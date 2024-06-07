@@ -1,7 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
+import uuid
 
 class User(AbstractUser):
+    id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
     product = models.ManyToManyField('consumptions.Product', related_name='users', blank=True)
     
     # Fix reverse accessors
