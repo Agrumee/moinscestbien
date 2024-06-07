@@ -13,7 +13,7 @@ def injectProductTable(apps, schema_editor):
     # Viande
     # Voyages/Trajets
 
-    products_names = ["alcool", "coffee", "tobacco", "meal deliveries", "sports betting", "shopping", "meat", "car trips"]
+    products_names = ["alcohol", "coffee", "tobacco", "meal_deliveries", "bets", "shopping", "meat", "car"]
     for product_name in products_names :
         Product.objects.create(
             name=product_name
