@@ -14,8 +14,8 @@ class Unit(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    motivation = models.ManyToManyField(Motivation, related_name='products', blank=True)
-    unit = models.ManyToManyField(Unit, related_name='products')
+    motivations = models.ManyToManyField(Motivation, related_name='products', blank=True)
+    units = models.ManyToManyField(Unit, related_name='products')
 
     def __str__(self):
         return self.name

@@ -1,10 +1,12 @@
 import factory
 from faker import Faker
 from django.utils.crypto import get_random_string
+from django.utils.timezone import datetime
 import random
 from accounts.models import User
 from consumptions.models import Product
 import uuid
+from datetime import date, timedelta
 
 fake = Faker()
 
@@ -19,24 +21,18 @@ class UserFactory(factory.django.DjangoModelFactory):
     last_name = factory.LazyAttribute(lambda _: fake.last_name())
     password = factory.PostGenerationMethodCall('set_password', get_random_string(10))
 
-    # def add_products(self, create, extracted, **kwargs):
-    #     if not create:
-    #         return
-
-    #     first_product_id = Product.objects.order_by('-id').first().id
-    #     last_product_id = Product.objects.order_by('-id').last().id
-    #     random_product_id = random.randint(first_product_id, last_product_id)
-    #     random_product = Product.objects.get(id=random_product_id)
-    #     self.product.add(random_product)
-
     @factory.post_generation
-    def products(self, create, extracted, **kwargs):
-        if not create:
-            return
-
-        if extracted:
-            for product in extracted:
-                self.products.add(product)
-        else:
-            products = Product.objects.order_by('?')[:3]
-            self.products.add(*products)
+    def products(self):
+        products = Product.objects.order_by('?')[:3]
+        self.products.add(*products)
+            
+    @factory.post_generation
+    def consumptions(self):
+        currentDate = date.today().replace(month=date.today().month-1)
+        endDate= date.today()
+        for product in self.products.all():
+            units = product.units.all()
+            unit = units[random.randint(0, len(units)-1)]
+            while currentDate <= endDate:
+                product.consumptions.create(user=self, quantity=random.randint(1, 100), date=currentDate, unit=unit)
+                currentDate += timedelta(days=1)
