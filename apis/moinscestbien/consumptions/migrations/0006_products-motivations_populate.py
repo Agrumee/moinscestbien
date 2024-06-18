@@ -1,27 +1,29 @@
 from django.db import migrations
 
 
-def injectProductMotivationTable(apps, schema_editor):
-    Product = apps.get_model('consumptions', 'Product')
-    # On a besoin de créer les produits que nous allons permettre aux utilisateurs de suivre : 
-    # Alcool - Santé/pécunier/ecologie/ethique
-    # Café - santé/écologie/pécunier ?/éthique
-    # Tabac -santé/éthique/écologique/pécunier
-    # Livraison de repas à domicile (Uber eats) - santé/éthique/écologique ?/éthique
-    # Paris sportifs santé/éthique ?/écologie ?/pécunier
-    # Vêtements éthique/écologie/pécunier
-    # Viande éthique/écologie/pécunier
-    # Voyages/Trajets écologie/pécunier/santé
-    # Motivation(name='health'),
-    #     Motivation(name='money'),
-    #     Motivation(name='ecology'),
-    #     Motivation(name='ethics'),
-
-    products_names = ["alcohol", "coffee", "tobacco", "meal_deliveries", "bets", "shopping", "meat", "car"]
-    for product_name in products_names :
-        Product.objects.create(
-            name=product_name
-        )
+def injectProductUnitTable(apps, schema_editor):
+    Unit = apps.get_model('consumptions', 'Unit')
+    Product = apps.get_model('consumptions', "Product")
+    
+    units = Unit.objects.all()
+    coffee = Product.objects.get(name='coffee')
+    alcohol = Product.objects.get(name='alcohol')
+    tobacco = Product.objects.get(name='tobacco')
+    meal_deliveries = Product.objects.get(name='meal_deliveries')
+    bets = Product.objects.get(name='bets')
+    meat = Product.objects.get(name='meat')
+    car = Product.objects.get(name='car')
+    shopping = Product.objects.get(name='shopping')
+    for unit in units : 
+        if unit.name == "count" :
+            unit.products.add(*[coffee, alcohol, tobacco, meal_deliveries, bets, meat, car])
+        elif unit.name == "euros" :
+            unit.products.add(*[shopping, alcohol, tobacco, meal_deliveries, bets, meat, car])
+        elif unit.name == "grams":
+            unit.products.add(meat)
+        elif unit.name == "kilometers" :
+            unit.products.add(car)
+    
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -29,5 +31,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(injectProductMotivationTable),
+        migrations.RunPython(injectProductUnitTable),
     ]
