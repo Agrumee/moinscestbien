@@ -4,7 +4,6 @@ import uuid
 
 class User(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, primary_key=True)
-    products = models.ManyToManyField('consumptions.Product', related_name='users', blank=True)
     
     # Fix reverse accessors
     groups = models.ManyToManyField(

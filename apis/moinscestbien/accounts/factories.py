@@ -4,7 +4,7 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import datetime
 import random
 from accounts.models import User
-from consumptions.models import Product
+from consumptions.models import Product, TrackedProduct
 import uuid
 from datetime import date, timedelta
 
@@ -22,17 +22,18 @@ class UserFactory(factory.django.DjangoModelFactory):
     password = factory.PostGenerationMethodCall('set_password', get_random_string(10))
 
     @factory.post_generation
-    def products(self):
+    def tracked_products(self, create, extracted, **kwargs):
         products = Product.objects.order_by('?')[:3]
-        self.products.add(*products)
+        TrackedProduct.objects.bulk_create([
+            TrackedProduct(user=self, product=product, unit=product.units.first(), motivation=product.motivations.first(), start_date=date.today().replace(month=date.today().month-1))
+            for product in products
+        ])
             
     @factory.post_generation
-    def consumptions(self):
+    def consumptions(self, create, extracted, **kwargs):
         currentDate = date.today().replace(month=date.today().month-1)
         endDate= date.today()
-        for product in self.products.all():
-            units = product.units.all()
-            unit = units[random.randint(0, len(units)-1)]
+        for tracked_product in self.tracked_products.all():
             while currentDate <= endDate:
-                product.consumptions.create(user=self, quantity=random.randint(1, 100), date=currentDate, unit=unit)
+                tracked_product.product.consumptions.create(user=self, quantity=random.randint(1, 100), date=currentDate)
                 currentDate += timedelta(days=1)

@@ -21,11 +21,29 @@ class Product(models.Model):
         return self.name
 
 class Consumption(models.Model):
+    
+    class Meta:
+        unique_together = ('user', 'product', 'date')
+        
     user = models.ForeignKey('accounts.User', related_name='consumptions', on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='consumptions', on_delete=models.CASCADE)
     quantity = models.FloatField()
     date = models.DateField()
-    unit = models.ForeignKey(Unit, related_name='consumptions', on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.user} - {self.product} - {self.quantity} - {self.date} - {self.unit}'
+
+class TrackedProduct(models.Model):
+    
+    class Meta:
+        unique_together = ('user', 'product')
+        
+    user = models.ForeignKey('accounts.User', related_name='tracked_products', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='tracked_products', on_delete=models.CASCADE)
+    unit = models.ForeignKey(Unit, related_name='tracked_products', on_delete=models.CASCADE)
+    motivation = models.ForeignKey(Motivation, related_name='tracked_products', on_delete=models.CASCADE, blank=True, null=True)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.user} - {self.product}'

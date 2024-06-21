@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from .models import Product
+from .models import Product, Consumption
 from accounts.models import User
 from .serializers import ProductSerializer, UnitSerializer
 
@@ -126,3 +126,4 @@ class ApiUserProductsList(APIView):
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
