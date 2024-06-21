@@ -7,13 +7,13 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('accounts', '0001_initial'),
-        ('consumptions', '0001_initial'),
+        ('consumptions', '0002_tracked_products'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='user',
-            name='product',
-            field=models.ManyToManyField(blank=True, related_name='users', to='consumptions.product'),
+            name='tracked_product',
+            field=models.ManyToManyField(blank=True, related_name='users', to='consumptions.TrackedProduct'),
         ),
     ]

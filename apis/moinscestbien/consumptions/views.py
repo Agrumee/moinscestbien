@@ -2,10 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import get_object_or_404
 
-from .models import Product, Consumption
+
+from .models import Product, Consumption, TrackedProduct
 from accounts.models import User
-from .serializers import ProductSerializer, UnitSerializer
+from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer
 
 class ApiProductsList(APIView):
     def get(self, request):
@@ -126,4 +128,127 @@ class ApiUserProductsList(APIView):
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class ApiConsumptionDetail(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            user = get_object_or_404(User, id=kwargs['userId'])
+            product = get_object_or_404(Product, id=kwargs['productId'])
+            date = kwargs['date']
+            tracked_product = get_object_or_404(TrackedProduct, user=user, product=product, end_date=None)
+            consumption = get_object_or_404(Consumption, tracked_product=tracked_product, date=date)
+            serializer = ConsumptionSerializer(consumption)
+            return Response({
+                "success": True,
+                "message": "Consumption retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "User not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Product.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Product not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except TrackedProduct.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Tracked product not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Consumption.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Consumption not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
             
+class ApiConsumptionPeriodList(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            user = get_object_or_404(User, id=kwargs['userId'])
+            product = get_object_or_404(Product, id=kwargs['productId'])
+            start_date = kwargs['start_date']
+            end_date = kwargs['end_date']
+            tracked_product = get_object_or_404(TrackedProduct, user=user, product=product, end_date=None)
+            consumptions = Consumption.objects.filter(tracked_product=tracked_product, date__range=[start_date, end_date])
+            serializer = ConsumptionSerializer(consumptions, many=True)
+            return Response({
+                "success": True,
+                "message": "Consumptions retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "User not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Product.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Product not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except TrackedProduct.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Tracked product not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+class ApiConsumptionsList(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            user = get_object_or_404(User, id=kwargs['userId'])
+            product = get_object_or_404(Product, id=kwargs['productId'])
+            tracked_product = get_object_or_404(TrackedProduct, user=user, product=product, end_date=None)
+            consumptions = Consumption.objects.filter(tracked_product=tracked_product)
+            serializer = ConsumptionSerializer(consumptions, many=True)
+            return Response({
+                "success": True,
+                "message": "Consumptions retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+        except User.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "User not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Product.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Product not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except TrackedProduct.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Tracked product not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

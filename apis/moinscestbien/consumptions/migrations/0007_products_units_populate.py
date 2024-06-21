@@ -27,7 +27,7 @@ def injectProductUnitTable(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('consumptions', '0005_products_populate'),
+        ('consumptions', '0006_products_populate'),
     ]
 
     operations = [

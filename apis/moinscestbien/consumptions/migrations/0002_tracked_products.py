@@ -7,32 +7,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0004_remove_user_products'),
-        ('consumptions', '0007_rename_motivation_product_motivations_and_more'),
+        ('accounts', '0001_initial'),
+        ('consumptions', '0001_initial'),
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='consumption',
-            unique_together={('user', 'product', 'date')},
-        ),
-        migrations.RemoveField(
-            model_name='consumption',
-            name='unit',
-        ),
         migrations.CreateModel(
             name='TrackedProduct',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_date', models.DateField()),
                 ('end_date', models.DateField(blank=True, null=True)),
-                ('motivation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.motivation')),
+                ('motivation', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.motivation')),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.product')),
                 ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.unit')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='accounts.user')),
             ],
             options={
-                'unique_together': {('user', 'product')},
+                'unique_together': {('user', 'product', 'unit')},
             },
         ),
     ]

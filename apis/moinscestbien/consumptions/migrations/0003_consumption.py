@@ -7,8 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accounts', '0002_user_product'),
-        ('consumptions', '0001_initial'),
+        ('consumptions', '0002_tracked_products'),
     ]
 
     operations = [
@@ -18,9 +17,10 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('quantity', models.FloatField()),
                 ('date', models.DateField()),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='consumptions', to='consumptions.product')),
-                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='consumptions', to='consumptions.unit')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='consumptions', to='accounts.user')),
+                ('tracked_product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='consumptions', to='consumptions.TrackedProduct')),
             ],
+            options={
+                'unique_together': {('tracked_product', 'date')},
+            },
         ),
     ]

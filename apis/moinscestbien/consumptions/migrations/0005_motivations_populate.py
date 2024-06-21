@@ -14,7 +14,7 @@ def populate_motivations(apps, schema_editor):
 class Migration(migrations.Migration):
     # Dépendances, le cas échéant
     dependencies = [
-        ('consumptions', '0003_units_populate'),
+        ('consumptions', '0004_units_populate'),
     ]
 
     operations = [

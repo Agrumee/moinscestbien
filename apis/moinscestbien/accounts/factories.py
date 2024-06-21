@@ -31,9 +31,9 @@ class UserFactory(factory.django.DjangoModelFactory):
             
     @factory.post_generation
     def consumptions(self, create, extracted, **kwargs):
-        currentDate = date.today().replace(month=date.today().month-1)
         endDate= date.today()
         for tracked_product in self.tracked_products.all():
+            currentDate = date.today().replace(month=date.today().month-1)
             while currentDate <= endDate:
-                tracked_product.product.consumptions.create(user=self, quantity=random.randint(1, 100), date=currentDate)
+                tracked_product.consumptions.create(quantity=random.randint(1, 100), date=currentDate)
                 currentDate += timedelta(days=1)

@@ -13,7 +13,7 @@ def populate_units(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('consumptions', '0002_consumption'),
+        ('consumptions', '0003_consumption'),
     ]
 
     operations = [
