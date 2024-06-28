@@ -1,6 +1,7 @@
+import React from 'react';
 import { Outlet, Link } from 'react-router-dom';
 
-const Layout = () => {
+const MainTemplate = () => {
   return (
     <div>
       <nav>
@@ -9,19 +10,21 @@ const Layout = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/Profile">Profile</Link>
+            <Link to="/profile">Profile</Link>
           </li>
           <li>
-            <Link to="/AddNew">Add New</Link>
+            <Link to="/addnew">Add New</Link>
           </li>
           <li>
-            <Link to="/ListView">List View</Link>
+            <Link to="/listview">List View</Link>
           </li>
         </ul>
       </nav>
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
     </div>
   );
 };
 
-export default Layout;
+export default MainTemplate;
