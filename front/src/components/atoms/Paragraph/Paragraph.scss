@@ -1,0 +1,23 @@
+@import '../../../styles/index.scss';
+
+.a-paragraph {
+    color: $black;
+    line-height: 150%;
+    font-family: 'Montserrat', sans-serif;
+    &.tiny {
+        font-size: 11px;
+    }
+    
+    &.small {
+        font-size: 14px;
+    }
+    
+    &.medium {
+        font-size: 16px;
+    }
+    
+    &.big {
+        font-size: 18px;
+    }
+}
+
