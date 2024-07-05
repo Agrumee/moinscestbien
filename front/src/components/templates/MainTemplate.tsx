@@ -15,9 +15,6 @@ const MainTemplate = () => {
           <li>
             <Link to="/addnew">Add New</Link>
           </li>
-          <li>
-            <Link to="/listview">List View</Link>
-          </li>
         </ul>
       </nav>
       <main>
