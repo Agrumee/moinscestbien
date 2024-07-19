@@ -1,7 +1,7 @@
 .a-paragraph {
     color: $red;
     line-height: 150%;
-    font-family: 'Montserrat', sans-serif;
+    font-family: $font-family;
     &.tiny {
         font-size: 11px;
     }

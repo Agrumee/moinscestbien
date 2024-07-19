@@ -1,0 +1,23 @@
+@mixin heading-style($font-size, $line-height: 150%) {
+  font-family: $font-family;
+  color: $black;
+  line-height: $line-height;
+  font-size: $font-size;
+}
+
+h1 {
+  @include heading-style(32px, 120%);
+}
+
+h2 {
+  @include heading-style(24px);
+}
+
+h3 {
+  @include heading-style(20px);
+}
+
+h4 {
+  @include heading-style(16px);
+}
+
