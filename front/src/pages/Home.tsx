@@ -1,6 +1,8 @@
 import Paragraph from "../components/atoms/Paragraph/Paragraph";
 import Heading from "../components/atoms/Heading/Heading";
 import Button from "../components/atoms/Button/Button";
+import Input from "../components/atoms/Input/Input";
+import Label from "../components/atoms/Label/Label";
 
 const Home = () => {
   const handleDeleteAccount = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -28,6 +30,13 @@ const Home = () => {
         className="tertiary"
         content="TEST TERTIARY BUTTON"
         onClick={handleDeleteAccount}
+      />
+      <Label content="nombre"/>
+      <Input className="small-input" placeholder="98"/>
+      <Label content="lalalala"/>
+      <Input
+        className="large-input"
+        placeholder="exemple@exemple.fr"
       />
     </>
   );
