@@ -8,7 +8,6 @@ interface InputProps {
 export default function Button({
   className,
   placeholder,
-  label_content,
 }: InputProps) {
   return <input className={className} placeholder={placeholder}></input>;
 }
