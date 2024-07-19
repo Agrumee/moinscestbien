@@ -1,21 +1,14 @@
-import React from 'react';
-import './Paragraph.scss';
+import "./Paragraph.scss";
 
 interface ParagraphProps {
   class: string;
   content: string;
 }
 
-class Paragraph extends React.Component<ParagraphProps> { 
-
-    render() {
-        return (
-            <p className={`a-paragraph ${this.props.class ?? ''}`}>
-              {this.props.content}
-            </p>
-          );
-    }
-};
-
-export default Paragraph;
-
+export default function Paragraph(props: ParagraphProps) {
+  return (
+    <p className={`a-paragraph ${props.class ?? ""}`}>
+      {props.content}
+    </p>
+  );
+}
