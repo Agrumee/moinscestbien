@@ -1,0 +1,46 @@
+/* Mixin pour le style des boutons */
+@mixin button-style($font-size, $line-height: 150%, $background-color, $color) {
+  font-family: $font-family;
+  line-height: $line-height;
+  font-size: $font-size;
+  background-color: $background-color;
+  color: $color;
+  border-radius: 30px;
+  padding: 5px;
+  width: 50%;
+  margin: 10px;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  cursor: pointer;
+  font-weight: 600;
+
+  &:focus {
+    box-shadow: none;
+    outline: none;
+  }
+}
+
+.primary {
+  @include button-style(18px, 150%, $yellow, $black);
+  &:hover {
+    background-color: darken($yellow, 10%);
+    color: $white;
+  }
+}
+
+.secondary {
+  @include button-style(18px, 150%, $red, $black);
+  &:hover {
+    background-color: darken($red, 10%);
+    color: $white;
+  }
+}
+
+.tertiary {
+  @include button-style(18px, 150%, $light_green, $dark_green);
+  border: 2px solid $dark_green;
+  &:hover {
+    background-color: darken($light_green, 10%);
+  }
+}
