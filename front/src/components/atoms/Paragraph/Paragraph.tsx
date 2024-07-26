@@ -1,14 +1,15 @@
 import "./Paragraph.scss";
 
 interface ParagraphProps {
-  class: string;
   content: string;
+  size?: 'tiny' | 'small' | 'medium' | 'big';
+  color?: 'black' | 'white';
 }
 
-export default function Paragraph(props: ParagraphProps) {
+export default function Paragraph( { content, size='small', color='black' } : ParagraphProps) {
   return (
-    <p className={`a-paragraph ${props.class ?? ""}`}>
-      {props.content}
+    <p className={`a-paragraph ${size} ${color}`}>
+      {content}
     </p>
   );
 }
