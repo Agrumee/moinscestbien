@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import MainTemplate from './components/templates/MainTemplate';
+import MainLayout from './layouts/MainLayout';
 import Home from './pages/Home';
 import Profile from './pages/Profile';
 import AddNew from './pages/AddNew';
@@ -10,7 +10,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<MainTemplate />}>
+        <Route path="/" element={<MainLayout />}>
           <Route index element={<Home />} />
           <Route path="profile" element={<Profile />} />
           <Route path="addnew" element={<AddNew />} />

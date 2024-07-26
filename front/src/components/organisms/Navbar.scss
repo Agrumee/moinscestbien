@@ -1,6 +1,10 @@
 .o-navbar {
-    display: flex;
-    background-color: $dark_green;
-    padding: 1rem;
-    justify-content: space-around;
-  }
+  display: flex;
+  background-color: $dark_green;
+  justify-content: space-around;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 0.5rem 0 0.5rem 0;
+}
