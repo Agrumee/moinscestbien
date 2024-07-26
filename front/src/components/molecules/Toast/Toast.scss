@@ -1,8 +1,19 @@
 .a-toast {
+  margin-top: 10px;
   border-radius: 10px;
   width: 90%;
   display: flex;
   align-items: center;
+  position: initial;
+  top : -20rem;
+
+  &.slide-in {
+    animation: slideIn 0.6s forwards;
+  }
+
+  &.slide-out {
+    animation: slideOut 0.6s forwards;
+  }
 
   &.fail {
     background-color: lighten($red, 25%);
@@ -45,7 +56,7 @@
   }
 
   &.loader {
-    background-color: lighten($yellow, 50%);
+    background-color: lighten($yellow, 30%);
     color: $yellow;
     border: 2px solid $yellow;
     .a-icon,
@@ -55,21 +66,12 @@
 
     .a-icon {
       margin-left: 50px;
-    //   background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3ClinearGradient id="a11"%3E%3Cstop offset="0" stop-color="%23FF156D" stop-opacity="0"%3E%3C/stop%3E%3Cstop offset="1" stop-color="%23FF156D"%3E%3C/stop%3E%3C/linearGradient%3E%3Ccircle fill="none" stroke="url(%23a11)" stroke-width="30" stroke-linecap="round" stroke-dasharray="0 44 0 44 0 44 0 44 0 360" cx="100" cy="100" r="70" transform-origin="center"%3E%3CanimateTransform type="rotate" attributeName="transform" calcMode="discrete" dur="2s" values="360;324;288;252;216;180;144;108;72;36" repeatCount="indefinite"%3E%3C/animateTransform%3E%3C/circle%3E%3C/svg%3E');
-      width: 3%;
+      width: 30px;
       height: 30px;
       background-repeat: no-repeat;
       background-size: contain;
-      animation: spin 2s linear infinite;
+      animation: spin 1.2s linear infinite;
     }
-    @keyframes spin {
-        from {
-          transform: rotate(0deg);
-        }
-        to {
-          transform: rotate(360deg);
-        }
-      }
 
     svg {
       path {
@@ -85,13 +87,33 @@
   width: 100%;
 }
 
-// .loader {
-//   background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"%3E%3ClinearGradient id="a11"%3E%3Cstop offset="0" stop-color="%23FF156D" stop-opacity="0"%3E%3C/stop%3E%3Cstop offset="1" stop-color="%23FF156D"%3E%3C/stop%3E%3C/linearGradient%3E%3Ccircle fill="none" stroke="url(%23a11)" stroke-width="30" stroke-linecap="round" stroke-dasharray="0 44 0 44 0 44 0 44 0 360" cx="100" cy="100" r="70" transform-origin="center"%3E%3CanimateTransform type="rotate" attributeName="transform" calcMode="discrete" dur="2s" values="360;324;288;252;216;180;144;108;72;36" repeatCount="indefinite"%3E%3C/animateTransform%3E%3C/circle%3E%3C/svg%3E');
-//   width: 100px;
-//   height: 100px;
-//   background-repeat: no-repeat;
-//   background-size: contain;
-//   animation: spin 2s linear infinite;
-// }
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 
+@keyframes slideOut {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

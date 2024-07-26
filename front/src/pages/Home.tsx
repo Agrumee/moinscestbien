@@ -5,11 +5,8 @@ import Toast from "../components/molecules/Toast/Toast";
 const Home = () => {
   return (
     <>
-      <Paragraph class="big" content="test de texte" />
-      <Icon name="home" color="black" />
-      <Toast status="fail" content="Echec de l'api" />
-      <Toast status="success" content="GG" />
-      <Toast status="loader" content="Chargement en cours..." />
+      <Toast status="loader" is_called={true} content="Chargement en cours..." />
+      <Icon name="home" color="black" />      
     </>
   );
 };
