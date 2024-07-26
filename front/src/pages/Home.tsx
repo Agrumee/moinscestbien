@@ -5,7 +5,7 @@ const Home = () => {
   return (
     <>
       <Paragraph class="big" content="test de texte" />
-      <Icon name="home" />
+      <Icon name="home" color="black"/>
     </>
   );
 };

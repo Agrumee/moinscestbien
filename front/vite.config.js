@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import svgr from "vite-plugin-svgr";
+import { svgSpritemap } from 'vite-plugin-svg-spritemap';
 
 export default defineConfig(() => {
   return {
@@ -9,7 +9,9 @@ export default defineConfig(() => {
     },
     plugins: [
       react(),
-      svgr(),
+      svgSpritemap({
+        pattern: 'src/assets/svg/*.svg',
+      }),
     ],
     css: {
       preprocessorOptions: {
