@@ -16,7 +16,7 @@ const CountButton: React.FC<CountButtonProps> = ({ operation, onClick }) => {
 
   return (
       <div className="m-count-button" onClick={handleClick}>
-          <Icon name={operation} color="white" />
+          <Icon name={operation} color="white" size="small"/>
       </div>
   );
 };
