@@ -1,6 +1,6 @@
 import "./NavbarItem.scss";
-import Icon from "../atoms/Icon/Icon";
-import Paragraph from "../atoms/Paragraph/Paragraph";
+import Icon from "../../atoms/Icon/Icon";
+import Paragraph from "../../atoms/Paragraph/Paragraph";
 
 
 interface NavbarItemProps {

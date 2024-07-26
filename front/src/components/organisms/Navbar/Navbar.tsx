@@ -1,5 +1,5 @@
 import "./Navbar.scss";
-import NavbarItem from "../molecules/NavbarItem";
+import NavbarItem from "../../molecules/NavbarItem/NavbarItem";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
