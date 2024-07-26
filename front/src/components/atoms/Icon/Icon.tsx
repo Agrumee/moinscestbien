@@ -2,11 +2,11 @@ import "./Icon.scss";
 
 interface IconProps {
   name: string;
-  size?: string;
-  color?: string;
+  size?: 'small' | 'medium' | 'large';
+  color?: 'black' | 'white';
 }
 
-export default function Icon({ name, size, color }: IconProps) {
+export default function Icon({ name, size = 'medium', color = 'white' }: IconProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

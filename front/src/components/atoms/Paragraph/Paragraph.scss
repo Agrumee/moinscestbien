@@ -1,5 +1,5 @@
 .a-paragraph {
-    color: $red;
+    color: $black;
     line-height: 150%;
     font-family: $font-family;
     &.tiny {
@@ -16,6 +16,14 @@
     
     &.big {
         font-size: 18px;
+    }
+
+    &.white {
+        color: $white;
+    }
+
+    &.black {
+        color: $black;
     }
 }
 
