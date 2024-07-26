@@ -3,7 +3,7 @@ import "./Icon.scss";
 interface IconProps {
   name: string;
   size?: 'small' | 'medium' | 'large';
-  color?: 'black' | 'white';
+  color?: 'black' | 'white' | 'red';
 }
 
 export default function Icon({ name, size = 'medium', color = 'white' }: IconProps) {

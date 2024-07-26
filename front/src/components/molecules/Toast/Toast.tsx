@@ -8,10 +8,13 @@ interface ToastProps {
 }
 
 export default function Toast(props: ToastProps) {
+
   return (
     <div className={`a-toast ${props.status}`}>
-      <Icon name={props.status} />
-      <Paragraph class="medium" content={props.content} />
+      <Icon name={props.status} size="small"/>
+      <div className="notification-content">
+      <Paragraph size="medium" content={props.content} />
+      </div>
     </div>
   );
 }
