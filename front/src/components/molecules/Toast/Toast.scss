@@ -1,0 +1,13 @@
+.a-toast {
+  border-radius: 10px;
+  width: 90%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &.fail {
+    background-color: lighten($red, 25%); // Éclaircir la couleur rouge de 90%
+    color: $red;
+    border: 2px solid $red;
+  }
+}
