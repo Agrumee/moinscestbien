@@ -42,6 +42,9 @@
     ]
   },
   "devDependencies": {
-    "sass": "^1.77.6"
+    "@svgr/rollup": "^8.1.0",
+    "@svgr/webpack": "^8.1.0",
+    "sass": "^1.77.6",
+    "vite-plugin-svgr": "^4.2.0"
   }
 }
