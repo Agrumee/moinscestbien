@@ -205,7 +205,7 @@ class ApiAddConsumption(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
-class ApiConsumptionsList(APIView):
+class ApiConsumptionsListByProduct(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user = get_object_or_404(User, id=kwargs['userId'])
@@ -321,6 +321,45 @@ class ApiConsumptionDetail(APIView):
             return Response({
                 "success": False,
                 "message": "Consumption not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class ApiConsumptionsList(APIView):
+   def get(self, request, *args, **kwargs):
+        try:
+            user = get_object_or_404(User, id=kwargs['userId'])
+            start_date_str = kwargs['start_date']
+            end_date_str = kwargs['end_date']
+            
+            # Convertir les chaînes en objets date
+            start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
+            end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
+            
+            # Filtrer les consommations pour l'utilisateur et la plage de dates
+            consumptions = Consumption.objects.filter(
+                tracked_product__user=user,
+                date__range=[start_date, end_date]
+            )
+            
+            # Utiliser le sérialiseur modifié
+            serializer = ConsumptionSerializer(consumptions, many=True)
+            return Response({
+                "success": True,
+                "message": "Consumptions retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+            
+        except User.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "User not found.",
                 "data": []
             }, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
