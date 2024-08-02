@@ -18,16 +18,16 @@ const groupDataByPeriod = (data: Array<{ date: string; product: string; quantity
 
     switch (period) {
       case 'daily':
-        key = new Date(date).toLocaleDateString('fr-FR').slice(0, 5); // Format DD/MM
+        key = new Date(date).toLocaleDateString('fr-FR').slice(0, 5); 
         break;
       case 'weekly':
         const startOfWeek = new Date(dateObj.setDate(dateObj.getDate() - dateObj.getDay()));
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 6);
-        key = `${startOfWeek.toLocaleDateString('fr-FR')} au ${endOfWeek.toLocaleDateString('fr-FR')}`;
+        key = `${startOfWeek.toLocaleDateString('fr-FR').slice(0, 5)}-${endOfWeek.toLocaleDateString('fr-FR').slice(0, 5)}`;
         break;
       case 'monthly':
-        key = `${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`; // Format MM/YYYY
+        key = `${dateObj.getMonth() + 1}`;  // Utilisation uniquement du mois
         break;
       default:
         key = date;
@@ -53,13 +53,14 @@ const groupDataByPeriod = (data: Array<{ date: string; product: string; quantity
 const formatDate = (date: string, period: 'daily' | 'weekly' | 'monthly') => {
   const [month, year] = date.split('/').map(Number);
   const months = [
-    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+    'Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Jui', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'
   ];
 
   if (period === 'monthly') {
-    return `${months[month - 1]} ${year}`;
+    return months[month - 1];  // Pas d'année dans le format mensuel
   }
 
+  // Pour daily et weekly
   return date;
 };
 
