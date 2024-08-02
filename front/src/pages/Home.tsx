@@ -1,13 +1,11 @@
 import Paragraph from "../components/atoms/Paragraph/Paragraph";
 import Icon from "../components/atoms/Icon/Icon";
 import Toast from "../components/molecules/Toast/Toast";
+import ConsumptionsChart from "../components/atoms/ConsumptionsChart/ConsumptionsChart";
 
 const Home = () => {
   return (
-    <>
-      <Toast status="loader" is_called={true} content="Chargement en cours..." />
-      <Icon name="home" color="black" />      
-    </>
+      <ConsumptionsChart/>   
   );
 };
 
