@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import "./ConsumptionsChart.scss";
 
 const COLORS = ['#F9BC60', '#004643', '#E16162', '#DD614A', '#3a86ff', '#73a580', '#f28482'];
@@ -19,14 +18,16 @@ const groupDataByPeriod = (data: Array<{ date: string; product: string; quantity
 
     switch (period) {
       case 'daily':
-        key = date;
+        key = new Date(date).toLocaleDateString('fr-FR').slice(0, 5); // Format DD/MM
         break;
       case 'weekly':
-        const week = `${dateObj.getFullYear()}-W${Math.ceil((dateObj.getDate() + 1 - dateObj.getDay()) / 7)}`;
-        key = week;
+        const startOfWeek = new Date(dateObj.setDate(dateObj.getDate() - dateObj.getDay()));
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+        key = `${startOfWeek.toLocaleDateString('fr-FR')} au ${endOfWeek.toLocaleDateString('fr-FR')}`;
         break;
       case 'monthly':
-        key = `${dateObj.getFullYear()}-${dateObj.getMonth() + 1}`;
+        key = `${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`; // Format MM/YYYY
         break;
       default:
         key = date;
@@ -49,12 +50,24 @@ const groupDataByPeriod = (data: Array<{ date: string; product: string; quantity
   }));
 };
 
+const formatDate = (date: string, period: 'daily' | 'weekly' | 'monthly') => {
+  const [month, year] = date.split('/').map(Number);
+  const months = [
+    'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'
+  ];
+
+  if (period === 'monthly') {
+    return `${months[month - 1]} ${year}`;
+  }
+
+  return date;
+};
+
 const getColor = (index: number) => COLORS[index % COLORS.length];
 
 export default function ConsumptionsChart({ className, data, period }: ConsumptionsChartProps) {
   const transformedData = groupDataByPeriod(data, period);
 
-  // Récupérer les produits uniques
   const products = Array.from(new Set(transformedData.flatMap(d => Object.keys(d).filter(k => k !== 'name'))));
 
   return (
@@ -64,7 +77,7 @@ export default function ConsumptionsChart({ className, data, period }: Consumpti
           data={transformedData}
           margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
         >
-          <XAxis dataKey="name" />
+          <XAxis dataKey="name" tickFormatter={(value) => formatDate(value, period)} />
           <YAxis />
           <Tooltip />
           <Legend />
