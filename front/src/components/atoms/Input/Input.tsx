@@ -5,7 +5,7 @@ interface InputProps {
   placeholder: string;
 }
 
-export default function Button({
+export default function Input({
   className,
   placeholder,
 }: InputProps) {
