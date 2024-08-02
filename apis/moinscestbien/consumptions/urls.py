@@ -8,6 +8,7 @@ from .views import (
     ApiConsumptionDetail,
     ApiConsumptionsList,
     ApiConsumptionPeriodList,
+    ApiConsumptionsListByProduct
     )
 
 urlpatterns = [
@@ -18,5 +19,7 @@ urlpatterns = [
     path('consumptions/<uuid:userId>/<int:productId>/add-consumption', ApiAddConsumption.as_view(), name='add-consumption'),
     path('consumption/<uuid:userId>/<int:productId>/<str:date>/', ApiConsumptionDetail.as_view(), name='consumption-detail'),
     path('consumptions/<uuid:userId>/<int:productId>/<str:start_date>/<str:end_date>/', ApiConsumptionPeriodList.as_view(), name='consumption-period-list'),
-    path('consumptions/<uuid:userId>/<int:productId>/', ApiConsumptionsList.as_view(), name='consumption-list'),
+    path('consumptions/<uuid:userId>/<int:productId>/', ApiConsumptionsListByProduct.as_view(), name='consumptions-list-by-product'),
+    path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
+
 ]
