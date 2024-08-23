@@ -22,7 +22,7 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
   const toggleDropdown = () => {
     setOpened(!opened);
     if (!opened) {
-      setActiveIndex(null); // Réinitialiser l'index actif lors de l'ouverture
+      setActiveIndex(null);
     }
   };
 
