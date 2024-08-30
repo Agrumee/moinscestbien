@@ -9,7 +9,6 @@ from django.contrib import auth
 import logging
 
 logger = logging.getLogger(__name__)
-
 @method_decorator(csrf_protect, name='dispatch')
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)

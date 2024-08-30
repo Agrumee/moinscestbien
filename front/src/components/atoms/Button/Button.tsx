@@ -1,7 +1,7 @@
 import "./Button.scss";
 
 interface ButtonProps {
-  className: string;
+  className: "primary" | "secondary" | "tertiary";
   content: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }
