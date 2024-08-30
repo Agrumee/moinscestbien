@@ -12,7 +12,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const csrfResponse = await fetch("/api/csrf_cookie/", {
+      const csrfResponse = await fetch("http://127.0.0.1:8000/api/csrf_cookie/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -24,7 +24,7 @@ const Login = () => {
         throw new Error("Failed to fetch CSRF token");
       }
 
-      const loginResponse = await fetch("/api/login/", {
+      const loginResponse = await fetch("http://127.0.0.1:8000/api/login/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -59,7 +59,7 @@ const Login = () => {
 
   return (
     <>
-       <Heading level={1} content="CONNEXION" />
+      <Heading level={1} content="CONNEXION" />
       <Label content="Adresse e-mail" />
       <Input 
         className="large-input" 
