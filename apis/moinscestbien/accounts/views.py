@@ -8,32 +8,41 @@ from django.utils.decorators import method_decorator
 from django.contrib import auth
 import logging
 from rest_framework import status
+import re
 
 logger = logging.getLogger(__name__)
 @method_decorator(csrf_protect, name='dispatch')
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
-
     def post(self, request, format=None):
         data = self.request.data
         email = data['email']
         password = data['password']
-        re_password = data['re_password']
+        confirmed_password = data['confirmedPassword']
         try:
-            if password == re_password:
+            regex_email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+            if not re.match(regex_email, email):
+                return Response({'message': 'Invalid email format'}, status=status.HTTP_401_UNAUTHORIZED)
+            elif password == confirmed_password:
                 if User.objects.filter(email=email).exists():
-                    return Response({'error': 'Email already exists'})
+                    return Response({'message': 'Email already exists'},
+                                status=status.HTTP_401_UNAUTHORIZED)
                 else:
                     if len(password) < 6:
-                        return Response({'error': 'Password must be at least 6 characters'})
+                        return Response({'message': 'Password must be at least 6 characters'},
+                                status=status.HTTP_401_UNAUTHORIZED)
                     else:
                         user = User.objects.create_user(email=email, password=password, username=email)
                         user.save()
-                        return Response({'success': 'User created successfully'})
+                        return Response({'message': 'User created successfully'},
+                                status=status.HTTP_200_OK)
             else:
-                return Response({'error': 'Passwords do not match'})
-        except:
-            return Response({'error': 'Error creating user'})
+                return Response({'message': 'Passwords do not match'}, status=status.HTTP_401_UNAUTHORIZED)
+        except Exception as e:
+            return Response(
+                {'message': f'Error registering user: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
 class GetCSRFToken(APIView):
@@ -93,5 +102,3 @@ class CheckAuthView(APIView):
                 return Response({'error': 'User is not authenticated'})
         except:
             return Response({'error': 'Error checking user authentication'})
-
-                
