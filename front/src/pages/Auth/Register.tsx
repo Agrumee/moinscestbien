@@ -3,55 +3,22 @@ import Label from "../../components/atoms/Label/Label";
 import Heading from "../../components/atoms/Heading/Heading";
 import Button from "../../components/atoms/Button/Button";
 import Paragraph from "../../components/atoms/Paragraph/Paragraph";
-import { getCSRFCookie } from "../../utils/cookies";
-
+import { useAuth } from "../../hooks/useAuth";
 import { useState } from "react";
 
 const Register = () => {
+  const { register } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
 
   const handleRegister = async () => {
     try {
-      const csrfResponse = await fetch("http://127.0.0.1:8000/api/csrf_cookie/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-
-      if (!csrfResponse.ok) {
-        throw new Error("Failed to fetch CSRF token");
-      }
-
-      const RegisterResponse = await fetch("http://127.0.0.1:8000/api/register/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCSRFCookie("csrftoken") || "",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email,
-          password,
-          confirmedPassword
-        }),
-      });
-
-      const data = await RegisterResponse.json();
-
-      if (RegisterResponse.ok) {
-        console.log("User registered:", data.username);
-      } else {
-        console.error("Error:", data.error);
-      }
+      await register(email, password, confirmedPassword);
     } catch (error) {
-      console.error("Error during login:", error);
+      throw error;
     }
   };
-
 
   return (
     <>
@@ -85,11 +52,7 @@ const Register = () => {
         onClick={handleRegister}
       />
       <div>
-        <Paragraph
-          content="Déjà inscrit ?"
-          size="medium"
-          color="black"
-        />
+        <Paragraph content="Déjà inscrit ?" size="medium" color="black" />
         <a href="/login">
           <Paragraph content="Se connecter" />
         </a>
