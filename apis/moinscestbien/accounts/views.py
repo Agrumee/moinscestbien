@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.response import Response
-from django.contrib.auth.models import User
+from accounts.models import User
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib import auth
 import logging
+from rest_framework import status
 
 logger = logging.getLogger(__name__)
 @method_decorator(csrf_protect, name='dispatch')
@@ -46,19 +47,30 @@ class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, format=None):
-        data = self.request.data
+        data = request.data
         username = data.get('email')
         password = data.get('password')
         try:
-            user = auth.authenticate(username=username, password=password)
-            if user is not None:
-                auth.login(request, user)
-                return Response({'success': 'User authenticated', 'username': username})
-            else:
-                return Response({'error': 'Invalid email or password'})
+            # Rest of the code...
+
+                        user = auth.authenticate(username=username, password=password)
+                        if user is not None:
+                            auth.login(request, user)
+                            return Response(
+                                {'message': 'User authenticated', 'username': username},
+                                status=status.HTTP_200_OK
+                            )
+                        else:
+                            return Response(
+                                {'message': 'Invalid email or password'},
+                                status=status.HTTP_401_UNAUTHORIZED
+                            )
         except Exception as e:
             logger.error(f"Error authenticating user: {e}")
-            return Response({'error': f'Error authenticating user: {str(e)}'})
+            return Response(
+                {'message': f'Error authenticating user: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
         
 class LogoutView(APIView):
     permission_classes = (permissions.AllowAny,)
