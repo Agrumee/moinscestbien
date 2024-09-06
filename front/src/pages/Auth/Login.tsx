@@ -3,6 +3,7 @@ import Label from "../../components/atoms/Label/Label";
 import Heading from "../../components/atoms/Heading/Heading";
 import Button from "../../components/atoms/Button/Button";
 import Paragraph from "../../components/atoms/Paragraph/Paragraph";
+import { getCSRFCookie } from "../../utils/cookies";
 
 import { useState } from "react";
 
@@ -28,7 +29,7 @@ const Login = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "X-CSRFToken": getCookie("csrftoken"),
+          "X-CSRFToken": getCSRFCookie("csrftoken") || "",
         },
         credentials: "include",
         body: JSON.stringify({
@@ -48,15 +49,7 @@ const Login = () => {
       console.error("Error during login:", error);
     }
   };
-
-  function getCookie(name: string): string | undefined {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(';').shift();
-    return undefined;
-  }
   
-
   return (
     <>
       <Heading level={1} content="CONNEXION" />
