@@ -51,20 +51,18 @@ class LoginView(APIView):
         username = data.get('email')
         password = data.get('password')
         try:
-            # Rest of the code...
-
-                        user = auth.authenticate(username=username, password=password)
-                        if user is not None:
-                            auth.login(request, user)
-                            return Response(
-                                {'message': 'User authenticated', 'username': username},
-                                status=status.HTTP_200_OK
-                            )
-                        else:
-                            return Response(
-                                {'message': 'Invalid email or password'},
-                                status=status.HTTP_401_UNAUTHORIZED
-                            )
+            user = auth.authenticate(username=username, password=password)
+            if user is not None:
+                auth.login(request, user)
+                return Response(
+                    {'message': 'User authenticated', 'username': username},
+                    status=status.HTTP_200_OK
+                )
+            else:
+                return Response(
+                    {'message': 'Invalid email or password'},
+                    status=status.HTTP_401_UNAUTHORIZED
+                )
         except Exception as e:
             logger.error(f"Error authenticating user: {e}")
             return Response(
