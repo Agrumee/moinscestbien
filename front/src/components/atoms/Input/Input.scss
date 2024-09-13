@@ -1,8 +1,7 @@
 @mixin input-style($width, $max_width) {
   display: flex;
-  align-self: center;
   background-color: $white;
-  border: 2px solid $medium_green;
+  border: 1px solid $medium_green;
   border-radius: 10px;
   padding:5px;
   width:$width;
@@ -12,7 +11,7 @@
 }
 
 .large-input {
-  @include input-style(90%, 90%);
+  @include input-style(auto, auto);
 }
 
 .small-input {

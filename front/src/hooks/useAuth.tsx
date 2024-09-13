@@ -125,9 +125,44 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const logout = () => {
-    
+  const logout = async () => {
+    try {
+      const csrfResponse = await fetch("http://127.0.0.1:8000/api/csrf_cookie/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+  
+      if (!csrfResponse.ok) {
+        throw new Error("Failed to fetch CSRF token for logout");
+      }
+  
+      const logoutResponse = await fetch("http://127.0.0.1:8000/api/logout/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFCookie("csrftoken") || "",
+        },
+        credentials: "include",
+      });
+  
+      if (logoutResponse.ok) {
+        // Supprimer l'utilisateur de l'état local
+        setUser(null);
+        // Supprimer l'utilisateur du localStorage
+        localStorage.removeItem('user');
+        console.log("User logged out successfully.");
+      } else {
+        const errorData = await logoutResponse.json();
+        throw new Error(errorData.error || "Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
   };
+  
 
   return (
     <AuthContext.Provider value={{ user, login, logout, register }}>
