@@ -13,7 +13,7 @@
 }
 
 .dropdown {
-  width: 90%;
+  width: 95%;
   background-color: $white;
   border: 2px solid $medium_green;
   border-radius: 10px;
@@ -52,10 +52,7 @@
 
   &:hover,
   &.active {
-    background-color: lighten(
-      $medium_green,
-      65%
-    );
+    background-color: lighten($medium_green, 65%);
   }
 }
 

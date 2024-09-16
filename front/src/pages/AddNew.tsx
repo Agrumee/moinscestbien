@@ -5,6 +5,8 @@ import Button from "../components/atoms/Button/Button";
 import { useEffect, useState } from "react";
 import { getCSRFCookie } from "../utils/cookies";
 
+import "./AddNew.scss";
+
 interface ContentItem {
   name: string;
   id: number;
@@ -99,8 +101,12 @@ const AddNew = () => {
   }, [currentProduct]);
 
   return (
-    <>
-      <Heading level={1} content="Suivre un nouveau produit" />
+    <div className="p-addnew">
+      <Heading
+        className="a-add-new-title"
+        level={1}
+        content="Suivre un nouveau produit"
+      />
       <Label content="Produit :" />
       <Dropdown
         label={currentProduct ? currentProduct.name : "Sélectionner"}
@@ -116,13 +122,14 @@ const AddNew = () => {
         onSelect={(selectedUnit: ContentItem) => setCurrentUnit(selectedUnit)}
       />
       <Button
+        className="a-add-new-button"
         variant="primary"
         size="large"
         content="Ajouter"
         onClick={handleAddNewProduct}
         disabled={!currentProduct || !currentUnit}
       />
-    </>
+    </div>
   );
 };
 
