@@ -11,8 +11,9 @@ interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, confirmedPassword: string) => Promise<void>;
-
   logout: () => void;
+  deleteAccount: () => void;
+  changePassword: (password: string, confirmedPassword: string) => void;
 }
 
 // Création du contexte d'authentification
@@ -127,18 +128,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      const csrfResponse = await fetch("http://127.0.0.1:8000/api/csrf_cookie/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
-  
-      if (!csrfResponse.ok) {
-        throw new Error("Failed to fetch CSRF token for logout");
-      }
-  
       const logoutResponse = await fetch("http://127.0.0.1:8000/api/logout/", {
         method: "POST",
         headers: {
@@ -162,10 +151,62 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.error("Error during logout:", error);
     }
   };
-  
+
+  const deleteAccount = async () => {
+    try {
+      const deleteAccountResponse = await fetch("http://127.0.0.1:8000/api/delete_account/", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFCookie("csrftoken") || "",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: user?.username,
+        }),
+      });
+
+      if (deleteAccountResponse.ok) {
+        setUser(null);
+        localStorage.removeItem('user');
+        console.log("User account deleted successfully.");
+      } else {
+        const errorData = await deleteAccountResponse.json();
+        throw new Error(errorData.error || "Account deletion failed");
+      }
+    } catch (error) {
+      console.error("Error during account deletion:", error);
+    }
+  }
+
+    const changePassword = async (password: string, confirmedPassword: string) => {
+      try {
+        const csrfResponse = await fetch("http://127.0.0.1:8000/api/change_password/", {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFCookie("csrftoken") || "",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            password,
+            confirmedPassword,
+          }),
+        });
+
+        if (csrfResponse.ok) {
+          console.log("Password changed successfully.");
+        } else {
+          const errorData = await csrfResponse.json();
+          throw new Error(errorData.error || "Password change failed");
+        }
+      } catch (error) {
+        console.error("Error during password change:", error);
+      }
+    }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register }}>
+    <AuthContext.Provider value={{ user, login, logout, register, deleteAccount, changePassword }}>
       {children}
     </AuthContext.Provider>
   );

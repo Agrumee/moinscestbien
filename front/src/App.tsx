@@ -7,6 +7,7 @@ import Profile from './pages/Profile/Profile';
 import AddNew from './pages/AddNew';
 import Login from './pages/Auth/Login/Login';
 import Register from './pages/Auth/Register/Register';
+import ChangePassword from './pages/ChangePassword/ChangePassword';
 import './App.css'
 
 const LayoutManager: React.FC = () => {
@@ -18,6 +19,7 @@ const LayoutManager: React.FC = () => {
         <Route path="/home" element={<Home />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/addnew" element={<AddNew />} />
+        <Route path="/changepassword" element={<ChangePassword />} />
       </Routes>
     </Logged>
   ) : (

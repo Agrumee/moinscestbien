@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../hooks/useAuth";
 
 const Profile = () => {
-  const { logout } = useAuth();
+  const { logout, deleteAccount } = useAuth();
   const navigate = useNavigate(); 
 
   const handleLogout = async () => {
@@ -17,11 +17,15 @@ const Profile = () => {
   };
 
   const handleChangePassword = () => {
-    console.log("Changement de mot de passe");
-  };
+    navigate('/changepassword');  };
 
   const handleDeleteAccount = () => {
-    console.log("Suppression de compte");
+    try {
+      deleteAccount();
+      navigate('/login');
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (

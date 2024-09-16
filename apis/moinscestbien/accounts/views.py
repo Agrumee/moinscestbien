@@ -122,3 +122,55 @@ class CheckAuthView(APIView):
                 return Response({"error": "User is not authenticated"})
         except:
             return Response({"error": "Error checking user authentication"})
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class DeleteAccountView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def delete(self, request, format=None):
+        try:
+            user = User.objects.get(username=request.user.username)
+            user.delete()
+            return Response(
+                {"success": "User account deleted"}, status=status.HTTP_204_NO_CONTENT
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class ChangePasswordView(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def patch(self, request, format=None):
+        data = request.data
+        password = data["password"]
+        confirmed_password = data["confirmedPassword"]
+        try:
+            if password == confirmed_password:
+                if len(password) < 6:
+                    return Response(
+                        {"message": "Password must be at least 6 characters"},
+                        status=status.HTTP_401_UNAUTHORIZED,
+                    )
+                else:
+                    user = User.objects.get(username=request.user.username)
+                    user.set_password(password)
+                    user.save()
+                    return Response(
+                        {"message": "Password changed successfully"},
+                        status=status.HTTP_200_OK,
+                    )
+            else:
+                return Response(
+                    {"message": "Passwords do not match"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+        except Exception as e:
+            return Response(
+                {"message": f"Error changing password: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
