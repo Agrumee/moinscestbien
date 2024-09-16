@@ -25,7 +25,7 @@ const AddNew = () => {
     console.log("Unité sélectionnée:", currentUnit);
   };
 
-  const getProductList = async () => {
+  const getProductsList = async () => {
     try {
       const response = await fetch("http://127.0.0.1:8000/api/products/", {
         method: "GET",
@@ -63,6 +63,7 @@ const AddNew = () => {
       const data = await response.json();
 
       if (response.ok) {
+        console.log(data.data);
         setUnitsList(data.data);
       } else {
         console.error("Error:", data.error || "Unknown error");
@@ -73,7 +74,7 @@ const AddNew = () => {
   };
 
   useEffect(() => {
-    getProductList();
+    getProductsList();
   }, []);
 
   useEffect(() => {
