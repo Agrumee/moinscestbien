@@ -3,6 +3,7 @@ import Label from "../../components/atoms/Label/Label";
 import Heading from "../../components/atoms/Heading/Heading";
 import Button from "../../components/atoms/Button/Button";
 import Paragraph from "../../components/atoms/Paragraph/Paragraph";
+import { getCSRFCookie } from "../../utils/cookies";
 
 import { useState } from "react";
 
@@ -11,16 +12,46 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
 
-  const handleRegister = () => {
-    console.log("inscrit !")
-  }
+  const handleRegister = async () => {
+    try {
+      const csrfResponse = await fetch("http://127.0.0.1:8000/api/csrf_cookie/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
 
-  function getCookie(name: string): string | undefined {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift();
-    return undefined;
-  }
+      if (!csrfResponse.ok) {
+        throw new Error("Failed to fetch CSRF token");
+      }
+
+      const RegisterResponse = await fetch("http://127.0.0.1:8000/api/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFCookie("csrftoken") || "",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          email,
+          password,
+          confirmedPassword
+        }),
+      });
+
+      const data = await RegisterResponse.json();
+
+      if (RegisterResponse.ok) {
+        console.log("User registered:", data.username);
+      } else {
+        console.error("Error:", data.error);
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
+
 
   return (
     <>

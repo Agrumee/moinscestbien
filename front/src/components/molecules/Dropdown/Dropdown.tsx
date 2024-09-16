@@ -4,16 +4,21 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Icon from "../../atoms/Icon/Icon";
 
 interface ContentItem {
-  label: string;
-  value: string;
+  name: string;
+  id: string;
 }
 
 interface DropDownProps {
   label: string;
   contentList: ContentItem[];
+  onSelect?: (selectedItem: ContentItem) => void; // Modifié pour accepter une fonction ou être undefined
 }
 
-export default function Dropdown({ contentList, label }: DropDownProps) {
+export default function Dropdown({
+  contentList,
+  label,
+  onSelect,
+}: DropDownProps) {
   const [opened, setOpened] = useState(false);
   const [selectedValue, setSelectedValue] = useState<string | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -26,9 +31,13 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
     }
   };
 
-  const handleOptionClick = (value: string) => {
-    setSelectedValue(value);
-    setOpened(false); // Ferme le dropdown après sélection
+  const handleOptionClick = (name: string, id: string) => {
+    setSelectedValue(name);
+    setOpened(false);
+
+    if (onSelect) {
+      onSelect({ name, id });
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -37,7 +46,7 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
       !dropdownRef.current.contains(event.target as Node)
     ) {
       setOpened(false);
-      setActiveIndex(null); // Réinitialiser l'index actif lors de la fermeture
+      setActiveIndex(null);
     }
   };
 
@@ -70,7 +79,8 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
       case " ":
         event.preventDefault();
         if (opened && activeIndex !== null) {
-          handleOptionClick(contentList[activeIndex].label);
+          const selectedItem = contentList[activeIndex];
+          handleOptionClick(selectedItem.name, selectedItem.id);
         } else {
           setOpened(true);
           setActiveIndex(0);
@@ -106,11 +116,7 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
         aria-label="Toggle dropdown"
       >
         <Paragraph content={selectedValue || label} size="big" color="black" />
-        <Icon
-          name={opened ? "chevron-up" : "chevron-right"}
-          size="tiny"
-          color="black"
-        />
+        <Icon name="chevron" size="tiny" color="black" />
       </div>
       <div
         className={`dropdown-content ${opened ? "show" : ""}`}
@@ -120,11 +126,11 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
           <div
             className={`option ${activeIndex === index ? "active" : ""}`}
             key={index}
-            onClick={() => handleOptionClick(item.label)}
+            onClick={() => handleOptionClick(item.name, item.id)}
             role="option"
             aria-selected={activeIndex === index}
           >
-            {item.label}
+            {item.name}
           </div>
         ))}
       </div>

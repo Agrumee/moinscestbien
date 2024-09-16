@@ -3,15 +3,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-
-
 from .models import Product, Consumption, TrackedProduct
 from accounts.models import User
 from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer
 from datetime import datetime
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
 
+from rest_framework.permissions import AllowAny
 
+@method_decorator(csrf_protect, name='dispatch')
 class ApiProductsList(APIView):
+    permission_classes = [AllowAny] 
+
     def get(self, request):
         try:
             product_list = Product.objects.all()
@@ -33,8 +37,11 @@ class ApiProductsList(APIView):
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
+
+@method_decorator(csrf_protect, name='dispatch')
 class ApiUnitsList(APIView):
+    permission_classes = [AllowAny] 
+
     def get(self, *args, **kwargs):
         try:
             product = Product.objects.get(id=kwargs['productId'])

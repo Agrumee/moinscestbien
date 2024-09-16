@@ -4,60 +4,108 @@ import Label from "../components/atoms/Label/Label";
 import Heading from "../components/atoms/Heading/Heading";
 import Button from "../components/atoms/Button/Button";
 import Paragraph from "../components/atoms/Paragraph/Paragraph";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getCSRFCookie } from "../utils/cookies";
+
+interface ContentItem {
+  name: string;
+  id: number;
+}
 
 const AddNew = () => {
-  const [currentProduct, setCurrentProduct] = useState("");
-  const [productList, setProductList] = useState("");
-  const [currentUnity, setCurrentUnity] = useState("");
-  const [unityList, setUnityList] = useState("");
-  const [currentMotivation, setCurrentMotivaiton] = useState("");
-  const [motivationList, setMotivationList] = useState("");
+  const [currentProduct, setCurrentProduct] = useState<ContentItem | null>(
+    null
+  );
+  const [currentUnit, setCurrentUnit] = useState<ContentItem | null>(null);
+  const [productsList, setProductsList] = useState<ContentItem[]>([]);
+  const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
 
-  const getProductList = () => {};
+  const handleAddNewProduct = () => {
+    console.log("Produit ajouté:", currentProduct);
+    console.log("Unité sélectionnée:", currentUnit);
+  };
+
+  const getProductList = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/api/products/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCSRFCookie("csrftoken"),
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+
+      if (response.ok) {
+        setProductsList(data.data);
+      } else {
+        console.error("Error:", data.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error during fetching products:", error);
+    }
+  };
+
+  const getUnitsList = async (productId: number) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/units/${productId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFCookie("csrftoken"),
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setUnitsList(data.data);
+      } else {
+        console.error("Error:", data.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error during fetching units:", error);
+    }
+  };
+
+  useEffect(() => {
+    getProductList();
+  }, []);
+
+  useEffect(() => {
+    if (currentProduct) {
+      console.log("Produit sélectionné:", currentProduct);
+      getUnitsList(currentProduct.id);
+    }
+  }, [currentProduct]);
 
   return (
     <>
       <Heading level={1} content="Suivre un nouveau produit" />
       <Label content="Produit :" />
       <Dropdown
-        label="Séléctionner"
-        contentList={[
-          { label: "shopping", value: "shopping" },
-          { label: "tabac", value: "tobacco" },
-          { label: "café", value: "coffee" },
-        ]}
+        label={currentProduct ? currentProduct.name : "Sélectionner"}
+        contentList={productsList}
+        onSelect={(selectedProduct: ContentItem) =>
+          setCurrentProduct(selectedProduct)
+        }
       />
       <Label content="Unité :" />
       <Dropdown
-        label="Séléctionner"
-        contentList={[
-          { label: "shopping", value: "shopping" },
-          { label: "tabac", value: "tobacco" },
-          { label: "café", value: "coffee" },
-        ]}
+        label={currentUnit ? currentUnit.name : "Sélectionner"}
+        contentList={unitsList}
+        onSelect={(selectedUnit: ContentItem) => setCurrentUnit(selectedUnit)}
       />
-      <Label content="Motivation :" />
-      <Dropdown
-        label="Séléctionner"
-        contentList={[
-          { label: "shopping", value: "shopping" },
-          { label: "tabac", value: "tobacco" },
-          { label: "café", value: "coffee" },
-        ]}
-      />
-      {/* <Button
+      <Button
         className="primary"
-        content="S'inscrire"
-        onClick={handleRegister}
-      /> */}
+        content="Ajouter"
+        onClick={handleAddNewProduct}
+      />
     </>
-
-    // <div>
-    //   <CountButton operation="plus" onClick={handleCountChange} />
-    //   <CountButton operation="minus" onClick={handleCountChange} />
-    //   <p>Current count: {count}</p>
-    // </div>
   );
 };
 

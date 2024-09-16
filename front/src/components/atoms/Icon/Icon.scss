@@ -1,34 +1,34 @@
 .a-icon {
-    fill: none;
-    &.black {
-      color: $black;
-    }
-
-    &.white {
-      color: $white;
-    }
-
-    &.red {
-      color: $red;
-    }
-
-    &.tiny {
-      width: 20px;
-      height: 20px;
-    }
-
-    &.small {
-      width: 30px;
-      height: 30px;
-    }
-
-    &.medium {
-      width: 40px;
-      height: 40px;
-    }
-
-    &.large {
-      width: 60px;
-      height: 60px;
-    }
+  fill: none;
+  &.black {
+    color: $black;
   }
+
+  &.white {
+    color: $white;
+  }
+
+  &.red {
+    color: $red;
+  }
+
+  &.tiny {
+    width: 20px;
+    height: 20px;
+  }
+
+  &.small {
+    width: 30px;
+    height: 30px;
+  }
+
+  &.medium {
+    width: 40px;
+    height: 40px;
+  }
+
+  &.large {
+    width: 60px;
+    height: 60px;
+  }
+}
