@@ -1,9 +1,7 @@
-import CountButton from "../components/molecules/CountButton/CountButton";
 import Dropdown from "../components/molecules/Dropdown/Dropdown";
 import Label from "../components/atoms/Label/Label";
 import Heading from "../components/atoms/Heading/Heading";
 import Button from "../components/atoms/Button/Button";
-import Paragraph from "../components/atoms/Paragraph/Paragraph";
 import { useEffect, useState } from "react";
 import { getCSRFCookie } from "../utils/cookies";
 
@@ -20,9 +18,27 @@ const AddNew = () => {
   const [productsList, setProductsList] = useState<ContentItem[]>([]);
   const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
 
-  const handleAddNewProduct = () => {
-    console.log("Produit ajouté:", currentProduct);
-    console.log("Unité sélectionnée:", currentUnit);
+  const handleAddNewProduct = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/users/products/${currentProduct.id}/${currentUnit.id}/add-product/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFCookie("csrftoken"),
+          },
+          credentials: "include",
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log("Product added successfully:", data);
+    } catch (error) {
+      console.error("Error during add new product", error);
+    }
   };
 
   const getProductsList = async () => {
@@ -63,7 +79,6 @@ const AddNew = () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log(data.data);
         setUnitsList(data.data);
       } else {
         console.error("Error:", data.error || "Unknown error");
@@ -79,7 +94,6 @@ const AddNew = () => {
 
   useEffect(() => {
     if (currentProduct) {
-      console.log("Produit sélectionné:", currentProduct);
       getUnitsList(currentProduct.id);
     }
   }, [currentProduct]);
@@ -102,9 +116,11 @@ const AddNew = () => {
         onSelect={(selectedUnit: ContentItem) => setCurrentUnit(selectedUnit)}
       />
       <Button
-        className="primary"
+        variant="primary"
+        size="large"
         content="Ajouter"
         onClick={handleAddNewProduct}
+        disabled={!currentProduct || !currentUnit}
       />
     </>
   );

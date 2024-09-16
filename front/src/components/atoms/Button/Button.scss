@@ -5,9 +5,11 @@
   font-size: $font-size;
   background-color: $background-color;
   color: $color;
+}
+
+.a-button {
   border-radius: 30px;
   padding: 10px;
-  margin-top: 10px;
   border: none;
   box-shadow: none;
   outline: none;
@@ -18,38 +20,53 @@
     box-shadow: none;
     outline: none;
   }
-}
 
-.a-button {
   &.primary {
     @include button-style(18px, 150%, $yellow, $black);
-    &:hover {
+
+    &:not(:disabled):hover {
       background-color: darken($yellow, 10%);
       color: $white;
     }
   }
-  
+
   &.secondary {
     @include button-style(18px, 150%, $red, $black);
-    &:hover {
+
+    &:not(:disabled):hover {
       background-color: darken($red, 10%);
       color: $white;
     }
   }
-  
+
   &.tertiary {
     @include button-style(18px, 150%, $light_green, $dark_green);
     border: 2px solid $dark_green;
-    &:hover {
+
+    &:not(:disabled):hover {
       background-color: darken($light_green, 10%);
     }
   }
-  
+
   &.small {
     width: 12rem;
   }
-  
+
   &.large {
     width: 20rem;
+  }
+
+  // Styles pour le bouton désactivé
+  &:disabled {
+    background-color: #d6d6d6;
+    color: #525252;
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  // Désactive le hover si le bouton est désactivé
+  &:disabled:hover {
+    background-color: #d6d6d6;
+    color: #525252;
   }
 }
