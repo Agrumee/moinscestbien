@@ -1,34 +1,39 @@
 import "./Dropdown.scss";
-import React, { useState, useEffect, useRef, KeyboardEvent } from "react";
+import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Icon from "../../atoms/Icon/Icon";
 
 interface ContentItem {
-  label: string;
-  value: string;
+  name: string;
+  id: number;
 }
 
 interface DropDownProps {
   label: string;
   contentList: ContentItem[];
+  onSelect?: (selectedItem: ContentItem) => void;
 }
 
-export default function Dropdown({ contentList, label }: DropDownProps) {
+export default function Dropdown({
+  contentList,
+  label,
+  onSelect,
+}: DropDownProps) {
   const [opened, setOpened] = useState(false);
-  const [selectedValue, setSelectedValue] = useState<string | null>(null);
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null); // État unique pour la sélection
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setOpened(!opened);
-    if (!opened) {
-      setActiveIndex(null);
-    }
   };
 
-  const handleOptionClick = (value: string) => {
-    setSelectedValue(value);
-    setOpened(false); // Ferme le dropdown après sélection
+  const handleOptionClick = (item: ContentItem) => {
+    setSelectedItem(item);
+    setOpened(false);
+
+    if (onSelect) {
+      onSelect(item);
+    }
   };
 
   const handleClickOutside = (event: MouseEvent) => {
@@ -37,43 +42,41 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
       !dropdownRef.current.contains(event.target as Node)
     ) {
       setOpened(false);
-      setActiveIndex(null); // Réinitialiser l'index actif lors de la fermeture
     }
   };
 
+  // Gestion de la navigation au clavier
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!opened) {
+      if (event.key === "ArrowDown" || event.key === "Enter") {
+        event.preventDefault();
+        setOpened(true);
+      }
+      return;
+    }
+
+    const currentIndex = selectedItem
+      ? contentList.findIndex((item) => item.id === selectedItem.id)
+      : -1;
+
     switch (event.key) {
       case "ArrowDown":
         event.preventDefault();
-        if (
-          opened &&
-          activeIndex !== null &&
-          activeIndex < contentList.length - 1
-        ) {
-          setActiveIndex((prevIndex) =>
-            prevIndex !== null ? prevIndex + 1 : 0
-          );
-        } else if (!opened) {
-          setOpened(true);
-          setActiveIndex(0);
-        }
+        const nextIndex =
+          currentIndex < contentList.length - 1 ? currentIndex + 1 : 0;
+        setSelectedItem(contentList[nextIndex]);
         break;
       case "ArrowUp":
         event.preventDefault();
-        if (opened && activeIndex !== null && activeIndex > 0) {
-          setActiveIndex((prevIndex) =>
-            prevIndex !== null ? prevIndex - 1 : 0
-          );
-        }
+        const prevIndex =
+          currentIndex > 0 ? currentIndex - 1 : contentList.length - 1;
+        setSelectedItem(contentList[prevIndex]);
         break;
       case "Enter":
       case " ":
         event.preventDefault();
-        if (opened && activeIndex !== null) {
-          handleOptionClick(contentList[activeIndex].label);
-        } else {
-          setOpened(true);
-          setActiveIndex(0);
+        if (currentIndex !== -1) {
+          handleOptionClick(contentList[currentIndex]);
         }
         break;
       case "Tab":
@@ -105,12 +108,12 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
         onClick={toggleDropdown}
         aria-label="Toggle dropdown"
       >
-        <Paragraph content={selectedValue || label} size="big" color="black" />
-        <Icon
-          name={opened ? "chevron-up" : "chevron-right"}
-          size="tiny"
+        <Paragraph
+          content={selectedItem ? selectedItem.name : label}
+          size="big"
           color="black"
         />
+        <Icon name="chevron" size="tiny" color="black" />
       </div>
       <div
         className={`dropdown-content ${opened ? "show" : ""}`}
@@ -118,13 +121,13 @@ export default function Dropdown({ contentList, label }: DropDownProps) {
       >
         {contentList.map((item, index) => (
           <div
-            className={`option ${activeIndex === index ? "active" : ""}`}
+            className={`option ${selectedItem?.id === item.id ? "active" : ""}`}
             key={index}
-            onClick={() => handleOptionClick(item.label)}
+            onClick={() => handleOptionClick(item)}
             role="option"
-            aria-selected={activeIndex === index}
+            aria-selected={selectedItem?.id === item.id}
           >
-            {item.label}
+            {item.name}
           </div>
         ))}
       </div>

@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 @method_decorator(csrf_protect, name="dispatch")
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
-
     def post(self, request, format=None):
         data = self.request.data
         email = data["email"]

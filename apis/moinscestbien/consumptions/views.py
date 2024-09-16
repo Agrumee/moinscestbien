@@ -3,15 +3,19 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-
-
-from .models import Product, Consumption, TrackedProduct
+from .models import Product, Consumption, TrackedProduct, Unit
 from accounts.models import User
 from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer
 from datetime import datetime
+from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
 
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
+@method_decorator(csrf_protect, name='dispatch')
 class ApiProductsList(APIView):
+    permission_classes = [AllowAny] 
+
     def get(self, request):
         try:
             product_list = Product.objects.all()
@@ -33,8 +37,11 @@ class ApiProductsList(APIView):
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
+
+@method_decorator(csrf_protect, name='dispatch')
 class ApiUnitsList(APIView):
+    permission_classes = [AllowAny] 
+
     def get(self, *args, **kwargs):
         try:
             product = Product.objects.get(id=kwargs['productId'])
@@ -65,13 +72,18 @@ class ApiUnitsList(APIView):
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@method_decorator(csrf_protect, name='dispatch')
 class ApiAddProduct(APIView):
-    def post(self, *args, **kwargs):
+    permission_classes = (IsAuthenticated,)
+    def post(self, request,*args, **kwargs):
         try:
-            user = User.objects.get(id=kwargs['userId'])
+            user = request.user
             product = Product.objects.get(id=kwargs['productId'])
-            if not product in user.products.all():
-                user.products.add(product)
+            unit = Unit.objects.get(id=kwargs['unitId'])
+            if not TrackedProduct.objects.filter(product=product, unit=unit, user=user):
+                TrackedProduct.objects.create(
+                    product=product, unit=unit, user=user
+                )
                 return Response({
                     "success": True,
                     "message": repr(product.name + " assigned successfully to " + user.username + "."),

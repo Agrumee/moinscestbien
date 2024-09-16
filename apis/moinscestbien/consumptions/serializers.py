@@ -9,7 +9,7 @@ class ProductSerializer(serializers.ModelSerializer):
 class UnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
-        fields = ['name']
+        fields = ['id', 'name']
 
 class ConsumptionSerializer(serializers.ModelSerializer):
     product = serializers.SerializerMethodField()  # Champ pour le produit

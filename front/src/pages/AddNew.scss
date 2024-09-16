@@ -1,0 +1,17 @@
+.p-addnew {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  height: 100vh;
+  padding: 1rem;
+}
+
+.a-add-new-title {
+  text-align: center;
+}
+
+.a-add-new-button {
+  align-self: center;
+  margin-top: 2rem;
+}
