@@ -1,4 +1,4 @@
-.p-login {
+.p-register {
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -10,10 +10,11 @@
         align-self: center;
     }
 
-    .loginButton {
+    .registerButton {
         align-self: center;
     }
-    .notRegistered {
+
+    .alreadyRegistered {
         display: inline-flex;
         align-self: center;
         align-items: center;
