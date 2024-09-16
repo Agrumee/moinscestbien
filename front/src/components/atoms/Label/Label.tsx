@@ -2,8 +2,9 @@ import "./Label.scss";
 
 interface LabelProps {
   content: string;
+  color?: "black" | "white";
 }
 
-export default function Button({ content }: LabelProps) {
-  return <label className="label">{content}</label>;
+export default function Label({ content, color = "black" }: LabelProps) {
+  return <label className={`label -${color}`}>{content}</label>;
 }

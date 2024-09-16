@@ -1,0 +1,33 @@
+.p-register {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+    height: 100vh;
+    padding: 1rem;
+
+    .title {
+        align-self: center;
+    }
+
+    .registerButton {
+        align-self: center;
+    }
+
+    .alreadyRegistered {
+        display: inline-flex;
+        align-self: center;
+        align-items: center;
+        gap: 1rem;
+
+        a {
+            text-decoration: none;
+        }
+
+        a:hover {
+            .a-paragraph {
+                color: $yellow;
+            }
+        }
+    }
+}
