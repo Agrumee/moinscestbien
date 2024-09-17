@@ -23,7 +23,6 @@ const AddNew = () => {
   const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
   const [motivationsList, setMotivationsList] = useState<ContentItem[]>([]);
 
-
   const handleAddNewProduct = async () => {
     try {
       const response = await fetch(
@@ -127,7 +126,6 @@ const AddNew = () => {
     if (currentProduct) {
       getUnitsList(currentProduct.id);
       getMotivationsList(currentProduct.id);
-      console.log(motivationsList);
     }
   }, [currentProduct]);
 

@@ -1,0 +1,13 @@
+.p-welcomingpage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 1rem;
+
+  .title {
+    text-align: center;
+  }
+}
