@@ -20,6 +20,7 @@ const AddNew = () => {
   const [productsList, setProductsList] = useState<ContentItem[]>([]);
   const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
 
+
   const handleAddNewProduct = async () => {
     try {
       const response = await fetch(
@@ -28,7 +29,7 @@ const AddNew = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFCookie("csrftoken"),
+            "X-CSRFToken": getCSRFCookie("csrftoken") || "",
           },
           credentials: "include",
         }
@@ -73,7 +74,7 @@ const AddNew = () => {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFCookie("csrftoken"),
+            "X-CSRFToken": getCSRFCookie("csrftoken") || "",
           },
           credentials: "include",
         }

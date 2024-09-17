@@ -1,31 +1,27 @@
 import Button from "../../components/atoms/Button/Button";
 import "./Profile.scss";
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const Profile = () => {
   const { logout, deleteAccount } = useAuth();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
       logout();
-      navigate('/login');
+      navigate("/login");
     } catch (error) {
       throw error;
     }
   };
 
   const handleChangePassword = () => {
-    navigate('/changepassword');  };
+    navigate("/changepassword");
+  };
 
   const handleDeleteAccount = () => {
-    try {
-      deleteAccount();
-      navigate('/login');
-    } catch (error) {
-      throw error;
-    }
+    navigate("/deleteaccount");
   };
 
   return (
