@@ -17,13 +17,16 @@ const AddNew = () => {
     null
   );
   const [currentUnit, setCurrentUnit] = useState<ContentItem | null>(null);
+  const [currentMotivation, setCurrentMotivation] =
+    useState<ContentItem | null>(null);
   const [productsList, setProductsList] = useState<ContentItem[]>([]);
   const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
+  const [motivationsList, setMotivationsList] = useState<ContentItem[]>([]);
 
   const handleAddNewProduct = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/api/users/products/${currentProduct.id}/${currentUnit.id}/add-product/`,
+        `http://127.0.0.1:8000/api/users/products/${currentProduct.id}/${currentUnit.id}/${currentMotivation.id}/add-product/`,
         {
           method: "POST",
           headers: {
@@ -90,6 +93,31 @@ const AddNew = () => {
     }
   };
 
+  const getMotivationsList = async (productId: number) => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/motivations/${productId}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCSRFCookie("csrftoken"),
+          },
+          credentials: "include",
+        }
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setMotivationsList(data.data);
+      } else {
+        console.error("Error:", data.error || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error during fetching units:", error);
+    }
+  };
+
   useEffect(() => {
     getProductsList();
   }, []);
@@ -97,6 +125,8 @@ const AddNew = () => {
   useEffect(() => {
     if (currentProduct) {
       getUnitsList(currentProduct.id);
+      getMotivationsList(currentProduct.id);
+      console.log(motivationsList);
     }
   }, [currentProduct]);
 
@@ -107,20 +137,37 @@ const AddNew = () => {
         level={1}
         content="Suivre un nouveau produit"
       />
-      <Label content="Produit :" />
-      <Dropdown
-        label={currentProduct ? currentProduct.name : "Sélectionner"}
-        contentList={productsList}
-        onSelect={(selectedProduct: ContentItem) =>
-          setCurrentProduct(selectedProduct)
-        }
-      />
-      <Label content="Unité :" />
-      <Dropdown
-        label={currentUnit ? currentUnit.name : "Sélectionner"}
-        contentList={unitsList}
-        onSelect={(selectedUnit: ContentItem) => setCurrentUnit(selectedUnit)}
-      />
+      <div>
+        <Label content="Produit :" />
+        <Dropdown
+          label={
+            currentProduct ? currentProduct.name : "Que voulez-vous suivre ?"
+          }
+          contentList={productsList}
+          onSelect={(selectedProduct: ContentItem) =>
+            setCurrentProduct(selectedProduct)
+          }
+        />
+      </div>
+      <div style={unitsList.length === 0 ? { display: "none" } : {}}>
+        <Label content="Unité :" />
+        <Dropdown
+          label={currentUnit ? currentUnit.name : "De quelle façon compter ?"}
+          contentList={unitsList}
+          onSelect={(selectedUnit: ContentItem) => setCurrentUnit(selectedUnit)}
+        />
+        <br></br>
+        <Label content="Motivation :" />
+        <Dropdown
+          label={
+            currentMotivation ? currentMotivation.name : "Pour quelle raison ?"
+          }
+          contentList={motivationsList}
+          onSelect={(selectedMotivation: ContentItem) =>
+            setCurrentMotivation(selectedMotivation)
+          }
+        />
+      </div>
       <Button
         className="a-add-new-button"
         variant="primary"

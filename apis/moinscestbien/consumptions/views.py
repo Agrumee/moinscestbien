@@ -3,9 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import Product, Consumption, TrackedProduct, Unit
+from .models import Product, Consumption, TrackedProduct, Unit, Motivation
 from accounts.models import User
-from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer
+from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer, MotivationSerializer
 from datetime import datetime
 from django.views.decorators.csrf import csrf_protect
 from django.utils.decorators import method_decorator
@@ -14,12 +14,14 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 @method_decorator(csrf_protect, name='dispatch')
 class ApiProductsList(APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [IsAuthenticated] 
 
     def get(self, request):
         try:
-            product_list = Product.objects.all()
-            serializer = ProductSerializer(product_list, many=True)
+            user = request.user
+            user_tracked_products = TrackedProduct.objects.filter(user=user).values_list('product', flat=True)
+            user_untracked_products = Product.objects.exclude(id__in=user_tracked_products)
+            serializer = ProductSerializer(user_untracked_products, many=True)
             return Response({
                 "success": True,
                 "message": "Products retrieved successfully.",
@@ -72,6 +74,43 @@ class ApiUnitsList(APIView):
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+@method_decorator(csrf_protect, name='dispatch')
+class ApiMotivationsList(APIView):
+    permission_classes = [AllowAny] 
+
+    def get(self, *args, **kwargs):
+        try:
+            product = Product.objects.get(id=kwargs['productId'])
+            motivations = product.motivations.all()
+            serializer = MotivationSerializer(motivations, many=True)
+            if motivations:
+                return Response({
+                    "success": True,
+                    "message": "Motivations retrieved successfully.",
+                    "data": serializer.data
+                }, status=status.HTTP_200_OK)
+            else :
+                return Response({
+                    "success": False,
+                    "message": "No Motivations found.",
+                    "data": []
+                }, status=status.HTTP_404_NOT_FOUND)
+        except Product.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "No product found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
 @method_decorator(csrf_protect, name='dispatch')
 class ApiAddProduct(APIView):
     permission_classes = (IsAuthenticated,)
@@ -80,9 +119,10 @@ class ApiAddProduct(APIView):
             user = request.user
             product = Product.objects.get(id=kwargs['productId'])
             unit = Unit.objects.get(id=kwargs['unitId'])
-            if not TrackedProduct.objects.filter(product=product, unit=unit, user=user):
+            motivation = Motivation.objects.get(id=kwargs['motivationId'])
+            if not TrackedProduct.objects.filter(product=product, unit=unit, user=user, motivation=motivation):
                 TrackedProduct.objects.create(
-                    product=product, unit=unit, user=user
+                    product=product, unit=unit, user=user, motivation=motivation
                 )
                 return Response({
                     "success": True,

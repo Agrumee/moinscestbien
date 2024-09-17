@@ -111,9 +111,9 @@ export default function Dropdown({
         <Paragraph
           content={selectedItem ? selectedItem.name : label}
           size="big"
-          color="black"
+          color="white"
         />
-        <Icon name="chevron" size="tiny" color="black" />
+        <Icon name="chevron" size="tiny" color="white" />
       </div>
       <div
         className={`dropdown-content ${opened ? "show" : ""}`}

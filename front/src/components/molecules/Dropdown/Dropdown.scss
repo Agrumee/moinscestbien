@@ -14,8 +14,7 @@
 
 .dropdown {
   width: 95%;
-  background-color: $white;
-  border: 2px solid $medium_green;
+  background-color: $dark_green;
   border-radius: 10px;
   padding: 5px;
   font-size: 22px;
@@ -23,6 +22,7 @@
   position: relative;
   display: flex;
   justify-content: center;
+  padding: 0.5rem;
 }
 
 .dropdown-content {

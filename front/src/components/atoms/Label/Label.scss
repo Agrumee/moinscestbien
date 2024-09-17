@@ -1,11 +1,12 @@
 .label {
-    font-family: $font-family;
-    font-size: 18px;
-    color: $black;
-    line-height: 150%;
-    font-weight: 600;
-  }
+  font-family: $font-family;
+  font-size: 18px;
+  color: $black;
+  line-height: 150%;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
 
 .-white {
-    color: $white;
-  }
+  color: $white;
+}

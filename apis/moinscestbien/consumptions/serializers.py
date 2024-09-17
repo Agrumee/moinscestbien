@@ -11,6 +11,11 @@ class UnitSerializer(serializers.ModelSerializer):
         model = Unit
         fields = ['id', 'name']
 
+class MotivationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unit
+        fields = ['id', 'name']
+
 class ConsumptionSerializer(serializers.ModelSerializer):
     product = serializers.SerializerMethodField()  # Champ pour le produit
 

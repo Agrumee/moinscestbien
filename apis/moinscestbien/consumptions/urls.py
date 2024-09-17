@@ -2,6 +2,7 @@ from django.urls import path
 from .views import (
     ApiProductsList, 
     ApiUnitsList, 
+    ApiMotivationsList,
     ApiAddProduct, 
     ApiUserProductsList, 
     ApiAddConsumption,
@@ -14,7 +15,8 @@ from .views import (
 urlpatterns = [
     path('products/', ApiProductsList.as_view(), name='products-list'),
     path('units/<int:productId>/', ApiUnitsList.as_view(), name='units-list'),
-    path('users/products/<int:productId>/<int:unitId>/add-product/', ApiAddProduct.as_view(), name='add-product'),
+    path('motivations/<int:productId>/', ApiMotivationsList.as_view(), name='motivations-list'),
+    path('users/products/<int:productId>/<int:unitId>/<int:motivationId>/add-product/', ApiAddProduct.as_view(), name='add-product'),
     path('products/<uuid:userId>/', ApiUserProductsList.as_view(), name='user-products-list'),
     path('consumptions/<uuid:userId>/<int:productId>/add-consumption/', ApiAddConsumption.as_view(), name='add-consumption'),
     path('consumption/<uuid:userId>/<int:productId>/<str:date>/', ApiConsumptionDetail.as_view(), name='consumption-detail'),
