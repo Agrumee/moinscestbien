@@ -26,7 +26,7 @@ const AddNew = () => {
   const handleAddNewProduct = async () => {
     try {
       const data = await fetchAPI(
-        `/users/products/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation.id}/add-product/`,
+        `/users/products/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation?.id}/add-product/`,
         {
           method: "POST",
         }
