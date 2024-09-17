@@ -3,7 +3,7 @@ import Label from "../components/atoms/Label/Label";
 import Heading from "../components/atoms/Heading/Heading";
 import Button from "../components/atoms/Button/Button";
 import { useEffect, useState } from "react";
-import { getCSRFCookie } from "../utils/cookies";
+import fetchAPI from "../utils/fetch";
 
 import "./AddNew.scss";
 
@@ -25,21 +25,12 @@ const AddNew = () => {
 
   const handleAddNewProduct = async () => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/users/products/${currentProduct.id}/${currentUnit.id}/${currentMotivation.id}/add-product/`,
+      const data = await fetchAPI(
+        `/users/products/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation.id}/add-product/`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFCookie("csrftoken") || "",
-          },
-          credentials: "include",
         }
       );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const data = await response.json();
       console.log("Product added successfully:", data);
     } catch (error) {
       console.error("Error during add new product", error);
@@ -48,21 +39,10 @@ const AddNew = () => {
 
   const getProductsList = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/api/products/", {
+      const response = await fetchAPI(`/products/`, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": getCSRFCookie("csrftoken"),
-        },
-        credentials: "include",
       });
-      const data = await response.json();
-
-      if (response.ok) {
-        setProductsList(data.data);
-      } else {
-        console.error("Error:", data.error || "Unknown error");
-      }
+      setProductsList(response.data);
     } catch (error) {
       console.error("Error during fetching products:", error);
     }
@@ -70,24 +50,10 @@ const AddNew = () => {
 
   const getUnitsList = async (productId: number) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/units/${productId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFCookie("csrftoken") || "",
-          },
-          credentials: "include",
-        }
-      );
-      const data = await response.json();
-
-      if (response.ok) {
-        setUnitsList(data.data);
-      } else {
-        console.error("Error:", data.error || "Unknown error");
-      }
+      const response = await fetchAPI(`/units/${productId}`, {
+        method: "GET",
+      });
+      setUnitsList(response.data);
     } catch (error) {
       console.error("Error during fetching units:", error);
     }
@@ -95,24 +61,13 @@ const AddNew = () => {
 
   const getMotivationsList = async (productId: number) => {
     try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/api/motivations/${productId}`,
+      const response = await fetchAPI(
+        `/motivations/${productId}`,
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRFToken": getCSRFCookie("csrftoken"),
-          },
-          credentials: "include",
         }
       );
-      const data = await response.json();
-
-      if (response.ok) {
-        setMotivationsList(data.data);
-      } else {
-        console.error("Error:", data.error || "Unknown error");
-      }
+        setMotivationsList(response.data);
     } catch (error) {
       console.error("Error during fetching units:", error);
     }
