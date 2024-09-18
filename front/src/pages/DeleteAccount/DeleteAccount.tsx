@@ -13,7 +13,7 @@ const DeleteAccount = () => {
   const handleDeleteAccount = async () => {
     try {
       deleteAccount();
-      navigate('/profile');
+      navigate('/login');
     } catch (error) {
       throw error;
     }

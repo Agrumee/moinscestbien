@@ -74,8 +74,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "POST",
       });
 
-      setCSRFToken(undefined);
       deleteCSRFCookie();
+      setCSRFToken(getCSRFCookie());
       console.log("User logged out successfully.");
     } catch (error) {
       console.error("Error during logout:", error);
@@ -88,6 +88,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "DELETE",
       });
 
+      deleteCSRFCookie();
+      setCSRFToken(getCSRFCookie());
+      console.log(csrfToken)
       console.log("User account deleted successfully.");
     } catch (error) {
       console.error("Error during account deletion:", error);

@@ -2,7 +2,7 @@ import "./Input.scss";
 
 interface InputProps {
   className: "large-input" | "small-input";
-  placeholder: string;
+  placeholder?: string;
   type?: string;
   value?: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;

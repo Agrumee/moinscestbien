@@ -25,9 +25,9 @@ const LayoutManager: React.FC = () => {
     else if (csrfToken && !['/addnew', '/profile', '/changepassword', '/deleteaccount'].includes(location.pathname)) {
       navigate('/home');
     }
-  }, [location.pathname]);
+  }, [location.pathname, csrfToken, navigate]);
 
-  return csrfToken !== undefined ? (
+  return csrfToken ? (
     <Logged>
       <Routes>
         <Route path="/home" element={<Home />} />

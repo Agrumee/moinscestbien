@@ -1,0 +1,43 @@
+
+.o-accordion {
+    margin: 2rem 2rem;
+
+    &__title {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        cursor: pointer;
+        background-color: $dark_green;
+        color: $white;
+        padding: 1rem;
+        border-radius: 10px 10px 10px 10px;
+
+        &.active {
+            border-radius: 10px 10px 0 0;
+        }
+    }
+      
+    &__content {
+        display: flex;
+        flex-direction: column;
+        background-color: $dark_green;
+        padding: 1rem;
+        border-radius: 0 0 10px 10px;
+        gap: 0.5rem;
+
+        &__counter {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        &__footer {
+            display: flex;
+            flex-direction: column;
+            gap:0.5rem;
+            align-items: center;
+            margin: 0 2rem 0 2rem;
+        }
+    }
+  }
