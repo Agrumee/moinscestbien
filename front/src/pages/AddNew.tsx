@@ -3,6 +3,8 @@ import Label from "../components/atoms/Label/Label";
 import Heading from "../components/atoms/Heading/Heading";
 import Button from "../components/atoms/Button/Button";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import fetchAPI from "../utils/fetch";
 
 import "./AddNew.scss";
@@ -13,6 +15,7 @@ interface ContentItem {
 }
 
 const AddNew = () => {
+  const navigate = useNavigate();
   const [currentProduct, setCurrentProduct] = useState<ContentItem | null>(
     null
   );
@@ -32,6 +35,7 @@ const AddNew = () => {
         }
       );
       console.log("Product added successfully:", data);
+      navigate("/");
     } catch (error) {
       console.error("Error during add new product", error);
     }
@@ -61,13 +65,10 @@ const AddNew = () => {
 
   const getMotivationsList = async (productId: number) => {
     try {
-      const response = await fetchAPI(
-        `/motivations/${productId}`,
-        {
-          method: "GET",
-        }
-      );
-        setMotivationsList(response.data);
+      const response = await fetchAPI(`/motivations/${productId}`, {
+        method: "GET",
+      });
+      setMotivationsList(response.data);
     } catch (error) {
       console.error("Error during fetching units:", error);
     }

@@ -151,11 +151,13 @@ class ApiAddProduct(APIView):
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-            
+
+@method_decorator(csrf_protect, name='dispatch')
 class ApiUserProductsList(APIView):
-    def get(self, *args, **kwargs):
+    permission_classes = (IsAuthenticated,)
+    def get(self, request,*args, **kwargs):
         try:
-            user = User.objects.get(id=kwargs['userId'])
+            user = request.user
             user_products_list = user.products.all()
             serializer = ProductSerializer(user_products_list, many=True)
             if user_products_list:
