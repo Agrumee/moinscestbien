@@ -19,8 +19,8 @@ const CalendarButton = () => {
   return (
     <div>
       <div className="m-calendar-button">
-        {date && <Paragraph content={date.toDateString()} />}
-        <Icon name="calendar" color="black" onClick={toggleDisplay} />
+        {date && <Paragraph color="white" content={date.toDateString()} />}
+        <Icon name="calendar" size="small" color="white" onClick={toggleDisplay} />
       </div>
       <div style={{ display: display }}>
         <CalendarComponent onDateChange={handleDateChange} />

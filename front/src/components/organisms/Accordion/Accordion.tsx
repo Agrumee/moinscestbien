@@ -5,6 +5,7 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
+import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 
 interface AccordionProps {
   productName: string;
@@ -40,8 +41,7 @@ const Accordion = ({ productName }: AccordionProps) => {
       {isActive && (
         <div className="o-accordion__content">
           <div className="o-accordion__content__dates">
-            <Paragraph content="Aujourd'hui" size="small" color="white" />
-            <div></div>
+            <CalendarButton/>
           </div>
           <div className="o-accordion__content__counter">
             <CountButton operation="minus"/>
