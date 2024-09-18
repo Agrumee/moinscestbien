@@ -14,7 +14,7 @@ const fetchAPI = async (
   { method, headers = {}, body = null, credentials = "include" }: FetchOptions
 ): Promise<any> => {
   try {
-    const csrfToken = getCSRFCookie("csrftoken") || "";
+    const csrfToken = getCSRFCookie() || "";
 
     const response = await fetch(`${BASE_URL}${endpoint}`, {
       method,

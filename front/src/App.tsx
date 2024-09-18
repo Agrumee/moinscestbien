@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import Logged from "./layouts/Logged";
 import Unlogged from "./layouts/Unlogged";
@@ -13,9 +14,20 @@ import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import "./App.css";
 
 const LayoutManager: React.FC = () => {
-  const { user } = useAuth();
+  const { csrfToken } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  return user ? (
+  useEffect(() => {
+    if (!csrfToken && !['/', '/login', '/register'].includes(location.pathname)) {
+      navigate('/');
+    }
+    else if (csrfToken && !['/addnew', '/profile', '/changepassword', '/deleteaccount'].includes(location.pathname)) {
+      navigate('/home');
+    }
+  }, [location.pathname]);
+
+  return csrfToken !== undefined ? (
     <Logged>
       <Routes>
         <Route path="/home" element={<Home />} />
@@ -36,7 +48,7 @@ const LayoutManager: React.FC = () => {
   );
 };
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <AuthProvider>
       <BrowserRouter>

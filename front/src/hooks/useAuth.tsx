@@ -1,13 +1,10 @@
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import fetchAPI from '../utils/fetch';
+import { getCSRFCookie, deleteCSRFCookie } from '../utils/cookies';
 
-interface User {
-  email: string;
-  username: string;
-}
 
 interface AuthContextType {
-  user: User | null;
+  csrfToken: string | undefined;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, confirmedPassword: string) => Promise<void>;
   logout: () => void;
@@ -30,24 +27,21 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
+  const [csrfToken, setCSRFToken] = useState(getCSRFCookie());
 
   const login = async (email: string, password: string) => {
     try {
+      await fetchAPI("/csrf_cookie/", {
+        method: "GET",
+      });
+
       const data = await fetchAPI("/login/", {
         method: "POST",
         body: { email, password }
       });
 
-      setUser(data);
-      localStorage.setItem('user', JSON.stringify(data)); 
+    setCSRFToken(getCSRFCookie());
+
     } catch (error) {
       console.error('Login failed', error);
       throw error;
@@ -56,12 +50,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (email: string, password: string, confirmedPassword: string) => {
     try {
+      await fetchAPI("/csrf_cookie/", {
+        method: "GET",
+      });
+
       const data = await fetchAPI("/register/", {
         method: "POST",
         body: { email, password, confirmedPassword }
       });
 
-      console.log("User registered:", data.username);
+      setCSRFToken(getCSRFCookie());
+
       await login(email, password);
     } catch (error) {
       console.error("Error during registration:", error);
@@ -75,8 +74,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "POST",
       });
 
-      setUser(null);
-      localStorage.removeItem('user');
+      setCSRFToken(undefined);
+      deleteCSRFCookie();
       console.log("User logged out successfully.");
     } catch (error) {
       console.error("Error during logout:", error);
@@ -87,11 +86,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       await fetchAPI("/delete_account/", {
         method: "DELETE",
-        body: { username: user?.username }
       });
 
-      setUser(null);
-      localStorage.removeItem('user');
       console.log("User account deleted successfully.");
     } catch (error) {
       console.error("Error during account deletion:", error);
@@ -112,7 +108,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, register, deleteAccount, changePassword }}>
+    <AuthContext.Provider value={{ csrfToken, login, logout, register, deleteAccount, changePassword }}>
       {children}
     </AuthContext.Provider>
   );
