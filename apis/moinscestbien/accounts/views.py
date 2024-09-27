@@ -69,7 +69,6 @@ class GetCSRFToken(APIView):
         return Response({"success": "CSRF cookie set"})
 
 
-@method_decorator(csrf_protect, name="dispatch")
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -97,9 +96,9 @@ class LoginView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-
+@method_decorator(csrf_protect, name="dispatch")
 class LogoutView(APIView):
-    permission_classes = (permissions.AllowAny,)
+    permission_classes = (permissions.IsAuthenticated,)
 
     def post(self, request, format=None):
         try:
@@ -108,18 +107,16 @@ class LogoutView(APIView):
         except:
             return Response({"error": "Error logging out user"})
 
-
-@method_decorator(csrf_protect, name="dispatch")
 class CheckAuthView(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
 
     def get(self, request, format=None):
         try:
-            isAuthenticated = User.is_authenticated
+            isAuthenticated = request.user.is_authenticated
             if isAuthenticated:
-                return Response({"success": "User is authenticated"})
+                return Response({"success": "User is authenticated", "isAuthenticated": True}, status=status.HTTP_200_OK)
             else:
-                return Response({"error": "User is not authenticated"})
+                return Response({"error": "User is not authenticated", "isAuthenticated": False}, status=status.HTTP_200_OK)
         except:
             return Response({"error": "Error checking user authentication"})
 
@@ -131,6 +128,7 @@ class DeleteAccountView(APIView):
     def delete(self, request, format=None):
         try:
             user = User.objects.get(username=request.user.username)
+            auth.logout(request)
             user.delete()
             return Response(
                 {"success": "User account deleted"}, status=status.HTTP_204_NO_CONTENT
