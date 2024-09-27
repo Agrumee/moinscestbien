@@ -7,14 +7,14 @@ from .models import Product, Consumption, TrackedProduct, Unit, Motivation
 from accounts.models import User
 from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer, MotivationSerializer
 from datetime import datetime
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-@method_decorator(csrf_protect, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiProductsList(APIView):
-    permission_classes = [IsAuthenticated] 
+    permission_classes = [IsAuthenticated,] 
 
     def get(self, request):
         try:
@@ -40,9 +40,9 @@ class ApiProductsList(APIView):
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@method_decorator(csrf_protect, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiUnitsList(APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [AllowAny,] 
 
     def get(self, *args, **kwargs):
         try:
@@ -75,9 +75,9 @@ class ApiUnitsList(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-@method_decorator(csrf_protect, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiMotivationsList(APIView):
-    permission_classes = [AllowAny] 
+    permission_classes = [IsAuthenticated,] 
 
     def get(self, *args, **kwargs):
         try:
@@ -152,7 +152,7 @@ class ApiAddProduct(APIView):
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-@method_decorator(csrf_protect, name='dispatch')
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiUserProductsList(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request,*args, **kwargs):
@@ -185,8 +185,9 @@ class ApiUserProductsList(APIView):
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
+@method_decorator(csrf_protect, name='dispatch')
 class ApiAddConsumption(APIView):
+    permission_classes = (IsAuthenticated,)
     def post(self, request, *args, **kwargs):
         try:
             userId = kwargs.get('userId')
@@ -259,7 +260,9 @@ class ApiAddConsumption(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiConsumptionsListByProduct(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
             user = get_object_or_404(User, id=kwargs['userId'])
@@ -298,7 +301,9 @@ class ApiConsumptionsListByProduct(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiConsumptionPeriodList(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
             user = get_object_or_404(User, id=kwargs['userId'])
@@ -339,7 +344,9 @@ class ApiConsumptionPeriodList(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiConsumptionDetail(APIView):
+    permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
             user = get_object_or_404(User, id=kwargs['userId'])
@@ -385,8 +392,10 @@ class ApiConsumptionDetail(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@method_decorator(ensure_csrf_cookie, name='dispatch')
 class ApiConsumptionsList(APIView):
-   def get(self, request, *args, **kwargs):
+    permission_classes = (IsAuthenticated,)    
+    def get(self, request, *args, **kwargs):
         try:
             user = get_object_or_404(User, id=kwargs['userId'])
             start_date_str = kwargs['start_date']
