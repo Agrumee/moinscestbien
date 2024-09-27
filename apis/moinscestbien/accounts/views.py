@@ -6,11 +6,9 @@ from accounts.models import User
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib import auth
-import logging
 from rest_framework import status
 import re
 
-logger = logging.getLogger(__name__)
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -91,7 +89,6 @@ class LoginView(APIView):
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
-            logger.error(f"Error authenticating user: {e}")
             return Response(
                 {"message": f"Error authenticating user: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
