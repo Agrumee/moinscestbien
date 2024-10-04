@@ -8,17 +8,24 @@ import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 import fetchAPI from "../../../utils/fetch";
 
-interface AccordionProps {
-  productName: string;
-  consumptions: Array<{ date: string; product: string; quantity: number }>;
-  productId: number;
+interface productItem {
+  id: number;
+  name: string;
 }
 
-const Accordion = ({
-  productName,
-  consumptions,
-  productId,
-}: AccordionProps) => {
+interface trackedProductItem {
+  id: number;
+  product: productItem;
+  start_date: string;
+  end_date: string;
+}
+
+interface AccordionProps {
+  trackedProduct: trackedProductItem;
+  consumptions: Array<{ date: string; product: string; quantity: number }>;
+}
+
+const Accordion = ({ trackedProduct, consumptions }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentConsumption, setCurrentConsumption] = useState(0);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -71,17 +78,22 @@ const Accordion = ({
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const formattedDate = formatDate(today);
-    getConsumptionDetail(productId, formattedDate);
+    getConsumptionDetail(trackedProduct.product.id, formattedDate);
   }, []);
 
   useEffect(() => {
     currentDate.setHours(0, 0, 0, 0);
     const formattedDate = formatDate(currentDate);
-    updateConsumptionDetail(productId, formattedDate, currentConsumption);
+    updateConsumptionDetail(
+      trackedProduct.product.id,
+      formattedDate,
+      currentConsumption
+    );
   }, [currentConsumption]);
 
   useEffect(() => {
-    getConsumptionDetail(productId, formatDate(currentDate)), [currentDate];
+    getConsumptionDetail(trackedProduct.product.id, formatDate(currentDate)),
+      [currentDate];
   });
 
   const updateInputValue = (value: number) => {
@@ -96,7 +108,7 @@ const Accordion = ({
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => setIsActive(!isActive)}
       >
-        <div>{productName}</div>
+        <div>{trackedProduct.product.name}</div>
         <div>{isActive ? "-" : "+"}</div>
       </div>
       {isActive && (
@@ -105,6 +117,7 @@ const Accordion = ({
             <CalendarButton
               initialDate={currentDate}
               onDateChange={handleDateChange}
+              startDate={trackedProduct.start_date}
             />
           </div>
           <div className="o-accordion__content__counter">

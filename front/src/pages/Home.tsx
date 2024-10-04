@@ -48,8 +48,9 @@ const Home = () => {
       {trackedProducts.map((trackedProduct: any) => (
         <Accordion
           key={trackedProduct.id}
-          productName={trackedProduct.product.name}
-          productId={trackedProduct.product.id}
+          // productName={trackedProduct.product.name}
+          // productId={trackedProduct.product.id}
+          trackedProduct={trackedProduct}
           consumptions={consumptions[trackedProduct.product.id] || []}
         />
       ))}

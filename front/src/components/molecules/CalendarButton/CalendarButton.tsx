@@ -5,15 +5,15 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./CalendarButton.scss";
 
 interface CalendarProps {
+  startDate: Date;
   initialDate?: Date;
-  period?: Array<{ start_date: Date; end_date: Date }>;
   onDateChange?: (initialDate: Date | null) => void;
 }
 
 const CalendarButton: React.FC<CalendarProps> = ({
+  startDate,
   initialDate,
-  period,
-  onDateChange, // Assurez-vous de passer cette prop
+  onDateChange,
 }) => {
   const [display, setDisplay] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date>(
@@ -25,11 +25,9 @@ const CalendarButton: React.FC<CalendarProps> = ({
     setDisplay((prevDisplay) => !prevDisplay);
   };
 
-  // Effect pour fermer le calendrier lorsque la date est sélectionnée
   useEffect(() => {
     if (selectedDate) {
       setDisplay(false);
-      // Appel de la fonction onDateChange si elle est définie
       if (onDateChange) {
         onDateChange(selectedDate);
       }
@@ -60,15 +58,6 @@ const CalendarButton: React.FC<CalendarProps> = ({
     );
   };
 
-  const isInPeriod = (date: Date) => {
-    if (!period) return false; // Si aucune période n'est définie, retourner faux
-    return period.some(({ start_date, end_date }) => {
-      const startDate = new Date(start_date);
-      const endDate = new Date(end_date);
-      return date >= startDate && date <= endDate;
-    });
-  };
-
   return (
     <div>
       <div className="m-calendar-button">
@@ -84,7 +73,6 @@ const CalendarButton: React.FC<CalendarProps> = ({
             })}
           />
         )}
-        {isInPeriod(selectedDate) && <span>Période active</span>}
         <Icon
           name="calendar"
           size="small"
@@ -97,6 +85,7 @@ const CalendarButton: React.FC<CalendarProps> = ({
           <CalendarComponent
             value={selectedDate}
             onDateChange={setSelectedDate}
+            startDate={startDate}
           />
         </div>
       )}
