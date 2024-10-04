@@ -5,7 +5,7 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./CalendarButton.scss";
 
 interface CalendarProps {
-  startDate: Date;
+  startDate: string;
   initialDate?: Date;
   onDateChange?: (initialDate: Date | null) => void;
 }

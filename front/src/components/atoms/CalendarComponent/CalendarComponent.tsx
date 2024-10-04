@@ -5,7 +5,7 @@ import "./CalendarComponent.scss";
 type Value = Date | [Date, Date] | null;
 
 interface CalendarComponentProps {
-  startDate: Date;
+  startDate: string;
   value: Date;
   onDateChange: (newValue: Date | null) => void;
 }

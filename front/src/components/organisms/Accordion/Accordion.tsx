@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Button from "../../atoms/Button/Button";
 import ConsumptionsChart from "../../atoms/ConsumptionsChart/ConsumptionsChart";
-import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
@@ -29,13 +28,26 @@ const Accordion = ({ trackedProduct, consumptions }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentConsumption, setCurrentConsumption] = useState(0);
   const [currentDate, setCurrentDate] = useState(new Date());
+  const [isConsumptionLoaded, setIsConsumptionLoaded] = useState(false); // Indicateur pour savoir si les données sont chargées
+  const [isNewDateLoaded, setIsNewDateLoaded] = useState(false); // Indicateur pour savoir si les données sont chargées
 
+  // Fonction pour changer la date sélectionnée
   const handleDateChange = (selectedDate: Date | null) => {
     if (selectedDate) {
       setCurrentDate(selectedDate);
+      setIsNewDateLoaded(false); // Marquer que les données doivent être rechargées
     }
   };
 
+  // Fonction pour formater la date au format "YYYY-MM-DD"
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  // Appel API pour obtenir la consommation du produit pour une date donnée
   const getConsumptionDetail = async (productId: number, date: string) => {
     try {
       const data = await fetchAPI(`/consumption/${productId}/${date}/`, {
@@ -48,58 +60,57 @@ const Accordion = ({ trackedProduct, consumptions }: AccordionProps) => {
     }
   };
 
+  // Appel API pour mettre à jour la consommation du produit
   const updateConsumptionDetail = async (
     productId: number,
     date: string,
     quantity: number
   ) => {
     try {
-      const data = await fetchAPI(
-        `/consumption/${productId}/add-consumption/`,
-        {
-          method: "POST",
-          body: { date: date, quantity: quantity },
-        }
-      );
+      await fetchAPI(`/consumption/${productId}/add-consumption/`, {
+        method: "POST",
+        body: { date: date, quantity: quantity },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
     } catch (error) {
-      console.error("Get consumption by date failed", error);
+      console.error("Update consumption failed", error);
       throw error;
     }
   };
 
-  const formatDate = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
+  // Charger la consommation du produit lorsque l'accordéon est ouvert ou la date est changée
   useEffect(() => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const formattedDate = formatDate(today);
-    getConsumptionDetail(trackedProduct.product.id, formattedDate);
-  }, []);
+    if (isActive && !isNewDateLoaded) {
+      const formattedDate = formatDate(currentDate);
+      getConsumptionDetail(trackedProduct.product.id, formattedDate);
+      setIsConsumptionLoaded(true); // Marquer que la consommation est chargée
+      setIsNewDateLoaded(true);
+    }
+  }, [currentDate]);
 
+  // Mettre à jour la consommation via l'API uniquement lorsque l'utilisateur modifie la consommation (et non lors de l'ouverture ou du changement de date)
   useEffect(() => {
-    currentDate.setHours(0, 0, 0, 0);
-    const formattedDate = formatDate(currentDate);
-    updateConsumptionDetail(
-      trackedProduct.product.id,
-      formattedDate,
-      currentConsumption
-    );
+    console.log(isConsumptionLoaded);
+    if (isConsumptionLoaded) {
+      const formattedDate = formatDate(currentDate);
+      updateConsumptionDetail(
+        trackedProduct.product.id,
+        formattedDate,
+        currentConsumption
+      );
+    }
   }, [currentConsumption]);
+  // Ne déclencher que lorsqu'on change la consommation
 
-  useEffect(() => {
-    getConsumptionDetail(trackedProduct.product.id, formatDate(currentDate)),
-      [currentDate];
-  });
-
+  // Mise à jour de la consommation en fonction de l'input de l'utilisateur
   const updateInputValue = (value: number) => {
+    console.log(value);
     setCurrentConsumption((prevConsumption) =>
       Math.max(prevConsumption + value, 0)
     );
+    console.log(currentConsumption);
   };
 
   return (
@@ -128,7 +139,10 @@ const Accordion = ({ trackedProduct, consumptions }: AccordionProps) => {
             <Input
               className="small-input"
               value={currentConsumption.toString()}
-              onChange={(e) => setCurrentConsumption(Number(e.target.value))}
+              onChange={(e) => {
+                setCurrentConsumption(Number(e.target.value));
+                console.log(currentConsumption);
+              }}
             />
             <CountButton operation="plus" onClick={() => updateInputValue(1)} />
           </div>
