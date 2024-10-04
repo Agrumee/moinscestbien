@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "../../atoms/Button/Button";
 import ConsumptionsChart from "../../atoms/ConsumptionsChart/ConsumptionsChart";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
@@ -6,14 +6,89 @@ import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
+import fetchAPI from "../../../utils/fetch";
 
 interface AccordionProps {
   productName: string;
   consumptions: Array<{ date: string; product: string; quantity: number }>;
+  productId: number;
 }
 
-const Accordion = ({ productName, consumptions }: AccordionProps) => {
+const Accordion = ({
+  productName,
+  consumptions,
+  productId,
+}: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
+  const [currentConsumption, setCurrentConsumption] = useState(0);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  const handleDateChange = (selectedDate: Date | null) => {
+    if (selectedDate) {
+      setCurrentDate(selectedDate);
+    }
+  };
+
+  const getConsumptionDetail = async (productId: number, date: string) => {
+    try {
+      const data = await fetchAPI(`/consumption/${productId}/${date}/`, {
+        method: "GET",
+      });
+      setCurrentConsumption(data.data.quantity);
+    } catch (error) {
+      console.error("Get consumption by date failed", error);
+      throw error;
+    }
+  };
+
+  const updateConsumptionDetail = async (
+    productId: number,
+    date: string,
+    quantity: number
+  ) => {
+    try {
+      const data = await fetchAPI(
+        `/consumption/${productId}/add-consumption/`,
+        {
+          method: "POST",
+          body: { date: date, quantity: quantity },
+        }
+      );
+    } catch (error) {
+      console.error("Get consumption by date failed", error);
+      throw error;
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  useEffect(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const formattedDate = formatDate(today);
+    getConsumptionDetail(productId, formattedDate);
+  }, []);
+
+  useEffect(() => {
+    currentDate.setHours(0, 0, 0, 0);
+    const formattedDate = formatDate(currentDate);
+    updateConsumptionDetail(productId, formattedDate, currentConsumption);
+  }, [currentConsumption]);
+
+  useEffect(() => {
+    getConsumptionDetail(productId, formatDate(currentDate)), [currentDate];
+  });
+
+  const updateInputValue = (value: number) => {
+    setCurrentConsumption((prevConsumption) =>
+      Math.max(prevConsumption + value, 0)
+    );
+  };
 
   return (
     <div className="o-accordion">
@@ -27,12 +102,22 @@ const Accordion = ({ productName, consumptions }: AccordionProps) => {
       {isActive && (
         <div className="o-accordion__content">
           <div className="o-accordion__content__dates">
-            <CalendarButton/>
+            <CalendarButton
+              initialDate={currentDate}
+              onDateChange={handleDateChange}
+            />
           </div>
           <div className="o-accordion__content__counter">
-            <CountButton operation="minus"/>
-            <Input className="small-input"/>
-            <CountButton operation="plus"/>
+            <CountButton
+              operation="minus"
+              onClick={() => updateInputValue(-1)}
+            />
+            <Input
+              className="small-input"
+              value={currentConsumption.toString()}
+              onChange={(e) => setCurrentConsumption(Number(e.target.value))}
+            />
+            <CountButton operation="plus" onClick={() => updateInputValue(1)} />
           </div>
           <ConsumptionsChart
             className="o-accordion__content__chart"

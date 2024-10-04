@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 
 const Home = () => {
   const [trackedProducts, setTrackedProducts] = useState([]);
-  const [consumptions, setConsumptions] = useState<{ [key: number]: any[] }>({});
+  const [consumptions, setConsumptions] = useState<{ [key: number]: any[] }>(
+    {}
+  );
 
   useEffect(() => {
     const getProducts = async () => {
@@ -47,7 +49,8 @@ const Home = () => {
         <Accordion
           key={trackedProduct.id}
           productName={trackedProduct.product.name}
-          consumptions={consumptions[trackedProduct.product.id] || []} 
+          productId={trackedProduct.product.id}
+          consumptions={consumptions[trackedProduct.product.id] || []}
         />
       ))}
     </div>

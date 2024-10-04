@@ -4,26 +4,37 @@ import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./CalendarButton.scss";
 
-const CalendarButton = () => {
+interface CalendarProps {
+  initialDate?: Date;
+  period?: Array<{ start_date: Date; end_date: Date }>;
+  onDateChange?: (initialDate: Date | null) => void;
+}
+
+const CalendarButton: React.FC<CalendarProps> = ({
+  initialDate,
+  period,
+  onDateChange, // Assurez-vous de passer cette prop
+}) => {
   const [display, setDisplay] = useState(false);
-  const [date, setDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    initialDate ? new Date(initialDate) : new Date()
+  );
   const calendarRef = useRef<HTMLDivElement | null>(null);
 
   const toggleDisplay = () => {
     setDisplay((prevDisplay) => !prevDisplay);
   };
 
-  const handleDateChange = (selectedDate: Date | null) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
+  // Effect pour fermer le calendrier lorsque la date est sélectionnée
   useEffect(() => {
-    if (date) {
+    if (selectedDate) {
       setDisplay(false);
+      // Appel de la fonction onDateChange si elle est définie
+      if (onDateChange) {
+        onDateChange(selectedDate);
+      }
     }
-  }, [date]);
+  }, [selectedDate, onDateChange]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -49,21 +60,31 @@ const CalendarButton = () => {
     );
   };
 
+  const isInPeriod = (date: Date) => {
+    if (!period) return false; // Si aucune période n'est définie, retourner faux
+    return period.some(({ start_date, end_date }) => {
+      const startDate = new Date(start_date);
+      const endDate = new Date(end_date);
+      return date >= startDate && date <= endDate;
+    });
+  };
+
   return (
     <div>
       <div className="m-calendar-button">
-        {isToday(date) ? (
+        {isToday(selectedDate) ? (
           <Paragraph color="white" content="Aujourd'hui" />
         ) : (
           <Paragraph
             color="white"
-            content={date.toLocaleDateString("fr-FR", {
+            content={selectedDate.toLocaleDateString("fr-FR", {
               day: "numeric",
               month: "long",
               year: "numeric",
             })}
           />
         )}
+        {isInPeriod(selectedDate) && <span>Période active</span>}
         <Icon
           name="calendar"
           size="small"
@@ -73,8 +94,10 @@ const CalendarButton = () => {
       </div>
       {display && (
         <div ref={calendarRef}>
-          {" "}
-          <CalendarComponent value={date} onDateChange={handleDateChange} />
+          <CalendarComponent
+            value={selectedDate}
+            onDateChange={setSelectedDate}
+          />
         </div>
       )}
     </div>
