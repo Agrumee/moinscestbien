@@ -15,11 +15,11 @@ class UserFactory(factory.django.DjangoModelFactory):
         model = User
 
     id = factory.LazyAttribute(lambda _: uuid.uuid4())
-    username = factory.LazyAttribute(lambda _: fake.user_name())
     email = factory.LazyAttribute(lambda _: fake.email())
+    username = factory.SelfAttribute('email')
     first_name = factory.LazyAttribute(lambda _: fake.first_name())
     last_name = factory.LazyAttribute(lambda _: fake.last_name())
-    password = factory.PostGenerationMethodCall('set_password', get_random_string(10))
+    password = factory.PostGenerationMethodCall('set_password', 'password')
 
     @factory.post_generation
     def tracked_products(self, create, extracted, **kwargs):

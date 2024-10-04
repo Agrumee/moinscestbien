@@ -1,18 +1,56 @@
-import Paragraph from "../components/atoms/Paragraph/Paragraph";
-import Icon from "../components/atoms/Icon/Icon";
-import Toast from "../components/molecules/Toast/Toast";
-import Input from "../components/atoms/Input/Input";
-import Dropdown from "../components/molecules/Dropdown/Dropdown";
 import Accordion from "../components/organisms/Accordion/Accordion";
-import ConsumptionsChart from "../components/atoms/ConsumptionsChart/ConsumptionsChart";
-import CalendarButton from "../components/molecules/CalendarButton/CalendarButton";
+import fetchAPI from "../utils/fetch";
+import { useEffect, useState } from "react";
 
 const Home = () => {
+  const [trackedProducts, setTrackedProducts] = useState([]);
+  const [consumptions, setConsumptions] = useState<{ [key: number]: any[] }>({});
+
+  useEffect(() => {
+    const getProducts = async () => {
+      try {
+        const data = await fetchAPI("/tracked-products/", {
+          method: "GET",
+        });
+        setTrackedProducts(data.data);
+
+        data.data.forEach((product: any) => {
+          getConsumptions(product.product.id);
+        });
+      } catch (error) {
+        console.error("Get products failed", error);
+        throw error;
+      }
+    };
+
+    const getConsumptions = async (productId: number) => {
+      try {
+        const data = await fetchAPI(`/consumptions/${productId}`, {
+          method: "GET",
+        });
+        setConsumptions((prev) => ({
+          ...prev,
+          [productId]: data.data,
+        }));
+      } catch (error) {
+        console.error("Get consumptions failed", error);
+        throw error;
+      }
+    };
+
+    getProducts();
+  }, []);
+
   return (
-    <>
-       <Accordion productName="shopping" />
-      <Accordion productName="tabac" />
-    </>
+    <div>
+      {trackedProducts.map((trackedProduct: any) => (
+        <Accordion
+          key={trackedProduct.id}
+          productName={trackedProduct.product.name}
+          consumptions={consumptions[trackedProduct.product.id] || []} 
+        />
+      ))}
+    </div>
   );
 };
 

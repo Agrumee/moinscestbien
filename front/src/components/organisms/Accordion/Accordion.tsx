@@ -9,25 +9,11 @@ import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 
 interface AccordionProps {
   productName: string;
+  consumptions: Array<{ date: string; product: string; quantity: number }>;
 }
 
-const Accordion = ({ productName }: AccordionProps) => {
+const Accordion = ({ productName, consumptions }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
-
-  const chartData = [
-    { quantity: 18.0, date: "2024-01-08", product: "shopping" },
-    { quantity: 12.0, date: "2024-01-22", product: "shopping" },
-    { quantity: 14.0, date: "2024-02-10", product: "shopping" },
-    { quantity: 8.0, date: "2024-02-28", product: "shopping" },
-    { quantity: 16.0, date: "2024-03-12", product: "shopping" },
-    { quantity: 20.0, date: "2024-03-26", product: "shopping" },
-    { quantity: 13.0, date: "2024-04-05", product: "shopping" },
-    { quantity: 17.0, date: "2024-04-20", product: "shopping" },
-    { quantity: 15.0, date: "2024-05-08", product: "shopping" },
-    { quantity: 11.0, date: "2024-05-22", product: "shopping" },
-    { quantity: 14.0, date: "2024-06-10", product: "shopping" },
-    { quantity: 9.0, date: "2024-06-25", product: "shopping" },
-  ];
 
   return (
     <div className="o-accordion">
@@ -50,7 +36,7 @@ const Accordion = ({ productName }: AccordionProps) => {
           </div>
           <ConsumptionsChart
             className="o-accordion__content__chart"
-            data={chartData}
+            data={consumptions}
             period="monthly"
           />
           <div className="o-accordion__content__footer">

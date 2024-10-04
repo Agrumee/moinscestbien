@@ -5,7 +5,7 @@ from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import Product, Consumption, TrackedProduct, Unit, Motivation
 from accounts.models import User
-from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer, MotivationSerializer
+from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer, MotivationSerializer, TrackedProductSerializer
 from datetime import datetime
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
@@ -158,9 +158,9 @@ class ApiUserProductsList(APIView):
     def get(self, request,*args, **kwargs):
         try:
             user = request.user
-            user_products_list = user.products.all()
-            serializer = ProductSerializer(user_products_list, many=True)
-            if user_products_list:
+            tracked_products = user.tracked_products.all()
+            serializer = TrackedProductSerializer(tracked_products, many=True)
+            if tracked_products:
                 return Response({
                     "success": True,
                     "message": "Products retrieved successfully.",
@@ -265,7 +265,7 @@ class ApiConsumptionsListByProduct(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request, *args, **kwargs):
         try:
-            user = get_object_or_404(User, id=kwargs['userId'])
+            user = request.user
             product = get_object_or_404(Product, id=kwargs['productId'])
             tracked_product = get_object_or_404(TrackedProduct, user=user, product=product, end_date=None)
             consumptions = Consumption.objects.filter(tracked_product=tracked_product)

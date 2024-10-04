@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Unit, Consumption
+from .models import Product, Unit, Consumption, TrackedProduct
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,3 +29,19 @@ class ConsumptionSerializer(serializers.ModelSerializer):
 
     def get_product(self, obj):
         return obj.tracked_product.product.name
+    
+class TrackedProductSerializer(serializers.ModelSerializer):
+    product = ProductSerializer()
+    unit = UnitSerializer()
+    motivation = MotivationSerializer()
+
+    class Meta:
+        model = TrackedProduct
+        fields = [
+            "id",
+            "product",
+            "unit",
+            "motivation",
+            "start_date",
+            "end_date"
+        ]
