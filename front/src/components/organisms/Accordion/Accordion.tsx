@@ -16,7 +16,7 @@ interface productItem {
 interface trackedProductItem {
   id: number;
   product: productItem;
-  start_date: Date;
+  start_date: string;
   end_date: string;
 }
 
