@@ -51,6 +51,12 @@
             gap:0.5rem;
             align-items: center;
             margin: 0 2rem 0 2rem;
+
+            &__button {
+                .a-icon {
+                    color: white;
+                }
+            }
         }
     }
   }

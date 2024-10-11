@@ -6,7 +6,6 @@ import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 import Icon from "../../atoms/Icon/Icon";
-import Paragraph from "../../atoms/Paragraph/Paragraph";
 
 interface AccordionProps {
   productName: string;
@@ -89,25 +88,20 @@ const Accordion = ({
           )}
 
           <div className="o-accordion__content__footer">
-            <Button
-              variant="tertiary"
-              size="small"
-              onClick={() => console.log("Pause")}
+            <div
+              className="o-accordion__content__footer__button"
             >
-              <Icon name="add" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={() => console.log("Ne plus suivre")}
+              <Icon name="pause" />
+            </div>
+            <div
+              className="o-accordion__content__footer__button"
             >
-              <Icon name="add" /> 
-            </Button>
+              <Icon name="trash" />
+            </div>
           </div>
-        </div>
-      )}
+        </div>)}
     </div>
   );
-};
+}
 
 export default Accordion;
