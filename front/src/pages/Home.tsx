@@ -113,6 +113,7 @@ const Home = () => {
           onUpdateConsumption={(quantity) =>
             handleUpdateConsumption(trackedProduct.product.id, date, quantity)
           }
+          frequency={trackedProduct.tracking_frequency.name}
         />
       ))}
     </div>
