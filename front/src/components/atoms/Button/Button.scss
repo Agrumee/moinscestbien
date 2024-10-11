@@ -48,6 +48,13 @@
     }
   }
 
+  &.tiny {
+    line-height: 100%;
+    font-size: 12px;
+    width: 6rem;
+    padding: 5px;
+  }
+
   &.small {
     width: 12rem;
   }

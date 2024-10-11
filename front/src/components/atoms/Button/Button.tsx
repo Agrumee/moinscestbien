@@ -3,10 +3,11 @@ import "./Button.scss";
 interface ButtonProps {
   className?: string;
   variant: "primary" | "secondary" | "tertiary";
-  size?: "small" | "large";
-  content: string;
+  size?: "tiny" | "small" | "large";
+  content?: string;
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled?: boolean;
+  children?: React.ReactNode;
 }
 
 export default function Button({
@@ -16,6 +17,7 @@ export default function Button({
   content,
   onClick,
   disabled = false,
+  children
 }: ButtonProps) {
   return (
     <button
@@ -23,7 +25,7 @@ export default function Button({
       onClick={onClick}
       disabled={disabled}
     >
-      {content}
+      {children ? children : content}
     </button>
   );
 }

@@ -31,6 +31,7 @@ class TrackedProduct(models.Model):
     product = models.ForeignKey(Product, related_name='tracked_products', on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, related_name='tracked_products', on_delete=models.CASCADE)
     motivation = models.ForeignKey(Motivation, related_name='tracked_products', on_delete=models.CASCADE, blank=True, null=True)
+    tracking_frequency = models.ForeignKey('TrackingFrequency', related_name='tracked_products', on_delete=models.CASCADE, default=1)
     start_date = models.DateField(default=date.today)
     end_date = models.DateField(blank=True, null=True)
 
@@ -48,3 +49,9 @@ class Consumption(models.Model):
 
     def __str__(self):
         return f' {self.tracked_product} - {self.quantity} - {self.date} '
+    
+class TrackingFrequency(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name

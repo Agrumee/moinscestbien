@@ -32,6 +32,19 @@
             gap: 0.5rem;
             margin-bottom: 1rem;
         }
+
+        &__noData {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
+
+        &__frequency {
+            display: inline-flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
         &__footer {
             display: flex;
             flex-direction: column;

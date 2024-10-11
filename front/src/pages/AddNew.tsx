@@ -22,14 +22,18 @@ const AddNew = () => {
   const [currentUnit, setCurrentUnit] = useState<ContentItem | null>(null);
   const [currentMotivation, setCurrentMotivation] =
     useState<ContentItem | null>(null);
+  const [currentTrackingFrequency, setCurrentTrackingFrequency] =
+    useState<ContentItem | null>(null);
   const [productsList, setProductsList] = useState<ContentItem[]>([]);
   const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
   const [motivationsList, setMotivationsList] = useState<ContentItem[]>([]);
+  const [trackingFrequenciesList, setTrackingFrequenciesList] =
+    useState<ContentItem[]>([]);
 
   const handleAddNewProduct = async () => {
     try {
       const data = await fetchAPI(
-        `/users/products/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation?.id}/add-product/`,
+        `/users/products/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation?.id}/${currentTrackingFrequency?.id}/add-product/`,
         {
           method: "POST",
         }
@@ -74,8 +78,20 @@ const AddNew = () => {
     }
   };
 
+  const getTrackingFrequenciesList = async () => {
+    try {
+      const response = await fetchAPI(`/tracking-frequencies/`, {
+        method: "GET",
+      });
+      setTrackingFrequenciesList(response.data);
+    } catch (error) {
+      console.error("Error during fetching tracking frequencies:", error);
+    }
+  }
+
   useEffect(() => {
     getProductsList();
+    getTrackingFrequenciesList();
   }, []);
 
   useEffect(() => {
@@ -120,6 +136,19 @@ const AddNew = () => {
           contentList={motivationsList}
           onSelect={(selectedMotivation: ContentItem) =>
             setCurrentMotivation(selectedMotivation)
+          }
+        />
+        <br></br>
+        <Label content="Fréquence de suivi :" />
+        <Dropdown
+          label={
+            currentTrackingFrequency
+              ? currentTrackingFrequency.name
+              : "A quelle fréquence ?"
+          }
+          contentList={trackingFrequenciesList}
+          onSelect={(selectedTrackingFrequency: ContentItem) =>
+            setCurrentTrackingFrequency(selectedTrackingFrequency)
           }
         />
       </div>

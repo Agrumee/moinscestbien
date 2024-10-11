@@ -4,7 +4,7 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import datetime
 import random
 from accounts.models import User
-from consumptions.models import Product, TrackedProduct
+from consumptions.models import Product, TrackedProduct, TrackingFrequency
 import uuid
 from datetime import date, timedelta
 
@@ -24,8 +24,9 @@ class UserFactory(factory.django.DjangoModelFactory):
     @factory.post_generation
     def tracked_products(self, create, extracted, **kwargs):
         products = Product.objects.order_by('?')[:3]
+        tracking_frequencies = list(TrackingFrequency.objects.all())
         TrackedProduct.objects.bulk_create([
-            TrackedProduct(user=self, product=product, unit=product.units.first(), motivation=product.motivations.first(), start_date=date.today().replace(month=date.today().month-1))
+            TrackedProduct(user=self, product=product, unit=product.units.first(), motivation=product.motivations.first(), tracking_frequency=random.choice(tracking_frequencies), start_date=date.today().replace(month=date.today().month-1))
             for product in products
         ])
             
