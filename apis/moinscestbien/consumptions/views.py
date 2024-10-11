@@ -155,7 +155,7 @@ class ApiAddProduct(APIView):
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')
-class ApiUserProductsList(APIView):
+class ApiTrackedProductsList(APIView):
     permission_classes = (IsAuthenticated,)
     def get(self, request,*args, **kwargs):
         try:

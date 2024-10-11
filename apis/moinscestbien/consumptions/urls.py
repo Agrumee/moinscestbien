@@ -4,7 +4,7 @@ from .views import (
     ApiUnitsList, 
     ApiMotivationsList,
     ApiAddProduct, 
-    ApiUserProductsList, 
+    ApiTrackedProductsList, 
     ApiAddConsumption,
     ApiConsumptionDetail,
     ApiConsumptionsList,
