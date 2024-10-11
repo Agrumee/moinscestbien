@@ -6,6 +6,7 @@ import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 import Icon from "../../atoms/Icon/Icon";
+import Paragraph from "../../atoms/Paragraph/Paragraph";
 
 interface AccordionProps {
   productName: string;
