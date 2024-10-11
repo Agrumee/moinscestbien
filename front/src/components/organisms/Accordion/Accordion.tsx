@@ -16,7 +16,6 @@ interface AccordionProps {
   currentConsumption: number;
   onDateChange: (date: string) => void;
   onUpdateConsumption: (quantity: number) => void;
-  onToggle: (isActive: boolean) => void; // Nouvelle prop
 }
 
 const Accordion = ({
@@ -26,7 +25,6 @@ const Accordion = ({
   frequency,
   onDateChange,
   onUpdateConsumption,
-  onToggle,
 }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -54,17 +52,13 @@ const Accordion = ({
     onUpdateConsumption(currentConsumption + value);
   };
 
-  const toggleAccordion = () => {
-    const newIsActive = !isActive;
-    setIsActive(newIsActive);
-    onToggle(newIsActive);
-  };
-
   return (
     <div className="o-accordion">
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
-        onClick={toggleAccordion}
+        onClick={() => {
+          setIsActive(true);
+        }}
       >
         <div className="align__title">
           <Heading

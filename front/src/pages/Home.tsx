@@ -54,12 +54,6 @@ const Home = () => {
     }
   };
 
-  const handleAccordionToggle = (productId: number, isActive: boolean) => {
-    if (isActive && !consumptions[productId]) {
-      getConsumptions(productId);
-    }
-  };
-
   //Récupération de la date à updater
   const handleDateChange = async (productId: number, date: string) => {
     try {
@@ -125,9 +119,6 @@ const Home = () => {
             handleUpdateConsumption(trackedProduct.product.id, date, quantity)
           }
           frequency={trackedProduct.tracking_frequency.name}
-          onToggle={(isActive) =>
-            handleAccordionToggle(trackedProduct.product.id, isActive)
-          } // Passer l'état de l'accordéon
         />
       ))}
     </div>
