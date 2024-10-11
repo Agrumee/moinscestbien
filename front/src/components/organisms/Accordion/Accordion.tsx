@@ -7,6 +7,7 @@ import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
+import Heading from "../../atoms/Heading/Heading";
 
 interface AccordionProps {
   trackedProduct: any;
@@ -65,8 +66,15 @@ const Accordion = ({
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={toggleAccordion}
       >
-        <div>{trackedProduct.product.name}</div>
-        <div>{isActive ? "-" : "+"}</div>
+        <div className="align__title">
+          <Heading
+            level={2}
+            color="white"
+            content={trackedProduct.product.name.toUpperCase()}
+          />
+        </div>
+
+        <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
       </div>
       {isActive && (
         <div className="o-accordion__content">
@@ -96,7 +104,7 @@ const Accordion = ({
               <Paragraph
                 color="white"
                 content="Entrez vos premières données pour commencer à suivre votre consommation."
-              ></Paragraph>
+              />
             </div>
           ) : (
             <>
