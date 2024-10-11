@@ -12,44 +12,55 @@ const Home = () => {
   }>({});
   const [date, setDate] = useState<string>("");
 
+  // Charger les produits suivis au chargement de la page
   useEffect(() => {
-    // Charger les produits suivis
     const getProducts = async () => {
       try {
         const data = await fetchAPI("/tracked-products/", {
           method: "GET",
         });
         setTrackedProducts(data.data);
-
-        data.data.forEach((product: any) => {
-          getConsumptions(product.product.id);
-        });
       } catch (error) {
         console.error("Get products failed", error);
         throw error;
       }
     };
 
-    // Récupérer les données de consommation pour produire les graphiques
-    const getConsumptions = async (productId: number) => {
-      try {
-        const data = await fetchAPI(`/consumptions/${productId}`, {
-          method: "GET",
-        });
-        setConsumptions((prev) => ({
-          ...prev,
-          [productId]: data.data,
-        }));
-      } catch (error) {
-        console.error("Get consumptions failed", error);
-        throw error;
-      }
-    };
-
     getProducts();
+  }, []);
+
+  // Déclenchement de getConsumptions lorsque currentconsumption est mis à jour
+  useEffect(() => {
+    for (let productId in currentConsumptions) {
+      if (currentConsumptions.hasOwnProperty(productId)) {
+        getConsumptions(Number(productId));
+      }
+    }
   }, [currentConsumptions]);
 
-  // Récupérer les données de consommation par jour pour pouvoir les maj via input
+  // Récupérer les consommations pour un produit lorsque l'accordéon est ouvert
+  const getConsumptions = async (productId: number) => {
+    try {
+      const data = await fetchAPI(`/consumptions/${productId}`, {
+        method: "GET",
+      });
+      setConsumptions((prev) => ({
+        ...prev,
+        [productId]: data.data,
+      }));
+    } catch (error) {
+      console.error("Get consumptions failed", error);
+      throw error;
+    }
+  };
+
+  const handleAccordionToggle = (productId: number, isActive: boolean) => {
+    if (isActive && !consumptions[productId]) {
+      getConsumptions(productId);
+    }
+  };
+
+  //Récupération de la date à updater
   const handleDateChange = async (productId: number, date: string) => {
     try {
       const data = await fetchAPI(`/consumption/${productId}/${date}/`, {
@@ -66,7 +77,7 @@ const Home = () => {
     }
   };
 
-  // maj des données de consommation en fonciton d'une date
+  // maj des données de consommation en fonction d'une date
   const handleUpdateConsumption = async (
     productId: number,
     date: string,
@@ -114,6 +125,9 @@ const Home = () => {
             handleUpdateConsumption(trackedProduct.product.id, date, quantity)
           }
           frequency={trackedProduct.tracking_frequency.name}
+          onToggle={(isActive) =>
+            handleAccordionToggle(trackedProduct.product.id, isActive)
+          } // Passer l'état de l'accordéon
         />
       ))}
     </div>

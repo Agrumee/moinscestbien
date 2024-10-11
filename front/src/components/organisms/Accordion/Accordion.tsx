@@ -15,6 +15,7 @@ interface AccordionProps {
   currentConsumption: number;
   onDateChange: (date: string) => void;
   onUpdateConsumption: (quantity: number) => void;
+  onToggle: (isActive: boolean) => void; // Nouvelle prop
 }
 
 const Accordion = ({
@@ -24,6 +25,7 @@ const Accordion = ({
   frequency,
   onDateChange,
   onUpdateConsumption,
+  onToggle,
 }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -51,11 +53,17 @@ const Accordion = ({
     onUpdateConsumption(currentConsumption + value);
   };
 
+  const toggleAccordion = () => {
+    const newIsActive = !isActive;
+    setIsActive(newIsActive);
+    onToggle(newIsActive);
+  };
+
   return (
     <div className="o-accordion">
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
-        onClick={() => setIsActive(!isActive)}
+        onClick={toggleAccordion}
       >
         <div>{trackedProduct.product.name}</div>
         <div>{isActive ? "-" : "+"}</div>
@@ -63,10 +71,6 @@ const Accordion = ({
       {isActive && (
         <div className="o-accordion__content">
           <div className="o-accordion__content__dates">
-            <Icon name="pause" color="white" size="medium" />
-            <Icon name="trash" color="white" size="medium" />
-            {/* <Icon name="calendar" color="white" size="medium" /> */}
-
             <CalendarButton
               initialDate={currentDate}
               onDateChange={handleDateChange}
