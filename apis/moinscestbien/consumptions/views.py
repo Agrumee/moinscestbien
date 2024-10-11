@@ -217,14 +217,12 @@ class ApiAddConsumption(APIView):
                 }, status=status.HTTP_400_BAD_REQUEST)
 
             # Create or update the consumption
-            consumption, created = Consumption.objects.get_or_create(
+            consumption = Consumption.objects.get(
                 tracked_product=tracked_product,
                 date=date,
             )
-
-            if not created:
-                consumption.quantity = quantity
-                consumption.save()
+            consumption.quantity = quantity
+            consumption.save()
 
             return Response({
                 "success": True,
@@ -350,7 +348,7 @@ class ApiConsumptionDetail(APIView):
             date = kwargs['date']
             tracked_product = get_object_or_404(TrackedProduct, user=request.user, product=product, end_date=None)
             try:
-                consumption = get_object_or_404(Consumption, tracked_product=tracked_product, date=date)
+                consumption = Consumption.objects.get(tracked_product=tracked_product, date=date)
             except Consumption.DoesNotExist:
                 consumption = Consumption.objects.create(
                     tracked_product=tracked_product,
