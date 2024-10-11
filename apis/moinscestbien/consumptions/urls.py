@@ -9,14 +9,16 @@ from .views import (
     ApiConsumptionDetail,
     ApiConsumptionsList,
     ApiConsumptionPeriodList,
-    ApiConsumptionsListByProduct
+    ApiConsumptionsListByProduct,
+    ApiTrackingFrequenciesList
     )
 
 urlpatterns = [
     path('products/', ApiProductsList.as_view(), name='products-list'),
     path('units/<int:productId>/', ApiUnitsList.as_view(), name='units-list'),
     path('motivations/<int:productId>/', ApiMotivationsList.as_view(), name='motivations-list'),
-    path('users/products/<int:productId>/<int:unitId>/<int:motivationId>/add-product/', ApiAddProduct.as_view(), name='add-product'),
+    path('tracking-frequencies/', ApiTrackingFrequenciesList.as_view(), name='tracking-frequencies-list'),
+    path('users/products/<int:productId>/<int:unitId>/<int:motivationId>/<int:trackingFrequencyId>/add-product/', ApiAddProduct.as_view(), name='add-product'),
     path('tracked-products/', ApiUserProductsList.as_view(), name='user-products-list'),
     path('consumptions/<uuid:userId>/<int:productId>/add-consumption/', ApiAddConsumption.as_view(), name='add-consumption'),
     path('consumption/<uuid:userId>/<int:productId>/<str:date>/', ApiConsumptionDetail.as_view(), name='consumption-detail'),

@@ -1,19 +1,28 @@
 import { useState } from "react";
 import Button from "../../atoms/Button/Button";
 import ConsumptionsChart from "../../atoms/ConsumptionsChart/ConsumptionsChart";
-import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
+import Icon from "../../atoms/Icon/Icon";
+import Paragraph from "../../atoms/Paragraph/Paragraph";
 
 interface AccordionProps {
   productName: string;
   consumptions: Array<{ date: string; product: string; quantity: number }>;
+  frequency: "daily" | "weekly" | "monthly";
 }
 
-const Accordion = ({ productName, consumptions }: AccordionProps) => {
+const Accordion = ({
+  productName,
+  consumptions,
+  frequency,
+}: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
+  const [currentFrequency, setCurrentFrequency] = useState<
+    "daily" | "weekly" | "monthly"
+  >(frequency);
 
   return (
     <div className="o-accordion">
@@ -27,31 +36,73 @@ const Accordion = ({ productName, consumptions }: AccordionProps) => {
       {isActive && (
         <div className="o-accordion__content">
           <div className="o-accordion__content__dates">
-            <CalendarButton/>
+            <CalendarButton />
           </div>
           <div className="o-accordion__content__counter">
-            <CountButton operation="minus"/>
-            <Input className="small-input"/>
-            <CountButton operation="plus"/>
+            <CountButton operation="minus" />
+            <Input className="small-input" />
+            <CountButton operation="plus" />
           </div>
-          <ConsumptionsChart
-            className="o-accordion__content__chart"
-            data={consumptions}
-            period="monthly"
-          />
+
+          {consumptions.length === 0 ? (
+            <div className="o-accordion__content__noData">
+              <Paragraph
+                color="white"
+                content="Entrez vos premières données pour commencer à suivre votre consommation."
+              ></Paragraph>
+            </div>
+          ) : (
+            <>
+              <ConsumptionsChart
+                className="o-accordion__content__chart"
+                data={consumptions}
+                frequency={currentFrequency}
+              />
+
+              <div className="o-accordion__content__frequency">
+                <Button
+                  variant={
+                    currentFrequency === "daily" ? "primary" : "tertiary"
+                  }
+                  size="tiny"
+                  content="Par jour"
+                  onClick={() => setCurrentFrequency("daily")}
+                />
+                <Button
+                  variant={
+                    currentFrequency === "weekly" ? "primary" : "tertiary"
+                  }
+                  size="tiny"
+                  content="Par semaine"
+                  onClick={() => setCurrentFrequency("weekly")}
+                />
+                <Button
+                  variant={
+                    currentFrequency === "monthly" ? "primary" : "tertiary"
+                  }
+                  size="tiny"
+                  content="Par mois"
+                  onClick={() => setCurrentFrequency("monthly")}
+                />
+              </div>
+            </>
+          )}
+
           <div className="o-accordion__content__footer">
             <Button
               variant="tertiary"
               size="small"
-              content="Mettre en pause"
               onClick={() => console.log("Pause")}
-            />
+            >
+              <Icon name="add" />
+            </Button>
             <Button
               variant="secondary"
               size="small"
-              content="Ne plus suivre"
               onClick={() => console.log("Ne plus suivre")}
-            />
+            >
+              <Icon name="add" /> 
+            </Button>
           </div>
         </div>
       )}

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Product, Unit, Consumption, TrackedProduct
+from .models import Product, Unit, Consumption, TrackedProduct, TrackingFrequency
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,8 +16,13 @@ class MotivationSerializer(serializers.ModelSerializer):
         model = Unit
         fields = ['id', 'name']
 
+class TrackingFrequencySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TrackingFrequency
+        fields = ['id', 'name']
+
 class ConsumptionSerializer(serializers.ModelSerializer):
-    product = serializers.SerializerMethodField()  # Champ pour le produit
+    product = serializers.SerializerMethodField()
 
     class Meta:
         model = Consumption
@@ -34,6 +39,7 @@ class TrackedProductSerializer(serializers.ModelSerializer):
     product = ProductSerializer()
     unit = UnitSerializer()
     motivation = MotivationSerializer()
+    tracking_frequency = TrackingFrequencySerializer()
 
     class Meta:
         model = TrackedProduct
@@ -42,6 +48,7 @@ class TrackedProductSerializer(serializers.ModelSerializer):
             "product",
             "unit",
             "motivation",
+            "tracking_frequency",
             "start_date",
             "end_date"
         ]

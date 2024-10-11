@@ -3,9 +3,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
-from .models import Product, Consumption, TrackedProduct, Unit, Motivation
+from .models import Product, Consumption, TrackedProduct, Unit, Motivation, TrackingFrequency
 from accounts.models import User
-from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer, MotivationSerializer, TrackedProductSerializer
+from .serializers import ProductSerializer, UnitSerializer, ConsumptionSerializer, MotivationSerializer, TrackedProductSerializer, TrackingFrequencySerializer
 from datetime import datetime
 from django.views.decorators.csrf import csrf_protect, ensure_csrf_cookie
 from django.utils.decorators import method_decorator
@@ -120,9 +120,11 @@ class ApiAddProduct(APIView):
             product = Product.objects.get(id=kwargs['productId'])
             unit = Unit.objects.get(id=kwargs['unitId'])
             motivation = Motivation.objects.get(id=kwargs['motivationId'])
-            if not TrackedProduct.objects.filter(product=product, unit=unit, user=user, motivation=motivation):
+            tracking_frequency = TrackingFrequency.objects.get(id=kwargs['trackingFrequencyId'])
+            
+            if not TrackedProduct.objects.filter(product=product, unit=unit, user=user, motivation=motivation, tracking_frequency=tracking_frequency).exists():
                 TrackedProduct.objects.create(
-                    product=product, unit=unit, user=user, motivation=motivation
+                    product=product, unit=unit, user=user, motivation=motivation, tracking_frequency=tracking_frequency
                 )
                 return Response({
                     "success": True,
@@ -423,6 +425,32 @@ class ApiConsumptionsList(APIView):
             return Response({
                 "success": False,
                 "message": "User not found.",
+                "data": []
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+                "data": []
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class ApiTrackingFrequenciesList(APIView):
+    permission_classes = [IsAuthenticated,] 
+
+    def get(self, request):
+        try:
+            tracking_frequencies = TrackingFrequency.objects.all()
+            serializer = TrackingFrequencySerializer(tracking_frequencies, many=True)
+            return Response({
+                "success": True,
+                "message": "Tracking frequencies retrieved successfully.",
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+        except TrackingFrequency.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "No tracking frequencies found.",
                 "data": []
             }, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:

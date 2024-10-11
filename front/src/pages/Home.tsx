@@ -48,6 +48,7 @@ const Home = () => {
           key={trackedProduct.id}
           productName={trackedProduct.product.name}
           consumptions={consumptions[trackedProduct.product.id] || []} 
+          frequency={trackedProduct.tracking_frequency.name}
         />
       ))}
     </div>

@@ -22,12 +22,12 @@ const COLORS = [
 interface ConsumptionsChartProps {
   className?: string;
   data: Array<{ date: string; product: string; quantity: number }>;
-  period: "daily" | "weekly" | "monthly";
+  frequency: "daily" | "weekly" | "monthly";
 }
 
 const groupDataByPeriod = (
   data: Array<{ date: string; product: string; quantity: number }>,
-  period: "daily" | "weekly" | "monthly"
+  frequency: "daily" | "weekly" | "monthly"
 ) => {
   const groupedData: { [key: string]: { [key: string]: number } } = {};
 
@@ -35,7 +35,7 @@ const groupDataByPeriod = (
     const dateObj = new Date(date);
     let key: string;
 
-    switch (period) {
+    switch (frequency) {
       case "daily":
         key = new Date(date).toLocaleDateString("fr-FR").slice(0, 5);
         break;
@@ -73,7 +73,7 @@ const groupDataByPeriod = (
   }));
 };
 
-const formatDate = (date: string, period: "daily" | "weekly" | "monthly") => {
+const formatDate = (date: string, frequency: "daily" | "weekly" | "monthly") => {
   const [month, year] = date.split("/").map(Number);
   const months = [
     "1",
@@ -90,7 +90,7 @@ const formatDate = (date: string, period: "daily" | "weekly" | "monthly") => {
     "12",
   ];
 
-  if (period === "monthly") {
+  if (frequency === "monthly") {
     return months[month - 1]; // Pas d'année dans le format mensuel
   }
 
@@ -103,9 +103,9 @@ const getColor = (index: number) => COLORS[index % COLORS.length];
 export default function ConsumptionsChart({
   className,
   data,
-  period,
+  frequency,
 }: ConsumptionsChartProps) {
-  const transformedData = groupDataByPeriod(data, period);
+  const transformedData = groupDataByPeriod(data, frequency);
 
   const products = Array.from(
     new Set(
@@ -123,7 +123,7 @@ export default function ConsumptionsChart({
           <XAxis
             dataKey="name"
             stroke="white"
-            tickFormatter={(value) => formatDate(value, period)}
+            tickFormatter={(value) => formatDate(value, frequency)}
           />
           <YAxis stroke="white" />
           <Tooltip />
