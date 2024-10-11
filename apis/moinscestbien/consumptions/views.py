@@ -188,6 +188,7 @@ class ApiTrackedProductsList(APIView):
 @method_decorator(csrf_protect, name='dispatch')
 class ApiAddConsumption(APIView):
     permission_classes = (IsAuthenticated,)
+
     def post(self, request, *args, **kwargs):
         try:
             productId = kwargs.get('productId')
@@ -195,18 +196,34 @@ class ApiAddConsumption(APIView):
             quantity = data.get('quantity')
             date = data.get('date')
 
-            if not all([quantity, date]):
+            if quantity is None or date is None:
                 return Response({
                     "success": False,
                     "message": "Quantity and date are required.",
                     "data": []
                 }, status=status.HTTP_400_BAD_REQUEST)
 
+            try:
+                quantity = int(quantity)  
+            except ValueError:
+                return Response({
+                    "success": False,
+                    "message": "Quantity must be an integer.",
+                    "data": []
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            try:
+                date = datetime.strptime(date, "%Y-%m-%d").date()
+            except ValueError:
+                return Response({
+                    "success": False,
+                    "message": "Date must be in the format YYYY-MM-DD.",
+                    "data": []
+                }, status=status.HTTP_400_BAD_REQUEST)
+
             user = request.user
             product = Product.objects.get(id=productId)
-            date = datetime.strptime(date, "%Y-%m-%d").date()
 
-            # Check if the product is tracked by the user
             try:
                 tracked_product = TrackedProduct.objects.get(user=user, product=product)
             except TrackedProduct.DoesNotExist:
@@ -216,13 +233,15 @@ class ApiAddConsumption(APIView):
                     "data": []
                 }, status=status.HTTP_400_BAD_REQUEST)
 
-            # Create or update the consumption
-            consumption = Consumption.objects.get(
+            consumption, created = Consumption.objects.get_or_create(
                 tracked_product=tracked_product,
                 date=date,
+                defaults={'quantity': quantity}
             )
-            consumption.quantity = quantity
-            consumption.save()
+
+            if not created:
+                consumption.quantity = quantity
+                consumption.save()
 
             return Response({
                 "success": True,
@@ -230,16 +249,10 @@ class ApiAddConsumption(APIView):
                 "data": {
                     "product": product.name,
                     "quantity": consumption.quantity,
-                    "date": consumption.date
+                    "date": str(consumption.date) 
                 }
             }, status=status.HTTP_201_CREATED)
 
-        except User.DoesNotExist:
-            return Response({
-                "success": False,
-                "message": "User not found.",
-                "data": []
-            }, status=status.HTTP_404_NOT_FOUND)
         except Product.DoesNotExist:
             return Response({
                 "success": False,
@@ -247,11 +260,13 @@ class ApiAddConsumption(APIView):
                 "data": []
             }, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
+            print(f"An error occurred: {str(e)}")  # Imprimer l'erreur pour débogage
             return Response({
                 "success": False,
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
         
 
 @method_decorator(ensure_csrf_cookie, name='dispatch')

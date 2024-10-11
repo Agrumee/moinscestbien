@@ -20,14 +20,17 @@ const CalendarButton: React.FC<CalendarProps> = ({
     initialDate ? new Date(initialDate) : new Date()
   );
   const calendarRef = useRef<HTMLDivElement | null>(null);
+  const previousDateRef = useRef<Date | null>(null);
 
   const toggleDisplay = () => {
     setDisplay((prevDisplay) => !prevDisplay);
   };
 
+  //Gestion des changements de date pour maj les données de l'input
   useEffect(() => {
-    if (selectedDate) {
+    if (selectedDate && selectedDate !== previousDateRef.current) {
       setDisplay(false);
+      previousDateRef.current = selectedDate;
       if (onDateChange) {
         onDateChange(selectedDate);
       }
