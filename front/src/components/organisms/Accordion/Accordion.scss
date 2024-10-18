@@ -47,14 +47,33 @@
 
         &__footer {
             display: flex;
-            flex-direction: column;
-            gap:0.5rem;
+            gap:2rem;
             align-items: center;
-            margin: 0 2rem 0 2rem;
+            justify-content: center;
+            margin-top: 1rem;
 
             &__button {
-                .a-icon {
-                    color: white;
+                display: flex;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid $white;
+                padding: 5px;
+                width: 20px;
+                height: 20px;
+                
+                &.-pause {
+                    .a-icon {
+                        width: 10px;
+                        height: 10px;
+                    }
+                }
+
+                &.-delete {
+                    .a-icon {
+                        width: 15px;
+                        height: 15px;
+                    }
                 }
             }
         }

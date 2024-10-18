@@ -90,14 +90,14 @@ const Accordion = ({
 
           <div className="o-accordion__content__footer">
             <div
-              className="o-accordion__content__footer__button"
+              className="o-accordion__content__footer__button -pause"
             >
-              <Icon name="pause" />
+              <Icon name="pause" size="tiny" />
             </div>
             <div
-              className="o-accordion__content__footer__button"
+              className="o-accordion__content__footer__button -delete"
             >
-              <Icon name="trash" />
+              <Icon name="trash" size="tiny" />
             </div>
           </div>
         </div>)}
