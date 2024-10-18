@@ -57,16 +57,15 @@ const Accordion = ({
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => {
-          setIsActive(true);
+          setIsActive(!isActive);
         }}
       >
-        <div className="align__title">
           <Heading
             level={2}
             color="white"
             content={trackedProduct.product.name.toUpperCase()}
+            className="o-accordion__title__text"
           />
-        </div>
 
         <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
       </div>
