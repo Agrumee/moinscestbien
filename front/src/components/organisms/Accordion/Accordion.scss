@@ -13,28 +13,67 @@
     &.active {
       border-radius: 10px 10px 0 0;
     }
-  }
+      
+    &__content {
+        display: flex;
+        flex-direction: column;
+        background-color: $dark_green;
+        padding: 1rem;
+        border-radius: 0 0 10px 10px;
+        gap: 0.5rem;
 
-  &__content {
-    display: flex;
-    flex-direction: column;
-    background-color: $dark_green;
-    padding: 1rem;
-    border-radius: 0 0 10px 10px;
-    gap: 0.5rem;
+        &__counter {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
 
-    &__counter {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 1rem;
-    }
+        &__noData {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+        }
 
-    &__noData {
-      display: flex;
-      justify-content: center;
-      text-align: center;
+        &__frequency {
+            display: inline-flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        &__footer {
+            display: flex;
+            gap:2rem;
+            align-items: center;
+            justify-content: center;
+            margin-top: 1rem;
+
+            &__button {
+                display: flex;
+                border-radius: 50%;
+                align-items: center;
+                justify-content: center;
+                border: 2px solid $white;
+                padding: 5px;
+                width: 20px;
+                height: 20px;
+                
+                &.-pause {
+                    .a-icon {
+                        width: 10px;
+                        height: 10px;
+                    }
+                }
+
+                &.-delete {
+                    .a-icon {
+                        width: 15px;
+                        height: 15px;
+                    }
+                }
+            }
+        }
     }
 
     &__frequency {

@@ -138,25 +138,20 @@ const Accordion = ({
           )}
 
           <div className="o-accordion__content__footer">
-            <Button
-              variant="tertiary"
-              size="small"
-              onClick={() => console.log("Pause")}
+            <div
+              className="o-accordion__content__footer__button -pause"
             >
-              <Icon name="add" />
-            </Button>
-            <Button
-              variant="secondary"
-              size="small"
-              onClick={() => console.log("Ne plus suivre")}
+              <Icon name="pause" size="tiny" />
+            </div>
+            <div
+              className="o-accordion__content__footer__button -delete"
             >
-              <Icon name="add" />
-            </Button>
+              <Icon name="trash" size="tiny" />
+            </div>
           </div>
-        </div>
-      )}
+        </div>)}
     </div>
   );
-};
+}
 
 export default Accordion;
