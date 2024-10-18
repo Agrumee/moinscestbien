@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "../../atoms/Button/Button";
 import ConsumptionsChart from "../../atoms/ConsumptionsChart/ConsumptionsChart";
 import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
@@ -7,41 +6,91 @@ import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
 import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
+import Button from "../../atoms/Button/Button";
+import Heading from "../../atoms/Heading/Heading";
 
 interface AccordionProps {
-  productName: string;
+  trackedProduct: any;
   consumptions: Array<{ date: string; product: string; quantity: number }>;
   frequency: "daily" | "weekly" | "monthly";
+  currentConsumption: number;
+  onDateChange: (date: string) => void;
+  onUpdateConsumption: (quantity: number) => void;
 }
 
 const Accordion = ({
-  productName,
+  trackedProduct,
   consumptions,
+  currentConsumption,
   frequency,
+  onDateChange,
+  onUpdateConsumption,
 }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [currentFrequency, setCurrentFrequency] = useState<
     "daily" | "weekly" | "monthly"
   >(frequency);
+
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  };
+
+  const handleDateChange = (selectedDate: Date | null) => {
+    if (selectedDate) {
+      setCurrentDate(selectedDate);
+      const formattedDate = formatDate(selectedDate);
+      onDateChange(formattedDate);
+    }
+  };
+
+  const updateInputValue = (value: number) => {
+    onUpdateConsumption(currentConsumption + value);
+  };
 
   return (
     <div className="o-accordion">
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
-        onClick={() => setIsActive(!isActive)}
+        onClick={() => {
+          setIsActive(true);
+        }}
       >
-        <div>{productName}</div>
-        <div>{isActive ? "-" : "+"}</div>
+        <div className="align__title">
+          <Heading
+            level={2}
+            color="white"
+            content={trackedProduct.product.name.toUpperCase()}
+          />
+        </div>
+
+        <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
       </div>
       {isActive && (
         <div className="o-accordion__content">
           <div className="o-accordion__content__dates">
-            <CalendarButton />
+            <CalendarButton
+              initialDate={currentDate}
+              onDateChange={handleDateChange}
+              startDate={trackedProduct.start_date}
+            />
           </div>
           <div className="o-accordion__content__counter">
-            <CountButton operation="minus" />
-            <Input className="small-input" />
-            <CountButton operation="plus" />
+            <CountButton
+              operation="minus"
+              onClick={() => updateInputValue(-1)}
+            />
+            <Input
+              className="small-input"
+              value={currentConsumption.toString()}
+              onChange={(e) => onUpdateConsumption(Number(e.target.value))}
+            />
+
+            <CountButton operation="plus" onClick={() => updateInputValue(1)} />
           </div>
 
           {consumptions.length === 0 ? (
@@ -49,7 +98,7 @@ const Accordion = ({
               <Paragraph
                 color="white"
                 content="Entrez vos premières données pour commencer à suivre votre consommation."
-              ></Paragraph>
+              />
             </div>
           ) : (
             <>

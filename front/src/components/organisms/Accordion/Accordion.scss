@@ -1,20 +1,17 @@
-
 .o-accordion {
-    margin: 2rem 2rem;
+  margin: 2rem 2rem;
 
-    &__title {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        cursor: pointer;
-        background-color: $dark_green;
-        color: $white;
-        padding: 1rem;
-        border-radius: 10px 10px 10px 10px;
+  &__title {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    cursor: pointer;
+    background-color: $dark_green;
+    color: $white;
+    border-radius: 10px 10px 10px 10px;
 
-        &.active {
-            border-radius: 10px 10px 0 0;
-        }
+    &.active {
+      border-radius: 10px 10px 0 0;
     }
       
     &__content {
@@ -78,4 +75,32 @@
             }
         }
     }
+
+    &__frequency {
+      display: inline-flex;
+      gap: 1rem;
+      justify-content: center;
+    }
+
+    &__footer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      align-items: center;
+      margin: 0 2rem 0 2rem;
+    }
   }
+}
+
+.align__title {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.toggled_accordion_icon {
+  align-self: center;
+  font-size: xx-large;
+  padding-right: 1rem;
+  font-weight: bolder;
+}

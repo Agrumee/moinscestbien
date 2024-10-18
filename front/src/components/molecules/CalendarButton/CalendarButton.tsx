@@ -4,26 +4,38 @@ import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import "./CalendarButton.scss";
 
-const CalendarButton = () => {
+interface CalendarProps {
+  startDate: string;
+  initialDate?: Date;
+  onDateChange?: (initialDate: Date | null) => void;
+}
+
+const CalendarButton: React.FC<CalendarProps> = ({
+  startDate,
+  initialDate,
+  onDateChange,
+}) => {
   const [display, setDisplay] = useState(false);
-  const [date, setDate] = useState<Date>(new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(
+    initialDate ? new Date(initialDate) : new Date()
+  );
   const calendarRef = useRef<HTMLDivElement | null>(null);
+  const previousDateRef = useRef<Date | null>(null);
 
   const toggleDisplay = () => {
     setDisplay((prevDisplay) => !prevDisplay);
   };
 
-  const handleDateChange = (selectedDate: Date | null) => {
-    if (selectedDate) {
-      setDate(selectedDate);
-    }
-  };
-
+  //Gestion des changements de date pour maj les données de l'input
   useEffect(() => {
-    if (date) {
+    if (selectedDate && selectedDate !== previousDateRef.current) {
       setDisplay(false);
+      previousDateRef.current = selectedDate;
+      if (onDateChange) {
+        onDateChange(selectedDate);
+      }
     }
-  }, [date]);
+  }, [selectedDate, onDateChange]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -52,12 +64,12 @@ const CalendarButton = () => {
   return (
     <div>
       <div className="m-calendar-button">
-        {isToday(date) ? (
+        {isToday(selectedDate) ? (
           <Paragraph color="white" content="Aujourd'hui" />
         ) : (
           <Paragraph
             color="white"
-            content={date.toLocaleDateString("fr-FR", {
+            content={selectedDate.toLocaleDateString("fr-FR", {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -73,8 +85,11 @@ const CalendarButton = () => {
       </div>
       {display && (
         <div ref={calendarRef}>
-          {" "}
-          <CalendarComponent value={date} onDateChange={handleDateChange} />
+          <CalendarComponent
+            value={selectedDate}
+            onDateChange={setSelectedDate}
+            startDate={startDate}
+          />
         </div>
       )}
     </div>

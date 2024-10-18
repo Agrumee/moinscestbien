@@ -3,8 +3,8 @@ import "./Input.scss";
 interface InputProps {
   className: "large-input" | "small-input";
   placeholder?: string;
-  type?: string;
-  value?: string;
+  type?: string | number;
+  value?: string | number;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
