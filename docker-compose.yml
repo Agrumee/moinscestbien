@@ -1,0 +1,55 @@
+version: "3.8"
+services:
+
+  # postgres_test:
+  #   image: postgres:16.3
+  #   restart: unless-stopped
+  #   volumes:
+  #     - db_test:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_DB: ${DB_TEST_NAME}
+  #   ports:
+  #     - "${DB_TEST_PORT}:5433"  
+
+  backend:
+    restart: unless-stopped
+    hostname: backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    volumes:
+      - ./backend:/backend 
+    depends_on:
+      - db_dev
+      # - postgres_test
+  db_dev:
+    image: postgres:16.3
+    restart: unless-stopped
+    volumes:
+      - db_dev:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+      POSTGRES_DB: "moinscestbien"
+    expose:
+      - 5432
+
+  frontend:
+    restart: unless-stopped
+    hostname: frontend
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - 5173:5173
+    volumes:
+      - ./frontend:/frontend 
+      - /frontend/node_modules
+
+volumes:
+  db_dev:

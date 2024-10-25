@@ -47,5 +47,10 @@
   "devDependencies": {
     "sass": "^1.77.6",
     "vite-plugin-svg-spritemap": "^0.0.18"
+  },
+  "overrides": {
+    "vite": {
+      "rollup": "npm:@rollup/wasm-node"
+    }
   }
 }
