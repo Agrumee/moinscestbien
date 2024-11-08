@@ -43,3 +43,15 @@ class RegisterTest(TestCase):
         response = self.client.post(self.register_url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        
+    def test_user_cannot_register_with_already_used_email(self):
+        data= {
+            'email' : "test@test.com",
+            'password' : "password",
+            'confirmedPassword' : "password",
+        }
+        self.client.post(self.register_url, data, format='json')
+        
+        response = self.client.post(self.register_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
