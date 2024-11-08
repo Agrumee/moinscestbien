@@ -55,3 +55,24 @@ class RegisterTest(TestCase):
         response = self.client.post(self.register_url, data, format='json')
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+class LoginTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123",
+        )
+
+        self.client = APIClient()
+
+        self.login_url = reverse('login')
+
+    def test_user_can_login_with_correct_email_and_password(self):
+        data = {
+            'email':'user@example.com',
+            'password':'password123',
+        }
+        response = self.client.post(self.login_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
