@@ -37,7 +37,7 @@ services:
       POSTGRES_PASSWORD: "postgres"
       POSTGRES_DB: "moinscestbien"
     ports:
-      - "5442:5432"
+      - "5432:5432"
 
   frontend:
     restart: unless-stopped
