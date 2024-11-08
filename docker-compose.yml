@@ -1,7 +1,7 @@
 version: "3.8"
 services:
 
-  # postgres_test:
+  # db_test:
   #   image: postgres:16.3
   #   restart: unless-stopped
   #   volumes:
@@ -37,7 +37,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     ports:
-      - "5440:5432"
+      - "${DB_LOCAL_PORT}:5432"
 
   frontend:
     restart: unless-stopped
