@@ -76,3 +76,23 @@ class LoginTest(TestCase):
         response = self.client.post(self.login_url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_user_cannot_login_with_incorrect_email(self):
+        data = {
+            'email' : "user2@example.com",
+            'password' : "password123",
+        }
+        
+        response = self.client.post(self.login_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+    
+    def test_user_cannot_login_with_incorrect_password(self):
+        data = {
+            'email' : "user@example.com",
+            'password' : "password1234",
+        }
+        
+        response = self.client.post(self.login_url, data, format='json')
+        
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
