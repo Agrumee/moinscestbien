@@ -33,3 +33,13 @@ class RegisterTest(TestCase):
         response = self.client.post(self.register_url, data, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_cannot_register_with_password_length_under_six_characters(self):
+        data= {
+            'email' : "test@test.fr",
+            'password' : "123",
+            'confirmedPassword' : "123",
+        }
+        response = self.client.post(self.register_url, data, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
