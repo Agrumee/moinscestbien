@@ -14,24 +14,32 @@ import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
 import "./App.css";
 
 const LayoutManager: React.FC = () => {
-  const { csrfToken } = useAuth();
+  const { authenticate, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    if (!csrfToken) {
-      // Redirigez vers '/login' pour toute page nécessitant une authentification
-      if (!['/', '/login', '/register'].includes(location.pathname)) {
-        navigate('/login');
+    const checkAuth = async () => {
+      await authenticate();
+      if (!isAuthenticated) {
+        if (!['/', '/login', '/register'].includes(location.pathname)) {
+          navigate('/');
+        }
+      } else {
+        if (['/login', '/register'].includes(location.pathname)) {
+          navigate('/home');
+        }
+        // if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
+        //   console.log(location.pathname);
+        //   navigate('/home');
+        // }
       }
-    } else {
-      // Redirigez vers '/home' si l'utilisateur est authentifié et sur une page publique
-      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
-        navigate('/home');
-      }
-    }
-  }, [location.pathname, csrfToken, navigate]);
-  return csrfToken ? (
+    };
+  
+    checkAuth();
+  }, [location.pathname, navigate]);
+
+  return isAuthenticated ? (
     <Logged>
       <Routes>
         <Route path="/home" element={<Home />} />

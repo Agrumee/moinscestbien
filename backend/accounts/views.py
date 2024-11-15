@@ -125,6 +125,7 @@ class DeleteAccountView(APIView):
     def delete(self, request, format=None):
         try:
             user = User.objects.get(username=request.user.username)
+            auth.logout(request)
             user.delete()
             return Response(
                 {"success": "User account deleted"}, status=status.HTTP_200_OK,
