@@ -15,7 +15,7 @@ const ChangePassword = () => {
 
   const handleChangePassword = async () => {
     try {
-      changePassword(password, confirmedPassword);
+      await changePassword(password, confirmedPassword);
       navigate('/profile');
     } catch (error) {
       throw error;

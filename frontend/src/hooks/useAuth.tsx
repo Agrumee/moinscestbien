@@ -4,7 +4,8 @@ import { getCSRFCookie, deleteCSRFCookie } from '../utils/cookies';
 
 
 interface AuthContextType {
-  csrfToken: string | undefined;
+  isAuthenticated: boolean;
+  authenticate: () => void;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, confirmedPassword: string) => Promise<void>;
   logout: () => void;
@@ -27,7 +28,19 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [csrfToken, setCSRFToken] = useState(getCSRFCookie());
+  const [isAuthenticated, setIsAutenticated] = useState(false);
+
+  const authenticate = async () => {
+    try {
+      const data = await fetchAPI("/authenticate/", {
+        method: "GET",
+      });
+
+      setIsAutenticated(data.isAuthenticated);
+    } catch (error) {
+      console.error("Error during authentication:", error);
+    }
+  }
 
   const login = async (email: string, password: string) => {
     try {
@@ -40,7 +53,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         body: { email, password }
       });
 
-    setCSRFToken(getCSRFCookie());
 
     } catch (error) {
       console.error('Login failed', error);
@@ -59,8 +71,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         body: { email, password, confirmedPassword }
       });
 
-      setCSRFToken(getCSRFCookie());
-
       await login(email, password);
     } catch (error) {
       console.error("Error during registration:", error);
@@ -74,8 +84,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "POST",
       });
 
-      deleteCSRFCookie();
-      setCSRFToken(getCSRFCookie());
       console.log("User logged out successfully.");
     } catch (error) {
       console.error("Error during logout:", error);
@@ -88,9 +96,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "DELETE",
       });
 
-      deleteCSRFCookie();
-      setCSRFToken(getCSRFCookie());
-      console.log(csrfToken)
       console.log("User account deleted successfully.");
     } catch (error) {
       console.error("Error during account deletion:", error);
@@ -111,7 +116,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }
 
   return (
-    <AuthContext.Provider value={{ csrfToken, login, logout, register, deleteAccount, changePassword }}>
+    <AuthContext.Provider value={{isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword }}>
       {children}
     </AuthContext.Provider>
   );

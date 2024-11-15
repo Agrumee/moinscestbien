@@ -4,6 +4,7 @@ import Heading from "../../../components/atoms/Heading/Heading";
 import Button from "../../../components/atoms/Button/Button";
 import Paragraph from "../../../components/atoms/Paragraph/Paragraph";
 import { useAuth } from "../../../hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import "./Register.scss";
 
@@ -13,10 +14,12 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
       await register(email, password, confirmedPassword);
+      navigate('/home')
     } catch (error) {
       throw error;
     }
