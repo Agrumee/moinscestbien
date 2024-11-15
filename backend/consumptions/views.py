@@ -222,19 +222,25 @@ class ApiAddConsumption(APIView):
                     "message": "Date must be in the format YYYY-MM-DD.",
                     "data": []
                 }, status=status.HTTP_400_BAD_REQUEST)
+           
 
             user = request.user
             product = Product.objects.get(id=productId)
 
             try:
                 tracked_product = TrackedProduct.objects.get(user=user, product=product)
+                if date > date.today() or date < tracked_product.start_date:
+                    return Response(
+                        {"error": "The date cannot be in the future."},
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
             except TrackedProduct.DoesNotExist:
                 return Response({
                     "success": False,
                     "message": "The product is not tracked by this user.",
                     "data": []
                 }, status=status.HTTP_400_BAD_REQUEST)
-
+             
             consumption, created = Consumption.objects.get_or_create(
                 tracked_product=tracked_product,
                 date=date,

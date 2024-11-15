@@ -127,3 +127,100 @@ class ApiConsumptionsListByProductTest(TestCase):
         dates = [item['date'] for item in response.data['data']]
         self.assertEqual(dates, sorted(dates))
     
+
+class ApiAddConsumption(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123",
+        )
+        self.product = Product.objects.get(name="coffee")
+        self.client = APIClient()
+        self.client.login(username="user@example.com", password="password123")
+        self.add_consumption_url = reverse('add-consumption', args=[self.product.id])
+        self.payload = {
+            "date": date.today().isoformat(),
+            "quantity": 5
+        }
+
+    def test_user_cannot_update_consumptions_of_untracked_products(self):
+        response = self.client.post(self.add_consumption_url, data=self.payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_user_can_update_consumptions_of_today(self):
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user,
+            product=self.product,
+            unit=Unit.objects.get(name="count"),
+            motivation=Motivation.objects.get(name="health"),
+            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+            start_date=date.today() - relativedelta(months=4),
+            end_date=None,
+        )
+        response = self.client.post(self.add_consumption_url, data=self.payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        self.assertTrue(Consumption.objects.filter(
+            tracked_product=self.trackedProduct,
+            date=self.payload["date"]
+        ).exists())
+
+    def test_user_can_update_consumptions_of_past(self):
+        past_date = date.today() - relativedelta(months=2)
+        self.payload = {
+            "date": past_date.isoformat(),
+            "quantity": 5
+        }
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user,
+            product=self.product,
+            unit=Unit.objects.get(name="count"),
+            motivation=Motivation.objects.get(name="health"),
+            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+            start_date=date.today() - relativedelta(months=4),
+            end_date=None,
+        )
+        response = self.client.post(self.add_consumption_url, data=self.payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        
+        self.assertTrue(Consumption.objects.filter(
+            tracked_product=self.trackedProduct,
+            date=self.payload["date"]
+        ).exists())
+
+    def test_user_cannot_update_consumptions_of_futur(self):
+        future_date = date.today() + relativedelta(months=2)
+        self.payload = {
+            "date": future_date.isoformat(),
+            "quantity": 5
+        }
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user,
+            product=self.product,
+            unit=Unit.objects.get(name="count"),
+            motivation=Motivation.objects.get(name="health"),
+            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+            start_date=date.today() - relativedelta(months=4),
+            end_date=None,
+        )
+        response = self.client.post(self.add_consumption_url, data=self.payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_user_cannot_update_consumptions_outside_tracking_period(self):
+        past_date = date.today() + relativedelta(months=2)
+        self.payload = {
+            "date": past_date.isoformat(),
+            "quantity": 5
+        }
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user,
+            product=self.product,
+            unit=Unit.objects.get(name="count"),
+            motivation=Motivation.objects.get(name="health"),
+            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+            start_date=date.today() - relativedelta(months=1),
+            end_date=None,
+        )
+        response = self.client.post(self.add_consumption_url, data=self.payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
