@@ -26,18 +26,15 @@ const LayoutManager: React.FC = () => {
           navigate('/');
         }
       } else {
-        if (['/login', '/register'].includes(location.pathname)) {
+        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
+          console.log(location.pathname);
           navigate('/home');
         }
-        // if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
-        //   console.log(location.pathname);
-        //   navigate('/home');
-        // }
       }
     };
   
     checkAuth();
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, isAuthenticated]);
 
   return isAuthenticated ? (
     <Logged>
