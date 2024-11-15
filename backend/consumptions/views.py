@@ -477,3 +477,78 @@ class ApiTrackingFrequenciesList(APIView):
                 "message": f"An error occurred: {str(e)}",
                 "data": []
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+@method_decorator(csrf_protect, name='dispatch')
+class ApiDeleteTrackedProduct(APIView):
+    permission_classes = [IsAuthenticated,] 
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            tracked_product = TrackedProduct.objects.get(user=user, id=kwargs['trackedProductId'])
+            tracked_product.delete() 
+            return Response({
+                "success": True,
+                "message": "Tracked product deleted successfully.",
+            }, status=status.HTTP_200_OK)
+        except TrackedProduct.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Tracked product not found.",
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class ApiPauseTrackedProduct(APIView):
+    permission_classes = [IsAuthenticated,] 
+
+    def patch(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            tracked_product = TrackedProduct.objects.get(user=user, id=kwargs['trackedProductId'])
+            tracked_product.end_date = datetime.now().date()
+            tracked_product.save()
+            return Response({
+                "success": True,
+                "message": "Tracked product paused successfully.",
+            }, status=status.HTTP_200_OK)
+        except TrackedProduct.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Tracked product not found.",
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@method_decorator(ensure_csrf_cookie, name='dispatch')
+class ApiUnpauseTrackedProduct(APIView):
+    permission_classes = [IsAuthenticated,]
+
+    def patch(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            tracked_product = TrackedProduct.objects.get(user=user, id=kwargs['trackedProductId'])
+            tracked_product.end_date = None
+            tracked_product.save()
+
+            return Response({
+                "success": True,
+                "message": "Tracked product reactivated successfully.",
+            }, status=status.HTTP_200_OK)
+        except TrackedProduct.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "Tracked product not found.",
+            }, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({
+                "success": False,
+                "message": f"An error occurred: {str(e)}",
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

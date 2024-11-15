@@ -10,7 +10,10 @@ from .views import (
     ApiConsumptionsList,
     ApiConsumptionPeriodList,
     ApiConsumptionsListByProduct,
-    ApiTrackingFrequenciesList
+    ApiTrackingFrequenciesList,
+    ApiDeleteTrackedProduct,
+    ApiPauseTrackedProduct,
+    ApiUnpauseTrackedProduct,
     )
 
 urlpatterns = [
@@ -26,5 +29,8 @@ urlpatterns = [
     # path('consumptions/<uuid:userId>/<int:productId>/<str:start_date>/<str:end_date>/', ApiConsumptionPeriodList.as_view(), name='consumption-period-list'),
     path('consumptions/<int:productId>/', ApiConsumptionsListByProduct.as_view(), name='consumptions-list-by-product'),
     # path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
+    path('users/products/<int:trackedProductId>/delete/', ApiDeleteTrackedProduct.as_view(), name='delete-tracked-product'),
+    path('user/products/<int:trackedProductId>/pause/', ApiPauseTrackedProduct.as_view(), name='pause-tracked-product'),
+    path('user/products/<int:trackedProductId>/unpause/', ApiUnpauseTrackedProduct.as_view(), name='unpause-tracked-product'),
 
 ]

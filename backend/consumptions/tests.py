@@ -126,7 +126,7 @@ class ApiConsumptionsListByProductTest(TestCase):
 
         dates = [item['date'] for item in response.data['data']]
         self.assertEqual(dates, sorted(dates))
-    
+
 
 class ApiAddConsumption(TestCase):
     def setUp(self):
@@ -224,3 +224,129 @@ class ApiAddConsumption(TestCase):
         )
         response = self.client.post(self.add_consumption_url, data=self.payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+#En tant qu'utilisateur, je peux supprimer le suivi d'un produit.
+class DeleteTrackedProductTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@test.test",
+            username="username",
+            password="password123",
+        )
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user, 
+            product=Product.objects.get(name="coffee"),
+            unit=Unit.objects.get(name="count"),
+            motivation=Motivation.objects.get(name="health"),
+            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+            start_date=date.today() - relativedelta(months=4),
+            end_date=None,
+        )
+        self.client = APIClient()
+        self.client.login(username="username", password="password123")
+        self.delete_tracked_product_url = reverse('delete-tracked-product', args=[self.trackedProduct.id])
+        
+    def test_user_can_delete_tracked_product(self):
+        response = self.client.delete(self.delete_tracked_product_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(TrackedProduct.objects.count(), 0)
+        
+class ApiAddProductTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123"
+        )
+
+        self.product = Product.objects.create(name="coffee")
+        self.unit = Unit.objects.create(name="count")
+        self.motivation = Motivation.objects.create(name="health")
+        self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
+
+        self.client = APIClient()
+        self.client.login(username="user@example.com", password="password123")
+
+        self.add_product_url = reverse('add-product', args=[self.product.id, self.unit.id, self.motivation.id, self.tracking_frequency.id])
+
+    def test_user_can_add_product(self):
+        response = self.client.post(self.add_product_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("success", response.data)
+        self.assertEqual(TrackedProduct.objects.count(), 1)
+        self.assertEqual(TrackedProduct.objects.first().product, self.product)
+
+    def test_user_cannot_add_product_already_assigned(self):
+        self.client.post(self.add_product_url)
+
+        response = self.client.post(self.add_product_url)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("already assigned", response.data['message'])
+        
+class ApiPauseTrackedProductTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123"
+        )
+
+        self.product = Product.objects.create(name="coffee")
+        self.unit = Unit.objects.create(name="count")
+        self.motivation = Motivation.objects.create(name="health")
+        self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
+
+        self.client = APIClient()
+        self.client.login(username="user@example.com", password="password123")
+        
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user, 
+            product=self.product,
+            unit=self.unit,
+            motivation=self.motivation,
+            tracking_frequency=self.tracking_frequency,
+            start_date=date.today() - relativedelta(months=4),
+            end_date=None,
+        )
+        
+        self.pause_tracked_product_url = reverse('pause-tracked-product', args=[self.trackedProduct.id])
+        
+    def test_user_can_pause_tracked_product(self):
+        response = self.client.patch(self.pause_tracked_product_url)
+        self.trackedProduct.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(self.trackedProduct.end_date)
+
+class ApiUnpauseTrackedProductTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123"
+        )
+
+        self.product = Product.objects.create(name="coffee")
+        self.unit = Unit.objects.create(name="count")
+        self.motivation = Motivation.objects.create(name="health")
+        self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
+
+        self.client = APIClient()
+        self.client.login(username="user@example.com", password="password123")
+        
+        self.trackedProduct = TrackedProduct.objects.create(
+            user=self.user, 
+            product=self.product,
+            unit=self.unit,
+            motivation=self.motivation,
+            tracking_frequency=self.tracking_frequency,
+            start_date=date.today() - relativedelta(months=4),
+            end_date=date.today(),
+        )
+        
+        self.unpause_tracked_product_url = reverse('unpause-tracked-product', args=[self.trackedProduct.id])
+
+    def test_user_can_unpause_tracked_product(self):
+        response = self.client.patch(self.unpause_tracked_product_url)
+        self.trackedProduct.refresh_from_db()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(self.trackedProduct.end_date)
