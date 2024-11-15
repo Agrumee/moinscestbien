@@ -19,14 +19,18 @@ const LayoutManager: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!csrfToken && !['/', '/login', '/register'].includes(location.pathname)) {
-      navigate('/');
-    }
-    else if (csrfToken && !['/addnew', '/profile', '/changepassword', '/deleteaccount'].includes(location.pathname)) {
-      navigate('/home');
+    if (!csrfToken) {
+      // Redirigez vers '/login' pour toute page nécessitant une authentification
+      if (!['/', '/login', '/register'].includes(location.pathname)) {
+        navigate('/login');
+      }
+    } else {
+      // Redirigez vers '/home' si l'utilisateur est authentifié et sur une page publique
+      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
+        navigate('/home');
+      }
     }
   }, [location.pathname, csrfToken, navigate]);
-
   return csrfToken ? (
     <Logged>
       <Routes>

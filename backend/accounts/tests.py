@@ -92,7 +92,82 @@ class LoginTest(TestCase):
             'email' : "user@example.com",
             'password' : "password1234",
         }
-        
         response = self.client.post(self.login_url, data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         
+class LogoutTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123",
+        )
+
+        self.client = APIClient()
+        
+    def test_user_can_logout_if_login(self):
+        self.client.force_authenticate(user=self.user)   
+        response = self.client.post(reverse('logout'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+    
+    def test_user_cannot_logout_if_not_login(self):
+        response = self.client.post(reverse('logout'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        
+class DeleteAccountTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="user@example.com",
+            username="user@example.com",
+            password="password123",
+        )
+
+        self.client = APIClient()
+        
+    def test_user_can_delete_account_if_login(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(reverse('delete-account'))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(User.objects.count(), 0)
+        
+    def test_user_cannot_delete_account_if_not_authenticated(self):
+        response = self.client.delete(reverse('delete-account'))
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(User.objects.count(), 1)
+        
+class ChangePasswordTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(
+            email="test@test.test",
+            username="test",
+            password="password123",
+        )
+        
+        self.client = APIClient()
+        
+    def test_user_can_change_password_with_valid_password(self):
+        self.client.force_authenticate(user=self.user)
+        data = {
+            'password' : 'password1234',
+            'confirmedPassword' : 'password1234',
+        }
+        response = self.client.patch(reverse('change-password'), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+    def test_user_cannot_change_password_with_invalid_password(self):
+        self.client.force_authenticate(user=self.user)
+        data = {
+            'password' : '0000',
+            'confirmedPassword' : '0000',
+        }
+        response = self.client.patch(reverse('change-password'), data, format='json')
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        
+    def test_user_cannot_change_password_with_invalid_password_confirmation(self):
+        self.client.force_authenticate(user=self.user)
+        data = {
+            'password' : 'password1234',
+            'confirmedPassword' : 'password',
+        }
+        response = self.client.patch(reverse('change-password'), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)

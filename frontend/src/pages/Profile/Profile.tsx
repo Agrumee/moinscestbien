@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const Profile = () => {
-  const { logout, deleteAccount } = useAuth();
+  const { logout } = useAuth();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {
-      logout();
+      await logout();
       navigate("/login");
     } catch (error) {
       throw error;

@@ -27,7 +27,7 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [csrfToken, setCSRFToken] = useState(getCSRFCookie());
+  const [csrfToken, setCSRFToken] = useState(undefined);
 
   const login = async (email: string, password: string) => {
     try {
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
 
       deleteCSRFCookie();
-      setCSRFToken(getCSRFCookie());
+      setCSRFToken(undefined);
       console.log("User logged out successfully.");
     } catch (error) {
       console.error("Error during logout:", error);
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
 
       deleteCSRFCookie();
-      setCSRFToken(getCSRFCookie());
+      setCSRFToken(undefined);
       console.log(csrfToken)
       console.log("User account deleted successfully.");
     } catch (error) {
