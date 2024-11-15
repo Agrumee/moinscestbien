@@ -23,8 +23,8 @@ urlpatterns = [
     path('consumption/<int:productId>/<str:date>/', ApiConsumptionDetail.as_view(), name='consumption-detail'),
     path('tracking-frequencies/', ApiTrackingFrequenciesList.as_view(), name='tracking-frequencies-list'),
     path('users/products/<int:productId>/<int:unitId>/<int:motivationId>/<int:trackingFrequencyId>/add-product/', ApiAddProduct.as_view(), name='add-product'),
-    path('consumptions/<uuid:userId>/<int:productId>/<str:start_date>/<str:end_date>/', ApiConsumptionPeriodList.as_view(), name='consumption-period-list'),
+    # path('consumptions/<uuid:userId>/<int:productId>/<str:start_date>/<str:end_date>/', ApiConsumptionPeriodList.as_view(), name='consumption-period-list'),
     path('consumptions/<int:productId>/', ApiConsumptionsListByProduct.as_view(), name='consumptions-list-by-product'),
-    path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
+    # path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
 
 ]

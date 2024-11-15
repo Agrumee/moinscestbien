@@ -160,7 +160,7 @@ class ApiTrackedProductsList(APIView):
     def get(self, request,*args, **kwargs):
         try:
             user = request.user
-            tracked_products = user.tracked_products.all()
+            tracked_products = user.tracked_products.all().order_by("start_date")
             serializer = TrackedProductSerializer(tracked_products, many=True)
             if tracked_products:
                 return Response({
