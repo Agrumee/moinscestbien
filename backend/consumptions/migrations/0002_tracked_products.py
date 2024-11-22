@@ -5,26 +5,63 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0001_initial'),
-        ('consumptions', '0001_initial'),
+        ("accounts", "0001_initial"),
+        ("consumptions", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='TrackedProduct',
+            name="TrackedProduct",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start_date', models.DateField()),
-                ('end_date', models.DateField(blank=True, null=True)),
-                ('motivation', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.motivation')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.product')),
-                ('unit', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='consumptions.unit')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tracked_products', to='accounts.user')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("start_date", models.DateField()),
+                ("end_date", models.DateField(blank=True, null=True)),
+                (
+                    "motivation",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tracked_products",
+                        to="consumptions.motivation",
+                    ),
+                ),
+                (
+                    "product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tracked_products",
+                        to="consumptions.product",
+                    ),
+                ),
+                (
+                    "unit",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tracked_products",
+                        to="consumptions.unit",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tracked_products",
+                        to="accounts.user",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('user', 'product', 'unit')},
+                "unique_together": {("user", "product", "unit")},
             },
         ),
     ]

@@ -5,22 +5,36 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('consumptions', '0002_tracked_products'),
+        ("consumptions", "0002_tracked_products"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Consumption',
+            name="Consumption",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('quantity', models.FloatField()),
-                ('date', models.DateField()),
-                ('tracked_product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='consumptions', to='consumptions.TrackedProduct')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("quantity", models.FloatField()),
+                ("date", models.DateField()),
+                (
+                    "tracked_product",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="consumptions",
+                        to="consumptions.TrackedProduct",
+                    ),
+                ),
             ],
             options={
-                'unique_together': {('tracked_product', 'date')},
+                "unique_together": {("tracked_product", "date")},
             },
         ),
     ]
