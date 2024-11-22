@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { svgSpritemap } from "vite-plugin-svg-spritemap";
+import eslint from 'vite-plugin-eslint';
+
 
 export default defineConfig(() => {
   return {
@@ -12,6 +14,7 @@ export default defineConfig(() => {
       svgSpritemap({
         pattern: "src/assets/svg/*.svg",
       }),
+      eslint()
     ],
     css: {
       preprocessorOptions: {
@@ -23,16 +26,5 @@ export default defineConfig(() => {
     server: {
       host: "0.0.0.0",
     },
-
-    // server: {
-    //   proxy: {
-    //     '/api': {
-    //       target: 'http://127.0.0.1:8000/api',
-    //       changeOrigin: true,
-    //       secure: false,
-    //       rewrite: (path) => path.replace(/^\/api/, ''),
-    //     },
-    //   },
-    // },
   };
 });

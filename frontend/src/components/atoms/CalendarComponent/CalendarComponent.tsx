@@ -1,13 +1,10 @@
-import { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "./CalendarComponent.scss";
-
-type Value = Date | [Date, Date] | null;
 
 interface CalendarComponentProps {
   startDate: string;
   value: Date;
-  onDateChange: (newValue: Date | null) => void;
+  onDateChange: (newValue: Date | null | [Date | null, Date | null]) => void;
 }
 
 const CalendarComponent = ({
@@ -15,7 +12,7 @@ const CalendarComponent = ({
   value: initialDate,
   onDateChange,
 }: CalendarComponentProps) => {
-  const [value, setValue] = useState<Date | null>(initialDate || new Date());
+  const value = initialDate || new Date();
 
   const disableDates = ({ date }: { date: Date }) => {
     const today = new Date();
@@ -29,9 +26,9 @@ const CalendarComponent = ({
   return (
     <div className="a-calendar">
       <Calendar
-        onChange={onDateChange}
         value={value}
         tileDisabled={disableDates}
+        onChange={onDateChange}
       />
     </div>
   );

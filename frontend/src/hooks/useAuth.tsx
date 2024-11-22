@@ -1,6 +1,5 @@
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import { useState, createContext, useContext, ReactNode } from 'react';
 import fetchAPI from '../utils/fetch';
-import { getCSRFCookie, deleteCSRFCookie } from '../utils/cookies';
 
 
 interface AuthContextType {
@@ -48,7 +47,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "GET",
       });
 
-      const data = await fetchAPI("/login/", {
+      await fetchAPI("/login/", {
         method: "POST",
         body: { email, password }
       });
@@ -66,7 +65,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "GET",
       });
 
-      const data = await fetchAPI("/register/", {
+      await fetchAPI("/register/", {
         method: "POST",
         body: { email, password, confirmedPassword }
       });

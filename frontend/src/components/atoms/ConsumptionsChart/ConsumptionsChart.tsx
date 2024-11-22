@@ -74,7 +74,7 @@ const groupDataByPeriod = (
 };
 
 const formatDate = (date: string, frequency: "daily" | "weekly" | "monthly") => {
-  const [month, year] = date.split("/").map(Number);
+  const [month] = date.split("/").map(Number);
   const months = [
     "1",
     "2",

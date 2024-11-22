@@ -34,7 +34,7 @@ const LayoutManager: React.FC = () => {
     };
   
     checkAuth();
-  }, [location.pathname, navigate, isAuthenticated]);
+  }, [location.pathname, navigate, isAuthenticated, authenticate]);
 
   return isAuthenticated ? (
     <Logged>
