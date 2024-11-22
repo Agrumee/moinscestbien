@@ -12,27 +12,68 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: db_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=5
+
+    env:
+      DJANGO_SETTINGS_MODULE: moinscestbien.settings
+      DB_NAME: db_test
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: localhost
+      DB_PORT: "5432"
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/db_test
+
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install Docker Compose
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
         run: |
-          sudo apt-get update
-          sudo apt-get install -y docker-compose
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
 
-      - name: Build and start Docker services
-        run: docker-compose up -d
+      - name: Run migrations
+        run: |
+          python server/manage.py migrate
 
-      - name: Run Backend Tests in Docker
-        run: docker-compose exec backend pytest
+      - name: Run Backend Tests
+        working-directory: ./backend
+        run: |
+          python manage.py test
 
-      - name: Lint Backend Code
+      - name : Lint Backend Code
         working-directory: ./backend
         run: black --check .
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm install
 
       - name: Lint Frontend Code
         working-directory: ./frontend
         run: npm run lint
 
-      - name: Stop Docker services
-        run: docker-compose down
+      - name: Build Frontend
+        working-directory: ./frontend
+        run: npm run build
