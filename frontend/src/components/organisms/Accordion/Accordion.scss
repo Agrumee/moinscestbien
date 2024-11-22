@@ -2,9 +2,10 @@
     margin: 2rem 2rem;
     &__title {
       display: flex;
-      align-items: center;
+      align-items:center;
       text-align: center;
-      justify-content: center;
+      justify-content: space-between;
+      padding: 0 1rem;
       cursor: pointer;
       background-color: $dark_green;
       color: $white;
@@ -14,17 +15,15 @@
       }
 
       &.__text {
-        position: fixed;
+        position: relative;
         left: auto;
         right: auto;
       }
 
       .toggled_accordion_icon {
-        position: fixed;
-        right: 50px;
-        align-self: center;
-        font-size: xx-large;
-        font-weight: bolder;
+        position: relative;
+        left: auto;
+        font-size: 30px;
       }
     }
     &__content {

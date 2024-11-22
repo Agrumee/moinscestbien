@@ -8,6 +8,7 @@ import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
+import fetchAPI from "../../../utils/fetch";
 
 interface AccordionProps {
   trackedProduct: any;
@@ -31,6 +32,7 @@ const Accordion = ({
   const [currentFrequency, setCurrentFrequency] = useState<
     "daily" | "weekly" | "monthly"
   >(frequency);
+  const [isPaused, setIsPaused] = useState(false);
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -50,6 +52,20 @@ const Accordion = ({
 
   const updateInputValue = (value: number) => {
     onUpdateConsumption(currentConsumption + value);
+  };
+
+  const pauseTracking = async (trackedProductId: string) => {
+    await fetchAPI(`/user/products/${trackedProductId}/pause/`, {
+      method: "PATCH",
+    });
+    setIsPaused(true);
+  };
+
+  const unpauseTracking = async (trackedProductId: string) => {
+    await fetchAPI(`/user/products/${trackedProductId}/unpause/`, {
+      method: "PATCH",
+    });
+    setIsPaused(false);
   };
 
   return (
@@ -137,11 +153,20 @@ const Accordion = ({
           )}
 
           <div className="o-accordion__content__footer">
+            {!isPaused ? (
             <div
               className="o-accordion__content__footer__button -pause"
+              onClick={() => pauseTracking(trackedProduct.id)}
             >
               <Icon name="pause" size="tiny" />
-            </div>
+            </div>)
+            : (
+            <div
+              className="o-accordion__content__footer__button -play"
+              onClick={() => unpauseTracking(trackedProduct.id)}
+            >
+              <Icon name="play" size="tiny" color="white" />
+            </div>)}
             <div
               className="o-accordion__content__footer__button -delete"
             >
