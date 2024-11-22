@@ -31,7 +31,7 @@ jobs:
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_HOST: localhost
-      DB_PORT: "5432"
+      DB_DOCKER_PORT: "5432"
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/db_test
 
     steps:
