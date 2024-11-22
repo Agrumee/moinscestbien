@@ -10,10 +10,10 @@ from rest_framework import status
 import re
 
 
-
 @method_decorator(csrf_protect, name="dispatch")
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
+
     def post(self, request, format=None):
         data = self.request.data
         email = data["email"]
@@ -93,6 +93,7 @@ class LoginView(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+
 @method_decorator(csrf_protect, name="dispatch")
 class LogoutView(APIView):
     permission_classes = (permissions.IsAuthenticated,)
@@ -104,6 +105,7 @@ class LogoutView(APIView):
         except:
             return Response({"error": "Error logging out user"})
 
+
 class CheckAuthView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -111,9 +113,15 @@ class CheckAuthView(APIView):
         try:
             isAuthenticated = request.user.is_authenticated
             if isAuthenticated:
-                return Response({"success": "User is authenticated", "isAuthenticated": True}, status=status.HTTP_200_OK)
+                return Response(
+                    {"success": "User is authenticated", "isAuthenticated": True},
+                    status=status.HTTP_200_OK,
+                )
             else:
-                return Response({"error": "User is not authenticated", "isAuthenticated": False}, status=status.HTTP_200_OK)
+                return Response(
+                    {"error": "User is not authenticated", "isAuthenticated": False},
+                    status=status.HTTP_200_OK,
+                )
         except:
             return Response({"error": "Error checking user authentication"})
 
@@ -128,7 +136,8 @@ class DeleteAccountView(APIView):
             auth.logout(request)
             user.delete()
             return Response(
-                {"success": "User account deleted"}, status=status.HTTP_200_OK,
+                {"success": "User account deleted"},
+                status=status.HTTP_200_OK,
             )
         except Exception as e:
             return Response(
