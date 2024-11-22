@@ -15,40 +15,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Backend Dependencies
-        working-directory: ./backend
+      - name: Install Docker Compose
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
-      - name : Lint Backend Code
+      - name: Build and start Docker services
+        run: docker-compose up -d
+
+      - name: Run Backend Tests in Docker
+        run: docker-compose exec backend pytest
+
+      - name: Lint Backend Code
         working-directory: ./backend
         run: black --check .
-
-      - name: Run Backend Tests
-        working-directory: ./backend
-        run: |
-          python manage.py test
-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-
-      - name: Install Frontend Dependencies
-        working-directory: ./frontend
-        run: npm install
 
       - name: Lint Frontend Code
         working-directory: ./frontend
         run: npm run lint
 
-      - name: Build Frontend
-        working-directory: ./frontend
-        run: npm run build
+      - name: Stop Docker services
+        run: docker-compose down
