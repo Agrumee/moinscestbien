@@ -12,7 +12,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "react": "^18.3.1",
-    "react-calendar": "^5.0.0",
+    "react-calendar": "^5.1.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.0",
     "react-svg": "^16.1.34",
@@ -24,7 +24,8 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx src"
   },
   "eslintConfig": {
     "extends": [
@@ -45,7 +46,11 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+    "eslint": "^8.57.1",
+    "eslint-config-react-app": "^7.0.1",
     "sass": "^1.77.6",
+    "vite-plugin-eslint": "^1.8.1",
     "vite-plugin-svg-spritemap": "^0.0.18"
   },
   "overrides": {

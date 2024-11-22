@@ -165,7 +165,7 @@ const Accordion = ({
               className="o-accordion__content__footer__button -play"
               onClick={() => unpauseTracking(trackedProduct.id)}
             >
-              <Icon name="play" size="tiny" color="white" />
+              <Icon name="play" size="large" color="white" />
             </div>)}
             <div
               className="o-accordion__content__footer__button -delete"

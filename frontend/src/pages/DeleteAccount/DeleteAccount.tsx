@@ -1,7 +1,5 @@
-import Label from "../../components/atoms/Label/Label";
 import Button from "../../components/atoms/Button/Button";
 import Heading from "../../components/atoms/Heading/Heading";
-import Input from "../../components/atoms/Input/Input";
 import { useAuth } from "../../hooks/useAuth";
 import "./DeleteAccount.scss";
 import { useNavigate } from "react-router-dom";
