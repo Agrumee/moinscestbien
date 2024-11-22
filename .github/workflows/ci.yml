@@ -28,7 +28,7 @@ jobs:
 
       - name : Lint Backend Code
         working-directory: ./backend
-        run: black --check
+        run: black --check .
 
       - name: Run Backend Tests
         working-directory: ./backend
