@@ -12,9 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    env:
-      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
-
     services:
       postgres:
         image: postgres:16
@@ -28,6 +25,7 @@ jobs:
           --health-cmd="pg_isready" --health-interval=10s --health-timeout=5s --health-retries=5
 
     env:
+      DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DJANGO_SETTINGS_MODULE: moinscestbien.settings
       DB_NAME: db_test
       DB_USER: postgres
