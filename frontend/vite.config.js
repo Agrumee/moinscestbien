@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { svgSpritemap } from "vite-plugin-svg-spritemap";
-import eslint from 'vite-plugin-eslint';
+import ViteEslint from 'vite-plugin-eslint';
 
 
 export default defineConfig(() => {
@@ -14,7 +14,7 @@ export default defineConfig(() => {
       svgSpritemap({
         pattern: "src/assets/svg/*.svg",
       }),
-      eslint()
+      ViteEslint()
     ],
     css: {
       preprocessorOptions: {
