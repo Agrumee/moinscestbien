@@ -65,6 +65,16 @@ class TrackedProductsListTest(TestCase):
                 - relativedelta(days=4),
                 end_date=None,
             ),
+            TrackedProduct.objects.create(
+                user=self.user,
+                product=Product.objects.get(name="bets"),
+                unit=Unit.objects.get(name="count"),
+                motivation=Motivation.objects.get(name="money"),
+                tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+                start_date=date.today()
+                - relativedelta(days=4),
+                end_date=date.today() - relativedelta(days=2),
+            ),
         ]
 
         self.client = APIClient()
