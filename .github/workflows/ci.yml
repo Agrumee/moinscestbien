@@ -56,7 +56,7 @@ jobs:
       - name: Run Backend Tests
         working-directory: ./backend
         run: |
-          python manage.py pytest
+          pytest
 
       - name : Lint Backend Code
         working-directory: ./backend
