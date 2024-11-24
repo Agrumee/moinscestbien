@@ -37,7 +37,7 @@ class ApiProductsList(APIView):
         try:
             user = request.user
             user_tracked_products = TrackedProduct.objects.filter(
-                user=user
+                user=user, end_date=None
             ).values_list("product", flat=True)
             user_untracked_products = Product.objects.exclude(
                 id__in=user_tracked_products
@@ -163,20 +163,15 @@ class ApiCreateTrackedProduct(APIView):
                 id=kwargs["trackingFrequencyId"]
             )
 
-            if not TrackedProduct.objects.filter(
+            tracked_product, created = TrackedProduct.objects.get_or_create(
+                user=user,
                 product=product,
                 unit=unit,
-                user=user,
                 motivation=motivation,
                 tracking_frequency=tracking_frequency,
-            ).exists():
-                TrackedProduct.objects.create(
-                    product=product,
-                    unit=unit,
-                    user=user,
-                    motivation=motivation,
-                    tracking_frequency=tracking_frequency,
-                )
+            )
+
+            if created:
                 return Response(
                     {
                         "success": True,
@@ -190,15 +185,30 @@ class ApiCreateTrackedProduct(APIView):
                     status=status.HTTP_200_OK,
                 )
             else:
-                return Response(
-                    {
-                        "success": False,
-                        "message": repr(
-                            product.name + " already assigned to " + user.username + "."
-                        ),
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
+                if tracked_product.end_date == None:
+                    return Response(
+                        {
+                            "success": False,
+                            "message": repr(
+                                product.name
+                                + " already assigned to "
+                                + user.username
+                                + "."
+                            ),
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                else:
+                    tracked_product.end_date = None
+                    tracked_product.save()
+                    return Response(
+                        {
+                            "success": True,
+                            "message": f"{product.name} tracking reactivated for {user.username}.",
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+
         except Product.DoesNotExist:
             return Response(
                 {"success": False, "message": "No product found.", "data": []},
@@ -310,19 +320,36 @@ class ApiAddConsumption(APIView):
             try:
                 tracked_product = TrackedProduct.objects.get(id=tracked_product_id)
 
-                if date > date.today() or date < tracked_product.start_date:
+                # Vérifiez si le produit appartient à l'utilisateur
+                if tracked_product.user != user:
+                    return Response(
+                        {
+                            "success": False,
+                            "message": "The product is not tracked by this user.",
+                            "data": [],
+                        },
+                        status=status.HTTP_401_UNAUTHORIZED,
+                    )
+
+                # Vérifiez si la date est valide
+                if date > date.today():
                     return Response(
                         {"error": "The date cannot be in the future."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
+
+                if date < tracked_product.start_date:
+                    return Response(
+                        {
+                            "error": "The date is earlier than the product's tracking start date."
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
             except TrackedProduct.DoesNotExist:
                 return Response(
-                    {
-                        "success": False,
-                        "message": "The product is not tracked by this user.",
-                        "data": [],
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
+                    {"error": "Tracked product not found."},
+                    status=status.HTTP_404_NOT_FOUND,
                 )
 
             consumption, created = Consumption.objects.get_or_create(
