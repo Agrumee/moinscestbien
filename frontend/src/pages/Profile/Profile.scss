@@ -3,7 +3,6 @@
     flex-direction: column;
     gap: 1rem;
     justify-content: center;
-    height: 100vh;
     padding: 1rem;
 
     .container {
@@ -15,5 +14,6 @@
         background-color: $dark_green;
         border-radius: 10px;
         height: 30rem;
+        box-shadow: $black 2px 2px 5px;
     }
 }

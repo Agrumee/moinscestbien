@@ -155,7 +155,7 @@ const AddNew = () => {
         size="large"
         content="Ajouter"
         onClick={handleAddNewProduct}
-        disabled={!currentProduct || !currentUnit}
+        disabled={!currentProduct || !currentUnit || !currentMotivation || !currentTrackingFrequency}
       />
     </div>
   );

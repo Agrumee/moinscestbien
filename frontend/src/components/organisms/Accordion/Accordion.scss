@@ -1,5 +1,10 @@
 .o-accordion {
     margin: 2rem;
+    
+    $border_radius: 10px;
+    box-shadow: $dark_green 2px 2px 5px;
+    border-radius: $border_radius;
+    
     &__title {
       display: flex;
       align-items:center;
@@ -9,15 +14,18 @@
       cursor: pointer;
       background-color: $dark_green;
       color: $white;
-      border-radius: 10px 10px 10px 10px;
+      border-radius: $border_radius;
+      
       &.active {
         border-radius: 10px 10px 0 0;
       }
+      
 
-      &.__text {
+      h2 {
         position: relative;
         left: auto;
         right: auto;
+        line-height: 100%;
       }
 
       .toggled_accordion_icon {
@@ -79,3 +87,10 @@
     width: 100%;
   }
   
+.o-accordion:first-of-type{
+    margin-top: 0;
+}
+
+.o-accordion:last-of-type{
+  margin-bottom: 10rem;
+}
