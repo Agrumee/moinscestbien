@@ -9,12 +9,14 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
 import fetchAPI from "../../../utils/fetch";
+import { Frequency, TrackedProduct } from "../../../types/tracked-product.model";
+import { Consumption } from "../../../types/consumption.model";
 
 interface AccordionProps {
-  trackedProduct: any;
-  consumptions: Array<{ date: string; product: string; quantity: number }>;
-  frequency: "daily" | "weekly" | "monthly";
+  trackedProduct: TrackedProduct;
+  consumptions: Consumption[];
   currentConsumption: number;
+  frequency: Frequency;
   onDateChange: (date: string) => void;
   onUpdateConsumption: (quantity: number) => void;
 }
@@ -30,7 +32,7 @@ const Accordion = ({
   const [isActive, setIsActive] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentFrequency, setCurrentFrequency] = useState<
-    "daily" | "weekly" | "monthly"
+    Frequency
   >(frequency);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -54,14 +56,14 @@ const Accordion = ({
     onUpdateConsumption(currentConsumption + value);
   };
 
-  const pauseTracking = async (trackedProductId: string) => {
+  const pauseTracking = async (trackedProductId: number) => {
     await fetchAPI(`/user/products/${trackedProductId}/pause/`, {
       method: "PATCH",
     });
     setIsPaused(true);
   };
 
-  const unpauseTracking = async (trackedProductId: string) => {
+  const unpauseTracking = async (trackedProductId: number) => {
     await fetchAPI(`/user/products/${trackedProductId}/unpause/`, {
       method: "PATCH",
     });

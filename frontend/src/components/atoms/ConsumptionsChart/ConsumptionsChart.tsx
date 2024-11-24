@@ -8,6 +8,8 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./ConsumptionsChart.scss";
+import { Consumption } from "../../../types/consumption.model";
+import { Frequency } from "../../../types/tracked-product.model";
 
 const COLORS = [
   "#F9BC60",
@@ -21,13 +23,13 @@ const COLORS = [
 
 interface ConsumptionsChartProps {
   className?: string;
-  data: Array<{ date: string; product: string; quantity: number }>;
-  frequency: "daily" | "weekly" | "monthly";
+  data: Consumption[];
+  frequency: Frequency;
 }
 
 const groupDataByPeriod = (
-  data: Array<{ date: string; product: string; quantity: number }>,
-  frequency: "daily" | "weekly" | "monthly"
+  data: Consumption[],
+  frequency: Frequency
 ) => {
   const groupedData: { [key: string]: { [key: string]: number } } = {};
 
@@ -52,8 +54,6 @@ const groupDataByPeriod = (
       case "monthly":
         key = `${dateObj.getMonth() + 1}`; // Utilisation uniquement du mois
         break;
-      default:
-        key = date;
     }
 
     if (!groupedData[key]) {
