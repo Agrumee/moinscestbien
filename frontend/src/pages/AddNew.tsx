@@ -8,27 +8,24 @@ import { useNavigate } from "react-router-dom";
 import fetchAPI from "../utils/fetch";
 
 import "./AddNew.scss";
+import { Product, Unit, Motivation, TrackingFrequency, Frequency } from "../types/tracked-product.model";
 
-interface ContentItem {
-  name: string;
-  id: number;
-}
 
 const AddNew = () => {
   const navigate = useNavigate();
-  const [currentProduct, setCurrentProduct] = useState<ContentItem | null>(
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(
     null
   );
-  const [currentUnit, setCurrentUnit] = useState<ContentItem | null>(null);
+  const [currentUnit, setCurrentUnit] = useState<Unit | null>(null);
   const [currentMotivation, setCurrentMotivation] =
-    useState<ContentItem | null>(null);
+    useState<Motivation | null>(null);
   const [currentTrackingFrequency, setCurrentTrackingFrequency] =
-    useState<ContentItem | null>(null);
-  const [productsList, setProductsList] = useState<ContentItem[]>([]);
-  const [unitsList, setUnitsList] = useState<ContentItem[]>([]);
-  const [motivationsList, setMotivationsList] = useState<ContentItem[]>([]);
+    useState<TrackingFrequency | null>(null);
+  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [unitsList, setUnitsList] = useState<Unit[]>([]);
+  const [motivationsList, setMotivationsList] = useState<Motivation[]>([]);
   const [trackingFrequenciesList, setTrackingFrequenciesList] =
-    useState<ContentItem[]>([]);
+    useState<TrackingFrequency[]>([]);
 
   const handleAddNewProduct = async () => {
     try {
@@ -115,7 +112,7 @@ const AddNew = () => {
             currentProduct ? currentProduct.name : "Que voulez-vous suivre ?"
           }
           contentList={productsList}
-          onSelect={(selectedProduct: ContentItem) =>
+          onSelect={(selectedProduct: Product) =>
             setCurrentProduct(selectedProduct)
           }
         />
@@ -125,7 +122,7 @@ const AddNew = () => {
         <Dropdown
           label={currentUnit ? currentUnit.name : "De quelle façon compter ?"}
           contentList={unitsList}
-          onSelect={(selectedUnit: ContentItem) => setCurrentUnit(selectedUnit)}
+          onSelect={(selectedUnit: Unit) => setCurrentUnit(selectedUnit)}
         />
         <br></br>
         <Label content="Motivation :" />
@@ -134,20 +131,20 @@ const AddNew = () => {
             currentMotivation ? currentMotivation.name : "Pour quelle raison ?"
           }
           contentList={motivationsList}
-          onSelect={(selectedMotivation: ContentItem) =>
+          onSelect={(selectedMotivation: Motivation) =>
             setCurrentMotivation(selectedMotivation)
           }
         />
         <br></br>
         <Label content="Fréquence de suivi :" />
-        <Dropdown
+        <Dropdown<Frequency>
           label={
             currentTrackingFrequency
               ? currentTrackingFrequency.name
               : "A quelle fréquence ?"
           }
           contentList={trackingFrequenciesList}
-          onSelect={(selectedTrackingFrequency: ContentItem) =>
+          onSelect={(selectedTrackingFrequency: TrackingFrequency) =>
             setCurrentTrackingFrequency(selectedTrackingFrequency)
           }
         />

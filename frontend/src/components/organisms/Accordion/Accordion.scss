@@ -1,5 +1,5 @@
 .o-accordion {
-    margin: 2rem 2rem;
+    margin: 2rem;
     &__title {
       display: flex;
       align-items:center;
@@ -30,7 +30,7 @@
       display: flex;
       flex-direction: column;
       background-color: $dark_green;
-      padding: 1rem;
+      padding: 0rem 1rem 2rem;
       border-radius: 0 0 10px 10px;
       gap: 0.5rem;
       &__counter {

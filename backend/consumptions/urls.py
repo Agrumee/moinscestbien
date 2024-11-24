@@ -26,7 +26,7 @@ urlpatterns = [
     ),
     # Modification du nom de l'api pour une meilleure clarté de son action, ApiAddProduct, evoque plus la possibilité pour un utilisateur de créer un nouveau produit.
     path(
-        "user/tracked-product/<int:productId>/<int:unitId>/<int:motivationId>/create/",
+        "user/tracked-product/<int:productId>/<int:unitId>/<int:motivationId>/<int:trackingFrequencyId>/create/",
         ApiCreateTrackedProduct.as_view(),
         name="add-product",
     ),

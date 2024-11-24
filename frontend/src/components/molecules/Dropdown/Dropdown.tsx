@@ -3,31 +3,31 @@ import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Icon from "../../atoms/Icon/Icon";
 
-interface ContentItem {
-  name: string;
+interface ContentItem<T> {
+  name: T;
   id: number;
 }
 
-interface DropDownProps {
+interface DropDownProps<T> {
   label: string;
-  contentList: ContentItem[];
-  onSelect?: (selectedItem: ContentItem) => void;
+  contentList: ContentItem<T>[];
+  onSelect?: (selectedItem: ContentItem<T>) => void;
 }
 
-export default function Dropdown({
+export default function Dropdown<T extends string>({
   contentList,
   label,
   onSelect,
-}: DropDownProps) {
+}: DropDownProps<T>) {
   const [opened, setOpened] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<ContentItem | null>(null); // État unique pour la sélection
+  const [selectedItem, setSelectedItem] = useState<ContentItem<T> | null>(null); // État unique pour la sélection
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const toggleDropdown = () => {
     setOpened(!opened);
   };
 
-  const handleOptionClick = (item: ContentItem) => {
+  const handleOptionClick = (item: ContentItem<T>) => {
     setSelectedItem(item);
     setOpened(false);
 
