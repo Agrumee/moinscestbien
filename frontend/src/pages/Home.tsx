@@ -17,7 +17,7 @@ const Home = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await fetchAPI("/tracked-products/", {
+        const response = await fetchAPI("/user/tracked-products/", {
           method: "GET",
         });
         setTrackedProducts(response.data);

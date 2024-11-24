@@ -3,13 +3,13 @@ from .views import (
     ApiProductsList,
     ApiUnitsList,
     ApiMotivationsList,
-    ApiAddProduct,
+    ApiCreateTrackedProduct,
     ApiTrackedProductsList,
     ApiAddConsumption,
     ApiConsumptionDetail,
-    ApiConsumptionsList,
-    ApiConsumptionPeriodList,
-    ApiConsumptionsListByProduct,
+    # ApiConsumptionsList,
+    # ApiConsumptionPeriodList,
+    ApiConsumptionsListByTrackedProduct,
     ApiTrackingFrequenciesList,
     ApiDeleteTrackedProduct,
     ApiPauseTrackedProduct,
@@ -24,19 +24,24 @@ urlpatterns = [
         ApiMotivationsList.as_view(),
         name="motivations-list",
     ),
+    # Modification du nom de l'api pour une meilleure clarté de son action, ApiAddProduct, evoque plus la possibilité pour un utilisateur de créer un nouveau produit.
     path(
-        "users/products/<int:productId>/<int:unitId>/<int:motivationId>/add-product/",
-        ApiAddProduct.as_view(),
+        "user/tracked-product/<int:productId>/<int:unitId>/<int:motivationId>/create/",
+        ApiCreateTrackedProduct.as_view(),
         name="add-product",
     ),
     path(
-        "tracked-products/", ApiTrackedProductsList.as_view(), name="user-products-list"
+        "user/tracked-products/",
+        ApiTrackedProductsList.as_view(),
+        name="user-products-list",
     ),
+    # Ici il vaut mieux passer directement l'id du tracked-product car on met à jour la consommation sur un tracked product et non sur un product directement
     path(
-        "consumption/<int:productId>/add-consumption/",
+        "consumption/<int:trackedProductId>/add-consumption/",
         ApiAddConsumption.as_view(),
         name="add-consumption",
     ),
+    # Api non utilisée (à supprimer)
     path(
         "consumption/<int:productId>/<str:date>/",
         ApiConsumptionDetail.as_view(),
@@ -47,17 +52,14 @@ urlpatterns = [
         ApiTrackingFrequenciesList.as_view(),
         name="tracking-frequencies-list",
     ),
-    path(
-        "users/products/<int:productId>/<int:unitId>/<int:motivationId>/<int:trackingFrequencyId>/add-product/",
-        ApiAddProduct.as_view(),
-        name="add-product",
-    ),
+    # API non utilisée, pourrait être utile dans un futur déploiement de l'app mais devrait être réécrite car l'uuid de l'user n'est pas utile
     # path('consumptions/<uuid:userId>/<int:productId>/<str:start_date>/<str:end_date>/', ApiConsumptionPeriodList.as_view(), name='consumption-period-list'),
     path(
-        "consumptions/<int:productId>/",
-        ApiConsumptionsListByProduct.as_view(),
+        "consumptions/<int:trackedProductId>/",
+        ApiConsumptionsListByTrackedProduct.as_view(),
         name="consumptions-list-by-product",
     ),
+    # API non utilisée, pourrait être utile dans un futur déploiement de l'app mais devrait être réécrite car l'uuid de l'user n'est pas utile
     # path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
     path(
         "users/products/<int:trackedProductId>/delete/",

@@ -150,7 +150,7 @@ class ApiMotivationsList(APIView):
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class ApiAddProduct(APIView):
+class ApiCreateTrackedProduct(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
@@ -227,7 +227,9 @@ class ApiTrackedProductsList(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_products = user.tracked_products.filter(end_date=None).order_by("start_date")
+            tracked_products = user.tracked_products.filter(end_date=None).order_by(
+                "start_date"
+            )
             serializer = TrackedProductSerializer(tracked_products, many=True)
             if tracked_products:
                 return Response(
@@ -265,7 +267,7 @@ class ApiAddConsumption(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            productId = kwargs.get("productId")
+            tracked_product_id = kwargs.get("trackedProductId")
             data = request.data
             quantity = data.get("quantity")
             date = data.get("date")
@@ -305,10 +307,9 @@ class ApiAddConsumption(APIView):
                 )
 
             user = request.user
-            product = Product.objects.get(id=productId)
-
             try:
-                tracked_product = TrackedProduct.objects.get(user=user, product=product)
+                tracked_product = TrackedProduct.objects.get(id=tracked_product_id)
+
                 if date > date.today() or date < tracked_product.start_date:
                     return Response(
                         {"error": "The date cannot be in the future."},
@@ -339,7 +340,7 @@ class ApiAddConsumption(APIView):
                     "success": True,
                     "message": "Consumption added/updated successfully.",
                     "data": {
-                        "product": product.name,
+                        "product": tracked_product.product.name,
                         "quantity": consumption.quantity,
                         "date": str(consumption.date),
                     },
@@ -353,7 +354,6 @@ class ApiAddConsumption(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
-            print(f"An error occurred: {str(e)}")  # Imprimer l'erreur pour débogage
             return Response(
                 {
                     "success": False,
@@ -365,15 +365,14 @@ class ApiAddConsumption(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiConsumptionsListByProduct(APIView):
+class ApiConsumptionsListByTrackedProduct(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         try:
             user = request.user
-            product = get_object_or_404(Product, id=kwargs["productId"])
             tracked_product = get_object_or_404(
-                TrackedProduct, user=user, product=product, end_date=None
+                TrackedProduct, user=user, id=kwargs["trackedProductId"], end_date=None
             )
             consumptions = Consumption.objects.filter(
                 tracked_product=tracked_product
