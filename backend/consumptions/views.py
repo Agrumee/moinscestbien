@@ -496,11 +496,8 @@ class ApiConsumptionDetail(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            product = get_object_or_404(Product, id=kwargs["productId"])
             date = kwargs["date"]
-            tracked_product = get_object_or_404(
-                TrackedProduct, user=request.user, product=product, end_date=None
-            )
+            tracked_product = TrackedProduct.objects.get(id=kwargs["trackedProductId"])
             try:
                 consumption = Consumption.objects.get(
                     tracked_product=tracked_product, date=date

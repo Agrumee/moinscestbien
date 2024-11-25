@@ -1,8 +1,7 @@
 .o-accordion {
     margin: 2rem;
-    
     $border_radius: 10px;
-    box-shadow: $dark_green 2px 2px 5px;
+    box-shadow: $dark_green 0px 2px 5px;
     border-radius: $border_radius;
     
     &__title {
