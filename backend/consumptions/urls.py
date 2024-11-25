@@ -41,9 +41,8 @@ urlpatterns = [
         ApiAddConsumption.as_view(),
         name="add-consumption",
     ),
-    # Api non utilisée (à supprimer)
     path(
-        "consumption/<int:productId>/<str:date>/",
+        "consumption/<int:trackedProductId>/<str:date>/",
         ApiConsumptionDetail.as_view(),
         name="consumption-detail",
     ),
