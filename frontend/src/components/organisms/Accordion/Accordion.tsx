@@ -78,12 +78,12 @@ const Accordion = ({
           setIsActive(!isActive);
         }}
       >
-          <Heading
-            level={2}
-            color="white"
-            content={trackedProduct.product.name.toUpperCase()}
-            className="o-accordion__title__text"
-          />
+        <Heading
+          level={2}
+          color="white"
+          content={trackedProduct.product.name.toUpperCase()}
+          className="o-accordion__title__text"
+        />
 
         <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
       </div>
@@ -156,27 +156,33 @@ const Accordion = ({
 
           <div className="o-accordion__content__footer">
             {!isPaused ? (
-            <div
-              className="o-accordion__content__footer__button -pause"
-              onClick={() => pauseTracking(trackedProduct.id)}
-            >
-              <Icon name="pause" size="tiny" />
-            </div>)
-            : (
-            <div
-              className="o-accordion__content__footer__button -play"
-              onClick={() => unpauseTracking(trackedProduct.id)}
-            >
-              <Icon name="play" size="large" color="white" />
-            </div>)}
-            <div
+              <Button
+                className="o-accordion__content__footer__button -pause"
+                variant="primary"
+                size="small"
+                content="Mettre en pause"
+                onClick={() => pauseTracking(trackedProduct.id)}
+              />)
+              : (
+                <div
+                  className="o-accordion__content__footer__button -play"
+                  onClick={() => unpauseTracking(trackedProduct.id)}
+                >
+                  <Icon name="play" size="large" color="white" />
+                </div>)}
+
+            <Button
               className="o-accordion__content__footer__button -delete"
-            >
-              <Icon name="trash" size="tiny" />
-            </div>
+              variant="secondary"
+              size="small"
+              content="Ne plus suivre"
+              onClick={() => pauseTracking(trackedProduct.id)}
+            />
           </div>
-        </div>)}
-    </div>
+        </div>
+      )
+      }
+    </div >
   );
 }
 
