@@ -4,6 +4,7 @@ from datetime import date
 
 class Motivation(models.Model):
     name = models.CharField(max_length=100)
+    label = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name
@@ -11,6 +12,8 @@ class Motivation(models.Model):
 
 class Unit(models.Model):
     name = models.CharField(max_length=100)
+    label = models.CharField(max_length=100)
+    code = models.CharField(max_length=24)
 
     def __str__(self):
         return self.name
@@ -18,9 +21,8 @@ class Unit(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=100)
-    motivations = models.ManyToManyField(
-        Motivation, related_name="products", blank=True
-    )
+    label = models.CharField(max_length=100)
+    motivations = models.ManyToManyField(Motivation, related_name="products")
     units = models.ManyToManyField(Unit, related_name="products")
 
     def __str__(self):
