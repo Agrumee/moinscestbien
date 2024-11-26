@@ -38,7 +38,7 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="coffee"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="cups"),
                 motivation=Motivation.objects.get(name="health"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
                 start_date=date.today() - relativedelta(months=4),
@@ -47,7 +47,7 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="alcohol"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="glasses"),
                 motivation=Motivation.objects.get(name="health"),
                 tracking_frequency=TrackingFrequency.objects.get(name="monthly"),
                 start_date=date.today() - relativedelta(months=1),
@@ -56,7 +56,7 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="car"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="kilometers"),
                 motivation=Motivation.objects.get(name="ecology"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
                 start_date=date.today()
@@ -67,7 +67,7 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="bets"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="euros"),
                 motivation=Motivation.objects.get(name="money"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
                 start_date=date.today() - relativedelta(days=4),
@@ -107,7 +107,7 @@ class ApiConsumptionsListByProductTest(TestCase):
         self.trackedProduct = TrackedProduct.objects.create(
             user=self.user,
             product=Product.objects.get(name="coffee"),
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
@@ -160,7 +160,7 @@ class ApiAddConsumption(TestCase):
         self.user_tracked_product = TrackedProduct.objects.create(
             user=self.user,
             product=self.product,
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
@@ -175,7 +175,7 @@ class ApiAddConsumption(TestCase):
         self.other_user_tracked_product = TrackedProduct.objects.create(
             user=self.other_user,
             product=self.product,
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
@@ -250,7 +250,7 @@ class DeleteTrackedProductTest(TestCase):
         self.trackedProduct = TrackedProduct.objects.create(
             user=self.user,
             product=Product.objects.get(name="coffee"),
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
@@ -277,7 +277,7 @@ class ApiCreateTrackedProductTest(TestCase):
         )
 
         self.product = Product.objects.create(name="coffee")
-        self.unit = Unit.objects.create(name="count")
+        self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
 
@@ -339,7 +339,7 @@ class ApiPauseTrackedProductTest(TestCase):
         )
 
         self.product = Product.objects.create(name="coffee")
-        self.unit = Unit.objects.create(name="count")
+        self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
 
@@ -376,7 +376,7 @@ class ApiUnpauseTrackedProductTest(TestCase):
         )
 
         self.product = Product.objects.create(name="coffee")
-        self.unit = Unit.objects.create(name="count")
+        self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
 
