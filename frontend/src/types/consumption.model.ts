@@ -1,7 +1,9 @@
+import { TrackedProduct } from "./tracked-product.model";
+
 export type Consumption = {
     quantity: number;
     date: Date;
-    product: string;
+    trackedProduct: TrackedProduct;
 }
 
 // indexed type
