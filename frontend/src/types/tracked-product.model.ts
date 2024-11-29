@@ -21,6 +21,7 @@ export type Motivation = {
 export type TrackingFrequency = {
     id: number;
     name: Frequency;
+    label:string;
 };
 
 export type Frequency = "daily" | "weekly" | "monthly";

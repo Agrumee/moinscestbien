@@ -71,19 +71,19 @@ const Accordion = ({
   };
 
   return (
-    <div className="o-accordion">
+    <div className="o-accordion" key={trackedProduct.id}>
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => {
           setIsActive(!isActive);
         }}
       >
-          <Heading
-            level={2}
-            color="white"
-            content={trackedProduct.product.name.toUpperCase()}
-            className="o-accordion__title__text"
-          />
+        <Heading
+          level={2}
+          color="white"
+          content={trackedProduct.product.label}
+          className="o-accordion__title__text"
+        />
 
         <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
       </div>
@@ -121,7 +121,7 @@ const Accordion = ({
             <>
               <ConsumptionsChart
                 className="o-accordion__content__chart"
-                data={consumptions}
+                consumptions={consumptions}
                 frequency={currentFrequency}
               />
 
@@ -156,19 +156,19 @@ const Accordion = ({
 
           <div className="o-accordion__content__footer">
             {!isPaused ? (
-            <div
-              className="o-accordion__content__footer__button -pause"
-              onClick={() => pauseTracking(trackedProduct.id)}
-            >
-              <Icon name="pause" size="tiny" />
-            </div>)
-            : (
-            <div
-              className="o-accordion__content__footer__button -play"
-              onClick={() => unpauseTracking(trackedProduct.id)}
-            >
-              <Icon name="play" size="large" color="white" />
-            </div>)}
+              <div
+                className="o-accordion__content__footer__button -pause"
+                onClick={() => pauseTracking(trackedProduct.id)}
+              >
+                <Icon name="pause" size="tiny" />
+              </div>)
+              : (
+                <div
+                  className="o-accordion__content__footer__button -play"
+                  onClick={() => unpauseTracking(trackedProduct.id)}
+                >
+                  <Icon name="play" size="large" color="white" />
+                </div>)}
             <div
               className="o-accordion__content__footer__button -delete"
             >

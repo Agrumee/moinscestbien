@@ -128,7 +128,7 @@ export default function Dropdown<T extends string>({
             role="option"
             aria-selected={selectedItem?.id === item.id}
           >
-            {item.name}
+            {item.label}
           </div>
         ))}
       </div>

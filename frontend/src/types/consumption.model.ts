@@ -3,11 +3,11 @@ import { TrackedProduct } from "./tracked-product.model";
 export type Consumption = {
     quantity: number;
     date: Date;
-    trackedProduct: TrackedProduct;
+    tracked_product: TrackedProduct;
 }
 
 // indexed type
-export type ConsumptionsListByProductId = {
+export type ConsumptionsListByTrackedProductId = {
     [key: number]: Consumption[];
 }
 

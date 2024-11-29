@@ -30,7 +30,7 @@ class MotivationSerializer(serializers.ModelSerializer):
 class TrackingFrequencySerializer(serializers.ModelSerializer):
     class Meta:
         model = TrackingFrequency
-        fields = ["id", "name"]
+        fields = ["id", "name", "label"]
 
 
 class TrackedProductSerializer(serializers.ModelSerializer):

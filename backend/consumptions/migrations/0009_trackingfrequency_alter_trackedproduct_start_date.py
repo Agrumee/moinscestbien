@@ -8,9 +8,9 @@ def populate_tracking_frequencies(apps, schema_editor):
 
     TrackingFrequency.objects.bulk_create(
         [
-            TrackingFrequency(name="daily"),
-            TrackingFrequency(name="weekly"),
-            TrackingFrequency(name="monthly"),
+            TrackingFrequency(name="daily", label="Jour"),
+            TrackingFrequency(name="weekly", label="Semaine"),
+            TrackingFrequency(name="monthly", label="Mois"),
         ]
     )
 
@@ -34,6 +34,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100)),
+                ("label", models.CharField(max_length=100)),
             ],
         ),
         migrations.RunPython(populate_tracking_frequencies),
