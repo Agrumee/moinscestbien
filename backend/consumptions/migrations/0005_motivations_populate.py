@@ -6,10 +6,10 @@ def populate_motivations(apps, schema_editor):
 
     Motivation.objects.bulk_create(
         [
-            Motivation(name="health"),
-            Motivation(name="money"),
-            Motivation(name="ecology"),
-            Motivation(name="ethics"),
+            Motivation(name="health", label="Santé"),
+            Motivation(name="money", label="Financier"),
+            Motivation(name="ecology", label="Écologie"),
+            Motivation(name="ethics", label="Éthique"),
         ]
     )
 

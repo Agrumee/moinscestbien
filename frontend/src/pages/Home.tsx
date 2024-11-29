@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
 import { TrackedProduct } from "../types/tracked-product.model";
-import { ConsumptionsListByProductId } from "../types/consumption.model";
+import { ConsumptionsListByTrackedProductId } from "../types/consumption.model";
 
 const Home = () => {
   const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
-  const [consumptionsListByProductId, setConsumptionsListByProductId] = useState<ConsumptionsListByProductId>(
+  const [ConsumptionsListByTrackedProductId, setConsumptionsListByTrackedProductId] = useState<ConsumptionsListByTrackedProductId>(
     {}
   );
   const [currentConsumptionByTrackedProductId, setCurrentConsumptionByTrackedProductId] = useState<{
@@ -44,7 +44,7 @@ const Home = () => {
       const response = await fetchAPI(`/consumptions/${productId}`, {
         method: "GET",
       });
-      setConsumptionsListByProductId((previousConsumptions) => ({
+      setConsumptionsListByTrackedProductId((previousConsumptions) => ({
         ...previousConsumptions,
         [productId]: response.data,
       }));
@@ -100,7 +100,7 @@ const Home = () => {
       {trackedProducts.map((trackedProduct: TrackedProduct) => (
         <Accordion
           trackedProduct={trackedProduct}
-          consumptions={consumptionsListByProductId[trackedProduct.id] || []}
+          consumptions={ConsumptionsListByTrackedProductId[trackedProduct.id] || []}
           currentConsumption={
             currentConsumptionByTrackedProductId[trackedProduct.id] || 0
           }

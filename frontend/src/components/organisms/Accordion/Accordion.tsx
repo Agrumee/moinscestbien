@@ -71,7 +71,7 @@ const Accordion = ({
   };
 
   return (
-    <div className="o-accordion">
+    <div className="o-accordion" key={trackedProduct.id}>
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => {
@@ -81,7 +81,7 @@ const Accordion = ({
         <Heading
           level={2}
           color="white"
-          content={trackedProduct.product.name.toUpperCase()}
+          content={trackedProduct.product.label}
           className="o-accordion__title__text"
         />
 
@@ -121,7 +121,7 @@ const Accordion = ({
             <>
               <ConsumptionsChart
                 className="o-accordion__content__chart"
-                data={consumptions}
+                consumptions={consumptions}
                 frequency={currentFrequency}
               />
 
@@ -170,7 +170,6 @@ const Accordion = ({
                 >
                   <Icon name="play" size="large" color="white" />
                 </div>)}
-
             <Button
               className="o-accordion__content__footer__button -delete"
               variant="secondary"

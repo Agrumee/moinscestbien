@@ -6,6 +6,7 @@ import Icon from "../../atoms/Icon/Icon";
 interface ContentItem<T> {
   name: T;
   id: number;
+  label: string;
 }
 
 interface DropDownProps<T> {
@@ -109,7 +110,7 @@ export default function Dropdown<T extends string>({
         aria-label="Toggle dropdown"
       >
         <Paragraph
-          content={selectedItem ? selectedItem.name : label}
+          content={selectedItem ? selectedItem.label : label}
           size="big"
           color="white"
         />
@@ -127,7 +128,7 @@ export default function Dropdown<T extends string>({
             role="option"
             aria-selected={selectedItem?.id === item.id}
           >
-            {item.name}
+            {item.label}
           </div>
         ))}
       </div>
