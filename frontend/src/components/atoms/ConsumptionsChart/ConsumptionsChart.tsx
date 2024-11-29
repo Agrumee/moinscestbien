@@ -1,6 +1,6 @@
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   Tooltip,
@@ -8,138 +8,167 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import "./ConsumptionsChart.scss";
+import { Consumption } from "../../../types/consumption.model";
+import { Frequency } from "../../../types/tracked-product.model";
 
-const COLORS = [
-  "#F9BC60",
-  "#004643",
-  "#E16162",
-  "#DD614A",
-  "#3a86ff",
-  "#73a580",
-  "#f28482",
-];
 
 interface ConsumptionsChartProps {
-  className?: string;
-  data: Array<{ date: string; product: string; quantity: number }>;
-  frequency: "daily" | "weekly" | "monthly";
+  consumptions: Consumption[];
+  frequency: Frequency;
+  className: string;
 }
 
-const groupDataByPeriod = (
-  data: Array<{ date: string; product: string; quantity: number }>,
-  frequency: "daily" | "weekly" | "monthly"
-) => {
-  const groupedData: { [key: string]: { [key: string]: number } } = {};
 
-  data.forEach(({ date, product, quantity }) => {
-    const dateObj = new Date(date);
-    let key: string;
+// Infobulle
+const CustomTooltip = ({ active, payload }: any) => {
+  console.log(payload)
+  if (active && payload && payload.length) {
+    return (
+      <div
+        className="custom-tooltip"
+        style={{ background: "white", padding: "10px", border: "1px solid #ddd" }}
+      >
+        <p style={{ margin: 0, fontWeight: "bold" }}>{payload[0].payload.name}</p>
+        {payload.map((entry: any, index: number) => {
+
+          let symbol = entry.name.trim().split('(')?.[1].split(')')?.[0];
+          return (
+            <div key={`item-${index}`} style={{ marginTop: 5 }}>
+              <span style={{ color: entry.color }}>
+                {entry.name.trim().split('(')[0]}: {entry.value + ' ' + symbol}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+    );
+  }
+
+  return null;
+};
+
+// Composant principal du graphique
+const ConsumptionsChart = ({
+  consumptions,
+  frequency,
+  className,
+}: ConsumptionsChartProps) => {
+
+  // Formater une date en fonction de la fréquence (quotidienne, hebdomadaire, mensuelle)
+  const formatDate = (date: Date, frequency: Frequency): string => {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "2-digit",
+    };
+
+    if (frequency === "monthly") options.month = "long";
+
+    return date.toLocaleDateString("fr-FR", options);
+  };
+
+  const formatXAxisLabels = (date: Date, frequency: Frequency): string => {
+    let label = "";
 
     switch (frequency) {
       case "daily":
-        key = new Date(date).toLocaleDateString("fr-FR").slice(0, 5);
+        // Formater la date pour un affichage quotidien, ex : "24/11"
+        label = formatDate(date, frequency);
         break;
+
       case "weekly":
-        const startOfWeek = new Date(
-          dateObj.setDate(dateObj.getDate() - dateObj.getDay())
-        );
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6);
-        key = `${startOfWeek
-          .toLocaleDateString("fr-FR")
-          .slice(0, 5)}-${endOfWeek.toLocaleDateString("fr-FR").slice(0, 5)}`;
+        const weekStart = new Date(date);
+        weekStart.setDate(date.getDate() - date.getDay());
+
+        const weekEnd = new Date(weekStart);
+        weekEnd.setDate(weekStart.getDate() + 6);
+
+        // Construire le label au format : "24/11-30/11"
+        label = `${formatDate(weekStart, "daily")}-${formatDate(weekEnd, "daily")}`;
         break;
+
       case "monthly":
-        key = `${dateObj.getMonth() + 1}`; // Utilisation uniquement du mois
+        // Formater le mois en texte, ex : "Novembre"
+        label = date.toLocaleDateString("fr-FR", { month: "long" });
         break;
+
       default:
-        key = date;
+        label = "";
+        break;
     }
 
-    if (!groupedData[key]) {
-      groupedData[key] = {};
-    }
+    return label;
+  };
 
-    if (!groupedData[key][product]) {
-      groupedData[key][product] = 0;
-    }
 
-    groupedData[key][product] += quantity;
-  });
 
-  return Object.entries(groupedData).map(([key, values]) => ({
-    name: key,
-    ...values,
-  }));
-};
+  const groupConsumptions = (consumptions: Consumption[], frequency: Frequency) => {
+    // Recharts prend en paramètre un indexed type. L'index correspond à l'axe des abscisses
+    const grouped: { [key: string]: { name: string;[key: string]: number | string } } = {};
 
-const formatDate = (date: string, frequency: "daily" | "weekly" | "monthly") => {
-  const [month] = date.split("/").map(Number);
-  const months = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12",
-  ];
+    consumptions.forEach((consumption) => {
+      const date = new Date(consumption.date);
+      let label = formatXAxisLabels(date, frequency);
 
-  if (frequency === "monthly") {
-    return months[month - 1]; // Pas d'année dans le format mensuel
+      // On crée un groupe de data lorsque la période n'a pas encore été créée.
+      if (!grouped[label]) grouped[label] = { name: label };
+
+      // Identifier chaque produit avec son label et son unité, ex : "Shopping (€)"
+      const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
+
+      // Initialiser la valeur à 0 si ce produit n'est pas encore dans la période
+      if (!grouped[label][productKey]) grouped[label][productKey] = 0;
+
+      // Ajouter la quantité à la clé correspondante
+      grouped[label][productKey] = (grouped[label][productKey] as number) + consumption.quantity;
+    });
+
+    // Retourner les valeurs sous forme de tableau
+    return Object.values(grouped);
+  };
+
+  // Regrouper les consommations par période pour les données du graphique
+  const groupedData = groupConsumptions(consumptions, frequency);
+
+  // Extraire les clés des produits pour créer des lignes distinctes
+  const trackedProductKey =
+    `${consumptions[0].tracked_product?.product.label} (${consumptions[0].tracked_product?.unit.code})`;
+
+  // Si aucune donnée n'est disponible, afficher un message
+  if (!groupedData.length) {
+    return <p>Aucune consommation disponible pour la fréquence sélectionnée.</p>;
   }
 
-  // Pour daily et weekly
-  return date;
-};
-
-const getColor = (index: number) => COLORS[index % COLORS.length];
-
-export default function ConsumptionsChart({
-  className,
-  data,
-  frequency,
-}: ConsumptionsChartProps) {
-  const transformedData = groupDataByPeriod(data, frequency);
-
-  const products = Array.from(
-    new Set(
-      transformedData.flatMap((d) => Object.keys(d).filter((k) => k !== "name"))
-    )
-  );
-
+  // Rendu du graphique
   return (
-    <div className={`a-consumptions-chart ${className}`}>
-      <ResponsiveContainer width="100%" height={200}>
-        <BarChart
-          data={transformedData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        >
-          <XAxis
-            dataKey="name"
-            stroke="white"
-            tickFormatter={(value) => formatDate(value, frequency)}
+    <div className={className}>
+      <ResponsiveContainer width="100%" height={300}>
+        <LineChart data={groupedData} dataKey={'label'}>
+          {/* Axe des X : périodes */}
+          <XAxis dataKey="name" />
+          {/* Axe des Y : quantités */}
+          <YAxis />
+          {/* Tooltip personnalisé */}
+          <Tooltip content={<CustomTooltip />} />
+          {/* Légende pour identifier les lignes */}
+          <Legend />
+          {/* Créer une ligne pour chaque produit suivi */}
+
+          <Line
+            key={trackedProductKey}
+            type="monotone" // Ligne lisse
+            dataKey={trackedProductKey} // Clé correspondant à ce produit
+            name={trackedProductKey} // Nom affiché dans la légende et le Tooltip
+            stroke={'#f9bc60'} // Couleur de la ligne
+            strokeWidth={2} // Épaisseur de la ligne
+            dot={{ r: 4 }} // Taille des points sur la ligne
+            activeDot={{ r: 6 }} // Taille des points survolés
           />
-          <YAxis stroke="white" />
-          <Tooltip />
-          {products.length > 1 && (
-            <>
-              <Legend />
-              {products.map((product, index) => (
-                <Bar key={product} dataKey={product} fill={getColor(index)} />
-              ))}
-            </>
-          )}
-          {products.length === 1 && (
-            <Bar dataKey={products[0]} fill={getColor(0)} />
-          )}
-        </BarChart>
+
+
+        </LineChart>
       </ResponsiveContainer>
     </div>
   );
-}
+};
+
+export default ConsumptionsChart;

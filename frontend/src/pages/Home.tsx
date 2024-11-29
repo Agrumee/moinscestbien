@@ -1,25 +1,26 @@
 import { useEffect, useState } from "react";
 import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
+import { TrackedProduct } from "../types/tracked-product.model";
+import { ConsumptionsListByTrackedProductId } from "../types/consumption.model";
 
 const Home = () => {
-  const [trackedProducts, setTrackedProducts] = useState([]);
-  const [consumptions, setConsumptions] = useState<{ [key: number]: any[] }>(
+  const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
+  const [ConsumptionsListByTrackedProductId, setConsumptionsListByTrackedProductId] = useState<ConsumptionsListByTrackedProductId>(
     {}
   );
-  const [currentConsumptions, setCurrentConsumptions] = useState<{
+  const [currentConsumptionByTrackedProductId, setCurrentConsumptionByTrackedProductId] = useState<{
     [key: number]: number;
   }>({});
   const [date, setDate] = useState<string>("");
 
-  // Charger les produits suivis au chargement de la page
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const data = await fetchAPI("/tracked-products/", {
+        const response = await fetchAPI("/user/tracked-products/", {
           method: "GET",
         });
-        setTrackedProducts(data.data);
+        setTrackedProducts(response.data);
       } catch (error) {
         console.error("Get products failed", error);
         throw error;
@@ -31,22 +32,21 @@ const Home = () => {
 
   // Déclenchement de getConsumptions lorsque currentconsumption est mis à jour
   useEffect(() => {
-    for (let productId in currentConsumptions) {
-      if (currentConsumptions.hasOwnProperty(productId)) {
-        getConsumptions(Number(productId));
-      }
+    for (let productId in currentConsumptionByTrackedProductId) {
+      getConsumptions(Number(productId));
+
     }
-  }, [currentConsumptions]);
+  }, [currentConsumptionByTrackedProductId]);
 
   // Récupérer les consommations pour un produit lorsque l'accordéon est ouvert
   const getConsumptions = async (productId: number) => {
     try {
-      const data = await fetchAPI(`/consumptions/${productId}`, {
+      const response = await fetchAPI(`/consumptions/${productId}`, {
         method: "GET",
       });
-      setConsumptions((prev) => ({
-        ...prev,
-        [productId]: data.data,
+      setConsumptionsListByTrackedProductId((previousConsumptions) => ({
+        ...previousConsumptions,
+        [productId]: response.data,
       }));
     } catch (error) {
       console.error("Get consumptions failed", error);
@@ -55,14 +55,14 @@ const Home = () => {
   };
 
   //Récupération de la date à updater
-  const handleDateChange = async (productId: number, date: string) => {
+  const handleDateChange = async (trackedProductId: number, date: string) => {
     try {
-      const data = await fetchAPI(`/consumption/${productId}/${date}/`, {
+      const data = await fetchAPI(`/consumption/${trackedProductId}/${date}/`, {
         method: "GET",
       });
-      setCurrentConsumptions((prev) => ({
+      setCurrentConsumptionByTrackedProductId((prev) => ({
         ...prev,
-        [productId]: data.data.quantity,
+        [trackedProductId]: data.data.quantity,
       }));
       setDate(date);
     } catch (error) {
@@ -73,12 +73,12 @@ const Home = () => {
 
   // maj des données de consommation en fonction d'une date
   const handleUpdateConsumption = async (
-    productId: number,
+    trackedProductId: number,
     date: string,
     quantity: number
   ) => {
     try {
-      await fetchAPI(`/consumption/${productId}/add-consumption/`, {
+      const response = await fetchAPI(`/consumption/${trackedProductId}/add-consumption/`, {
         method: "POST",
         body: { date: date, quantity: quantity },
         headers: {
@@ -86,16 +86,9 @@ const Home = () => {
         },
       });
 
-      const updatedConsumptionData = await fetchAPI(
-        `/consumption/${productId}/${date}/`,
-        {
-          method: "GET",
-        }
-      );
-
-      setCurrentConsumptions((prev) => ({
+      setCurrentConsumptionByTrackedProductId((prev) => ({
         ...prev,
-        [productId]: updatedConsumptionData.data.quantity,
+        [trackedProductId]: response.data.quantity,
       }));
     } catch (error) {
       console.error("Update consumption failed", error);
@@ -104,19 +97,18 @@ const Home = () => {
 
   return (
     <div>
-      {trackedProducts.map((trackedProduct: any) => (
+      {trackedProducts.map((trackedProduct: TrackedProduct) => (
         <Accordion
-          key={trackedProduct.id}
           trackedProduct={trackedProduct}
-          consumptions={consumptions[trackedProduct.product.id] || []}
+          consumptions={ConsumptionsListByTrackedProductId[trackedProduct.id] || []}
           currentConsumption={
-            currentConsumptions[trackedProduct.product.id] || 0
+            currentConsumptionByTrackedProductId[trackedProduct.id] || 0
           }
           onDateChange={(date) =>
-            handleDateChange(trackedProduct.product.id, date)
+            handleDateChange(trackedProduct.id, date)
           }
           onUpdateConsumption={(quantity) =>
-            handleUpdateConsumption(trackedProduct.product.id, date, quantity)
+            handleUpdateConsumption(trackedProduct.id, date, quantity)
           }
           frequency={trackedProduct.tracking_frequency.name}
         />

@@ -22,6 +22,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100)),
+                ("label", models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(
@@ -37,6 +38,8 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100)),
+                ("label", models.CharField(max_length=100)),
+                ("code", models.CharField(max_length=24)),
             ],
         ),
         migrations.CreateModel(
@@ -52,6 +55,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 ("name", models.CharField(max_length=100)),
+                ("label", models.CharField(max_length=100)),
                 (
                     "motivations",
                     models.ManyToManyField(

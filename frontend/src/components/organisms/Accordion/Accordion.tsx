@@ -9,12 +9,14 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
 import fetchAPI from "../../../utils/fetch";
+import { Frequency, TrackedProduct } from "../../../types/tracked-product.model";
+import { Consumption } from "../../../types/consumption.model";
 
 interface AccordionProps {
-  trackedProduct: any;
-  consumptions: Array<{ date: string; product: string; quantity: number }>;
-  frequency: "daily" | "weekly" | "monthly";
+  trackedProduct: TrackedProduct;
+  consumptions: Consumption[];
   currentConsumption: number;
+  frequency: Frequency;
   onDateChange: (date: string) => void;
   onUpdateConsumption: (quantity: number) => void;
 }
@@ -30,7 +32,7 @@ const Accordion = ({
   const [isActive, setIsActive] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentFrequency, setCurrentFrequency] = useState<
-    "daily" | "weekly" | "monthly"
+    Frequency
   >(frequency);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -54,14 +56,14 @@ const Accordion = ({
     onUpdateConsumption(currentConsumption + value);
   };
 
-  const pauseTracking = async (trackedProductId: string) => {
+  const pauseTracking = async (trackedProductId: number) => {
     await fetchAPI(`/user/products/${trackedProductId}/pause/`, {
       method: "PATCH",
     });
     setIsPaused(true);
   };
 
-  const unpauseTracking = async (trackedProductId: string) => {
+  const unpauseTracking = async (trackedProductId: number) => {
     await fetchAPI(`/user/products/${trackedProductId}/unpause/`, {
       method: "PATCH",
     });
@@ -69,19 +71,19 @@ const Accordion = ({
   };
 
   return (
-    <div className="o-accordion">
+    <div className="o-accordion" key={trackedProduct.id}>
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => {
           setIsActive(!isActive);
         }}
       >
-          <Heading
-            level={2}
-            color="white"
-            content={trackedProduct.product.name.toUpperCase()}
-            className="o-accordion__title__text"
-          />
+        <Heading
+          level={2}
+          color="white"
+          content={trackedProduct.product.label}
+          className="o-accordion__title__text"
+        />
 
         <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
       </div>
@@ -119,7 +121,7 @@ const Accordion = ({
             <>
               <ConsumptionsChart
                 className="o-accordion__content__chart"
-                data={consumptions}
+                consumptions={consumptions}
                 frequency={currentFrequency}
               />
 
@@ -154,19 +156,19 @@ const Accordion = ({
 
           <div className="o-accordion__content__footer">
             {!isPaused ? (
-            <div
-              className="o-accordion__content__footer__button -pause"
-              onClick={() => pauseTracking(trackedProduct.id)}
-            >
-              <Icon name="pause" size="tiny" />
-            </div>)
-            : (
-            <div
-              className="o-accordion__content__footer__button -play"
-              onClick={() => unpauseTracking(trackedProduct.id)}
-            >
-              <Icon name="play" size="large" color="white" />
-            </div>)}
+              <div
+                className="o-accordion__content__footer__button -pause"
+                onClick={() => pauseTracking(trackedProduct.id)}
+              >
+                <Icon name="pause" size="tiny" />
+              </div>)
+              : (
+                <div
+                  className="o-accordion__content__footer__button -play"
+                  onClick={() => unpauseTracking(trackedProduct.id)}
+                >
+                  <Icon name="play" size="large" color="white" />
+                </div>)}
             <div
               className="o-accordion__content__footer__button -delete"
             >

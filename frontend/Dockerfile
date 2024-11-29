@@ -1,4 +1,4 @@
-FROM node:20.9.0
+FROM node:22.11.0
 WORKDIR /frontend
 COPY frontend/package*.json ./
 RUN npm install

@@ -28,7 +28,6 @@ Consumption = apps.get_model("consumptions", "Consumption")
 
 class TrackedProductsListTest(TestCase):
     def setUp(self):
-        # Test 1 utilisateur 1 liste de produits suivis
         self.user = User.objects.create_user(
             email="user@example.com",
             username="user@example.com",
@@ -39,7 +38,7 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="coffee"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="cups"),
                 motivation=Motivation.objects.get(name="health"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
                 start_date=date.today() - relativedelta(months=4),
@@ -48,7 +47,7 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="alcohol"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="glasses"),
                 motivation=Motivation.objects.get(name="health"),
                 tracking_frequency=TrackingFrequency.objects.get(name="monthly"),
                 start_date=date.today() - relativedelta(months=1),
@@ -57,13 +56,22 @@ class TrackedProductsListTest(TestCase):
             TrackedProduct.objects.create(
                 user=self.user,
                 product=Product.objects.get(name="car"),
-                unit=Unit.objects.get(name="count"),
+                unit=Unit.objects.get(name="kilometers"),
                 motivation=Motivation.objects.get(name="ecology"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
                 start_date=date.today()
                 - relativedelta(months=4)
                 - relativedelta(days=4),
                 end_date=None,
+            ),
+            TrackedProduct.objects.create(
+                user=self.user,
+                product=Product.objects.get(name="bets"),
+                unit=Unit.objects.get(name="euros"),
+                motivation=Motivation.objects.get(name="money"),
+                tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+                start_date=date.today() - relativedelta(days=4),
+                end_date=date.today() - relativedelta(days=2),
             ),
         ]
 
@@ -99,7 +107,7 @@ class ApiConsumptionsListByProductTest(TestCase):
         self.trackedProduct = TrackedProduct.objects.create(
             user=self.user,
             product=Product.objects.get(name="coffee"),
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
@@ -125,7 +133,7 @@ class ApiConsumptionsListByProductTest(TestCase):
 
         self.client = APIClient()
         self.consumptions_list_url = reverse(
-            "consumptions-list-by-product", args=[self.trackedProduct.product.id]
+            "consumptions-list-by-product", args=[self.trackedProduct.id]
         )
         self.client.login(username="user@example.com", password="password123")
 
@@ -142,103 +150,96 @@ class ApiConsumptionsListByProductTest(TestCase):
 
 class ApiAddConsumption(TestCase):
     def setUp(self):
+        self.product = Product.objects.get(name="coffee")
         self.user = User.objects.create_user(
             email="user@example.com",
             username="user@example.com",
             password="password123",
         )
-        self.product = Product.objects.get(name="coffee")
-        self.client = APIClient()
-        self.client.login(username="user@example.com", password="password123")
-        self.add_consumption_url = reverse("add-consumption", args=[self.product.id])
-        self.payload = {"date": date.today().isoformat(), "quantity": 5}
 
-    def test_user_cannot_update_consumptions_of_untracked_products(self):
-        response = self.client.post(
-            self.add_consumption_url, data=self.payload, format="json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    def test_user_can_update_consumptions_of_today(self):
-        self.trackedProduct = TrackedProduct.objects.create(
+        self.user_tracked_product = TrackedProduct.objects.create(
             user=self.user,
             product=self.product,
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
-            end_date=None,
         )
+
+        self.other_user = User.objects.create_user(
+            email="other_user@example.com",
+            username="other_user@example.com",
+            password="password123",
+        )
+
+        self.other_user_tracked_product = TrackedProduct.objects.create(
+            user=self.other_user,
+            product=self.product,
+            unit=Unit.objects.get(name="cups"),
+            motivation=Motivation.objects.get(name="health"),
+            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
+            start_date=date.today() - relativedelta(months=4),
+        )
+
+        self.client = APIClient()
+        self.client.login(username="user@example.com", password="password123")
+        self.add_user_consumption_url = reverse(
+            "add-consumption", args=[self.user_tracked_product.id]
+        )
+        self.add_other_user_consumption_url = reverse(
+            "add-consumption", args=[self.other_user_tracked_product.id]
+        )
+        self.payload = {"date": date.today().isoformat(), "quantity": 5}
+
+    def test_user_cannot_update_consumptions_of_product_tracked_by_another_user(self):
         response = self.client.post(
-            self.add_consumption_url, data=self.payload, format="json"
+            self.add_other_user_consumption_url, data=self.payload, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_user_can_update_consumptions_of_today(self):
+        response = self.client.post(
+            self.add_user_consumption_url, data=self.payload, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertTrue(
             Consumption.objects.filter(
-                tracked_product=self.trackedProduct, date=self.payload["date"]
+                tracked_product=self.user_tracked_product, date=self.payload["date"]
             ).exists()
         )
 
     def test_user_can_update_consumptions_of_past(self):
         past_date = date.today() - relativedelta(months=2)
         self.payload = {"date": past_date.isoformat(), "quantity": 5}
-        self.trackedProduct = TrackedProduct.objects.create(
-            user=self.user,
-            product=self.product,
-            unit=Unit.objects.get(name="count"),
-            motivation=Motivation.objects.get(name="health"),
-            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
-            start_date=date.today() - relativedelta(months=4),
-            end_date=None,
-        )
         response = self.client.post(
-            self.add_consumption_url, data=self.payload, format="json"
+            self.add_user_consumption_url, data=self.payload, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         self.assertTrue(
             Consumption.objects.filter(
-                tracked_product=self.trackedProduct, date=self.payload["date"]
+                tracked_product=self.user_tracked_product, date=self.payload["date"]
             ).exists()
         )
 
     def test_user_cannot_update_consumptions_of_futur(self):
         future_date = date.today() + relativedelta(months=2)
         self.payload = {"date": future_date.isoformat(), "quantity": 5}
-        self.trackedProduct = TrackedProduct.objects.create(
-            user=self.user,
-            product=self.product,
-            unit=Unit.objects.get(name="count"),
-            motivation=Motivation.objects.get(name="health"),
-            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
-            start_date=date.today() - relativedelta(months=4),
-            end_date=None,
-        )
         response = self.client.post(
-            self.add_consumption_url, data=self.payload, format="json"
+            self.add_user_consumption_url, data=self.payload, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_cannot_update_consumptions_outside_tracking_period(self):
-        past_date = date.today() + relativedelta(months=2)
+        past_date = date.today() - relativedelta(months=6)
         self.payload = {"date": past_date.isoformat(), "quantity": 5}
-        self.trackedProduct = TrackedProduct.objects.create(
-            user=self.user,
-            product=self.product,
-            unit=Unit.objects.get(name="count"),
-            motivation=Motivation.objects.get(name="health"),
-            tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
-            start_date=date.today() - relativedelta(months=1),
-            end_date=None,
-        )
         response = self.client.post(
-            self.add_consumption_url, data=self.payload, format="json"
+            self.add_user_consumption_url, data=self.payload, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-# En tant qu'utilisateur, je peux supprimer le suivi d'un produit.
 class DeleteTrackedProductTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
@@ -249,7 +250,7 @@ class DeleteTrackedProductTest(TestCase):
         self.trackedProduct = TrackedProduct.objects.create(
             user=self.user,
             product=Product.objects.get(name="coffee"),
-            unit=Unit.objects.get(name="count"),
+            unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
             start_date=date.today() - relativedelta(months=4),
@@ -267,7 +268,7 @@ class DeleteTrackedProductTest(TestCase):
         self.assertEqual(TrackedProduct.objects.count(), 0)
 
 
-class ApiAddProductTest(TestCase):
+class ApiCreateTrackedProductTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -276,7 +277,7 @@ class ApiAddProductTest(TestCase):
         )
 
         self.product = Product.objects.create(name="coffee")
-        self.unit = Unit.objects.create(name="count")
+        self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
 
@@ -300,9 +301,30 @@ class ApiAddProductTest(TestCase):
         self.assertEqual(TrackedProduct.objects.count(), 1)
         self.assertEqual(TrackedProduct.objects.first().product, self.product)
 
-    def test_user_cannot_add_product_already_assigned(self):
-        self.client.post(self.add_product_url)
+    def test_user_can_add_untracked_product_anymore(self):
+        self.tracked_product = TrackedProduct.objects.create(
+            user=self.user,
+            product=self.product,
+            unit=self.unit,
+            motivation=self.motivation,
+            tracking_frequency=self.tracking_frequency,
+            end_date=date.today() - relativedelta(months=4),
+        )
+        response = self.client.post(self.add_product_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("success", response.data)
+        self.assertEqual(TrackedProduct.objects.count(), 1)
+        self.assertEqual(TrackedProduct.objects.first().product, self.product)
 
+    def test_user_cannot_add_product_already_assigned(self):
+        self.tracked_product = TrackedProduct.objects.create(
+            user=self.user,
+            product=self.product,
+            unit=self.unit,
+            motivation=self.motivation,
+            tracking_frequency=self.tracking_frequency,
+            end_date=None,
+        )
         response = self.client.post(self.add_product_url)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("already assigned", response.data["message"])
@@ -317,7 +339,7 @@ class ApiPauseTrackedProductTest(TestCase):
         )
 
         self.product = Product.objects.create(name="coffee")
-        self.unit = Unit.objects.create(name="count")
+        self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
 
@@ -354,7 +376,7 @@ class ApiUnpauseTrackedProductTest(TestCase):
         )
 
         self.product = Product.objects.create(name="coffee")
-        self.unit = Unit.objects.create(name="count")
+        self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
 

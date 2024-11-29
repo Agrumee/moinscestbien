@@ -1,10 +1,11 @@
 import Calendar from "react-calendar";
 import "./CalendarComponent.scss";
+import { Value } from "react-calendar/dist/cjs/shared/types";
 
 interface CalendarComponentProps {
-  startDate: string;
+  startDate: Date;
   value: Date;
-  onDateChange: (newValue: Date | null | [Date | null, Date | null]) => void;
+  onDateChange: (newValue: Date) => void;
 }
 
 const CalendarComponent = ({
@@ -23,12 +24,18 @@ const CalendarComponent = ({
     return date < start || date > today;
   };
 
+  const handleOnChangeDate = (value: Value) => {
+    if (value && !Array.isArray(value)) {
+      onDateChange(value as Date); // Forward the `value` as `Date`
+    }
+  };
+
   return (
     <div className="a-calendar">
       <Calendar
         value={value}
         tileDisabled={disableDates}
-        onChange={onDateChange}
+        onChange={handleOnChangeDate}
       />
     </div>
   );

@@ -1,44 +1,36 @@
 from rest_framework import serializers
-from .models import Product, Unit, Consumption, TrackedProduct, TrackingFrequency
+from .models import (
+    Product,
+    Unit,
+    Motivation,
+    Consumption,
+    TrackedProduct,
+    TrackingFrequency,
+)
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ["id", "name"]
+        fields = ["id", "name", "label"]
 
 
 class UnitSerializer(serializers.ModelSerializer):
     class Meta:
         model = Unit
-        fields = ["id", "name"]
+        fields = ["id", "name", "label", "code"]
 
 
 class MotivationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Unit
-        fields = ["id", "name"]
+        model = Motivation
+        fields = ["id", "name", "label"]
 
 
 class TrackingFrequencySerializer(serializers.ModelSerializer):
     class Meta:
         model = TrackingFrequency
-        fields = ["id", "name"]
-
-
-class ConsumptionSerializer(serializers.ModelSerializer):
-    product = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Consumption
-        fields = [
-            "quantity",
-            "date",
-            "product",
-        ]
-
-    def get_product(self, obj):
-        return obj.tracked_product.product.name
+        fields = ["id", "name", "label"]
 
 
 class TrackedProductSerializer(serializers.ModelSerializer):
@@ -57,4 +49,16 @@ class TrackedProductSerializer(serializers.ModelSerializer):
             "tracking_frequency",
             "start_date",
             "end_date",
+        ]
+
+
+class ConsumptionSerializer(serializers.ModelSerializer):
+    tracked_product = TrackedProductSerializer()
+
+    class Meta:
+        model = Consumption
+        fields = [
+            "quantity",
+            "date",
+            "tracked_product",
         ]
