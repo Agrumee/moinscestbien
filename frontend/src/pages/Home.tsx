@@ -3,6 +3,7 @@ import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
 import { TrackedProduct } from "../types/tracked-product.model";
 import { ConsumptionsListByTrackedProductId } from "../types/consumption.model";
+import "./Home.scss"
 
 const Home = () => {
   const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
@@ -34,7 +35,6 @@ const Home = () => {
   useEffect(() => {
     for (let productId in currentConsumptionByTrackedProductId) {
       getConsumptions(Number(productId));
-
     }
   }, [currentConsumptionByTrackedProductId]);
 
@@ -96,7 +96,7 @@ const Home = () => {
   };
 
   return (
-    <div>
+    <div className="p-home">
       {trackedProducts.map((trackedProduct: TrackedProduct) => (
         <Accordion
           trackedProduct={trackedProduct}

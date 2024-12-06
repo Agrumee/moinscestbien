@@ -27,12 +27,11 @@ const LayoutManager: React.FC = () => {
         }
       } else {
         if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
-          console.log(location.pathname);
           navigate('/home');
         }
       }
     };
-  
+
     checkAuth();
   }, [location.pathname, navigate, isAuthenticated, authenticate]);
 
