@@ -11,6 +11,7 @@ import WelcomingPage from "./pages/WelcomingPage/WelcomingPage";
 import Register from "./pages/Auth/Register/Register";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import PausedTracking from "./pages/PausedTracking";
 import "./App.css";
 
 const LayoutManager: React.FC = () => {
@@ -26,13 +27,12 @@ const LayoutManager: React.FC = () => {
           navigate('/');
         }
       } else {
-        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
-          console.log(location.pathname);
+        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking'].includes(location.pathname)) {
           navigate('/home');
         }
       }
     };
-  
+
     checkAuth();
   }, [location.pathname, navigate, isAuthenticated, authenticate]);
 
@@ -40,6 +40,7 @@ const LayoutManager: React.FC = () => {
     <Logged>
       <Routes>
         <Route path="/home" element={<Home />} />
+        <Route path="/pausedtracking" element={<PausedTracking />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/addnew" element={<AddNew />} />
         <Route path="/changepassword" element={<ChangePassword />} />

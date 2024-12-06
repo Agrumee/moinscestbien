@@ -35,7 +35,6 @@ const AddNew = () => {
           method: "POST",
         }
       );
-      console.log("Product added successfully:", data);
       navigate("/");
     } catch (error) {
       console.error("Error during add new product", error);

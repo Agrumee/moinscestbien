@@ -29,7 +29,6 @@ const fetchAPI = async (
 
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
-      //faire l'appel refresh token ici
     }
 
     const data = await response.json();

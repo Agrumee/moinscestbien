@@ -14,6 +14,7 @@ from .views import (
     ApiDeleteTrackedProduct,
     ApiPauseTrackedProduct,
     ApiUnpauseTrackedProduct,
+    ApiPausedTrackedProductsList,
 )
 
 urlpatterns = [
@@ -34,6 +35,11 @@ urlpatterns = [
         "user/tracked-products/",
         ApiTrackedProductsList.as_view(),
         name="user-products-list",
+    ),
+    path(
+        "user/tracked-products/paused/",
+        ApiPausedTrackedProductsList.as_view(),
+        name="user-paused-products-list",
     ),
     # Ici il vaut mieux passer directement l'id du tracked-product car on met à jour la consommation sur un tracked product et non sur un product directement
     path(
@@ -61,7 +67,7 @@ urlpatterns = [
     # API non utilisée, pourrait être utile dans un futur déploiement de l'app mais devrait être réécrite car l'uuid de l'user n'est pas utile
     # path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
     path(
-        "users/products/<int:trackedProductId>/delete/",
+        "user/products/<int:trackedProductId>/delete/",
         ApiDeleteTrackedProduct.as_view(),
         name="delete-tracked-product",
     ),

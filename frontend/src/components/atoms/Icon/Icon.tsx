@@ -19,7 +19,7 @@ export default function Icon({
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
-      className={`a-icon ${size} ${color} ${animation}`}
+      className={`a-icon ${size} ${color} ${animation} ${name}`}
       onClick={onClick}
     >
       <use xlinkHref={`/spritemap.svg#${name}`} />

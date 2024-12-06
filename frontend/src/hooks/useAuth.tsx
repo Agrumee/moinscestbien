@@ -83,7 +83,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "POST",
       });
 
-      console.log("User logged out successfully.");
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -95,7 +94,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "DELETE",
       });
 
-      console.log("User account deleted successfully.");
     } catch (error) {
       console.error("Error during account deletion:", error);
     }
@@ -108,7 +106,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         body: { password, confirmedPassword }
       });
 
-      console.log("Password changed successfully.");
     } catch (error) {
       console.error("Error during password change:", error);
     }
