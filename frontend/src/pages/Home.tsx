@@ -32,14 +32,12 @@ const Home = () => {
     getProducts();
   }, []);
 
-  // Déclenchement de getConsumptions lorsque currentconsumption est mis à jour
   useEffect(() => {
     for (let productId in currentConsumptionByTrackedProductId) {
       getConsumptions(Number(productId));
     }
   }, [currentConsumptionByTrackedProductId]);
 
-  // Récupérer les consommations pour un produit lorsque l'accordéon est ouvert
   const getConsumptions = async (productId: number) => {
     try {
       const response = await fetchAPI(`/consumptions/${productId}`, {
@@ -51,11 +49,9 @@ const Home = () => {
       }));
     } catch (error) {
       console.error("Get consumptions failed", error);
-      throw error;
     }
   };
 
-  //Récupération de la date à updater
   const handleDateChange = async (trackedProductId: number, date: string) => {
     try {
       const data = await fetchAPI(`/consumption/${trackedProductId}/${date}/`, {
@@ -68,11 +64,9 @@ const Home = () => {
       setDate(date);
     } catch (error) {
       console.error("Get consumption by date failed", error);
-      throw error;
     }
   };
 
-  // maj des données de consommation en fonction d'une date
   const handleUpdateConsumption = async (
     trackedProductId: number,
     date: string,
@@ -96,26 +90,51 @@ const Home = () => {
     }
   };
 
+  const handleDeleteTracking = async (trackedProductId: number) => {
+    try {
+      await fetchAPI(`/user/products/${trackedProductId}/delete/`, {
+        method: "DELETE",
+      });
+      setTrackedProducts((prev) =>
+        prev.filter((product) => product.id !== trackedProductId)
+      );
+    } catch (error) {
+      console.error("Delete tracked product failed", error);
+    }
+  };
+
+  const handlePauseTracking = async (trackedProductId: number) => {
+    try {
+      await fetchAPI(`/user/products/${trackedProductId}/pause/`, {
+        method: "PATCH",
+      });
+      setTrackedProducts((prev) =>
+      prev.filter((product) => product.id !== trackedProductId)
+    );
+    } catch (error) {
+      console.error("Pause tracked product failed", error);
+    }
+  };
+
   return (
     <div className="p-home">
       {trackedProducts.map((trackedProduct: TrackedProduct) => (
         <Accordion
+          key={trackedProduct.id}
           trackedProduct={trackedProduct}
           consumptions={ConsumptionsListByTrackedProductId[trackedProduct.id] || []}
-          currentConsumption={
-            currentConsumptionByTrackedProductId[trackedProduct.id] || 0
-          }
-          onDateChange={(date) =>
-            handleDateChange(trackedProduct.id, date)
-          }
+          currentConsumption={currentConsumptionByTrackedProductId[trackedProduct.id] || 0}
+          onDateChange={(date) => handleDateChange(trackedProduct.id, date)}
           onUpdateConsumption={(quantity) =>
             handleUpdateConsumption(trackedProduct.id, date, quantity)
           }
           frequency={trackedProduct.tracking_frequency.name}
+          deleteTracking={() => handleDeleteTracking(trackedProduct.id)}
+          pauseTracking={() => handlePauseTracking(trackedProduct.id)}
         />
       ))}
     </div>
   );
-}
+};
 
 export default Home;

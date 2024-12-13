@@ -271,6 +271,47 @@ class ApiTrackedProductsList(APIView):
             )
 
 
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiPausedTrackedProductsList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            tracked_products = user.tracked_products.filter(
+                end_date__isnull=False
+            ).order_by("start_date")
+            serializer = TrackedProductSerializer(tracked_products, many=True)
+            if tracked_products:
+                return Response(
+                    {
+                        "success": True,
+                        "message": "Products retrieved successfully.",
+                        "data": serializer.data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"success": False, "message": "No products found.", "data": []},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        except User.DoesNotExist:
+            return Response(
+                {"success": False, "message": "No user found.", "data": []},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": f"An error occurred: {str(e)}",
+                    "data": [],
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
 @method_decorator(csrf_protect, name="dispatch")
 class ApiAddConsumption(APIView):
     permission_classes = (IsAuthenticated,)

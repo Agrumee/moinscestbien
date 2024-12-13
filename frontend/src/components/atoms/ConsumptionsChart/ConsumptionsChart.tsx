@@ -100,28 +100,64 @@ const ConsumptionsChart = ({
 
 
 
-  const groupConsumptions = (consumptions: Consumption[], frequency: Frequency) => {
-    // Recharts prend en paramètre un indexed type. L'index correspond à l'axe des abscisses
-    const grouped: { [key: string]: { name: string;[key: string]: number | string } } = {};
-
-    consumptions.forEach((consumption) => {
-      const date = new Date(consumption.date);
-      let label = formatXAxisLabels(date, frequency);
-
-      // On crée un groupe de data lorsque la période n'a pas encore été créée.
-      if (!grouped[label]) grouped[label] = { name: label };
-
-      // Identifier chaque produit avec son label et son unité, ex : "Shopping (€)"
-      const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
-
-      // Initialiser la valeur à 0 si ce produit n'est pas encore dans la période
-      if (!grouped[label][productKey]) grouped[label][productKey] = 0;
-
-      // Ajouter la quantité à la clé correspondante
-      grouped[label][productKey] = (grouped[label][productKey] as number) + consumption.quantity;
+  const groupConsumptions = (
+    consumptions: Consumption[],
+    frequency: Frequency
+  ) => {
+    const grouped: { [key: string]: { name: string; [key: string]: number | string } } = {};
+  
+    // Obtenir la plage de dates
+    const dates = consumptions.map(c => new Date(c.date));
+    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+  
+    // Générer toutes les périodes possibles
+    const allPeriods: string[] = [];
+    let currentDate = new Date(minDate);
+  
+    while (currentDate <= maxDate) {
+      const label = formatXAxisLabels(currentDate, frequency);
+      allPeriods.push(label);
+  
+      // Avancer selon la fréquence
+      switch (frequency) {
+        case "daily":
+          currentDate.setDate(currentDate.getDate() + 1);
+          break;
+        case "weekly":
+          currentDate.setDate(currentDate.getDate() + 7);
+          break;
+        case "monthly":
+          currentDate.setMonth(currentDate.getMonth() + 1);
+          break;
+        default:
+          break;
+      }
+    }
+  
+    // Remplir les périodes avec les consommations
+    allPeriods.forEach(label => {
+      if (!grouped[label]) grouped[label] = { name: label }; // Initialiser chaque période
+  
+      consumptions.forEach(consumption => {
+        const date = new Date(consumption.date);
+        const periodLabel = formatXAxisLabels(date, frequency);
+  
+        if (periodLabel === label) {
+          const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
+  
+          if (!grouped[label][productKey]) grouped[label][productKey] = 0;
+          grouped[label][productKey] = (grouped[label][productKey] as number) + consumption.quantity;
+        }
+      });
+  
+      // Ajouter `0` pour tous les produits suivis si aucune consommation n'existe pour la période
+      consumptions.forEach(consumption => {
+        const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
+        if (!grouped[label][productKey]) grouped[label][productKey] = 0;
+      });
     });
-
-    // Retourner les valeurs sous forme de tableau
+  
     return Object.values(grouped);
   };
 
