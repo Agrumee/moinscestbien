@@ -1,4 +1,5 @@
 import { getCSRFCookie } from "./cookies";
+import APIError from "../types/apierror.models";
 
 const BASE_URL = "http://127.0.0.1:8000/api";
 
@@ -28,8 +29,9 @@ const fetchAPI = async (
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-      //faire l'appel refresh token ici
+
+      const errorData = await response.json().catch(() => ({}));
+      throw new APIError(`HTTP error! Status: ${response.status}`, response.status, errorData);
     }
 
     const data = await response.json();
