@@ -17,7 +17,8 @@ export default function Toast({ content, status, is_called }: ToastProps) {
       setAnimation("slide-in");
       const timeout = setTimeout(() => {
         setAnimation("slide-out");
-      }, 3000); 
+        setTimeout(() => setAnimation(""), 500);
+      }, 3000);
 
       return () => {
         clearTimeout(timeout);
@@ -25,7 +26,14 @@ export default function Toast({ content, status, is_called }: ToastProps) {
     } else {
       setAnimation("");
     }
-  }, [is_called]);
+  }, [content, is_called]);
+
+  useEffect(() => {
+    if (content) {
+      setAnimation("slide-in");
+    }
+  }, [content]);
+
 
   return (
     <div className={`a-toast ${status} ${animation}`}>

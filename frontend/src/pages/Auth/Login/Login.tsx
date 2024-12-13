@@ -6,6 +6,9 @@ import Paragraph from "../../../components/atoms/Paragraph/Paragraph";
 import { useAuth } from "../../../hooks/useAuth";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+//gestion erreurs
+import Toast from "../../../components/molecules/Toast/Toast";
+import APIError from "../../../types/apierror.models";
 import "./Login.scss";
 
 const Login = () => {
@@ -14,26 +17,47 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const [showErrorToast, setShowErrorToast] = useState<boolean>(false)
+  const [error, setError] = useState<string>("")
+
+  const handleShowToast = (message: string) => {
+    setShowErrorToast(false);
+    setTimeout(() => {
+      setError(message);
+      setShowErrorToast(true);
+    }, 100);
+  };
+
   const handleLogin = async () => {
     try {
       await login(email, password);
       navigate("/home");
     } catch (error) {
-      throw error;
+      if (error instanceof APIError) {
+        if (error.data?.message) {
+          handleShowToast(error.data.message);
+        } else {
+          console.error("Unexpected error:", error);
+          handleShowToast("An unexpected error occurred.");
+        }
+      } else {
+        console.error("Non-API error:", error);
+        handleShowToast("An unexpected error occurred.");
+      }
     }
-  };
-
+  }
   return (
     <div className="p-login">
-      <Heading className="title" level={1} content="CONNEXION" color="white"/>
-      <Label content="Adresse e-mail" color="white"/>
+      <Toast is_called={showErrorToast} content={error} status={"fail"} />
+      <Heading className="title" level={1} content="CONNEXION" color="white" />
+      <Label content="Adresse e-mail" color="white" />
       <Input
         className="large-input"
         placeholder="exemple@exemple.com"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
-      <Label content="Mot de passe" color="white"/>
+      <Label content="Mot de passe" color="white" />
       <Input
         className="large-input"
         placeholder="**********"
@@ -42,7 +66,7 @@ const Login = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <Button
-      className="loginButton"
+        className="loginButton"
         variant="primary"
         content={"Se connecter"}
         onClick={handleLogin}
@@ -50,7 +74,7 @@ const Login = () => {
       <div className="notRegistered">
         <Paragraph content="Vous n'avez pas encore de compte ?" size="medium" color="white" />
         <a href="/register">
-          <Paragraph content="Créer un compte" color="white"/>
+          <Paragraph content="Créer un compte" color="white" />
         </a>
       </div>
     </div>
