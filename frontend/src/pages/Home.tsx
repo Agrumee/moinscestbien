@@ -15,6 +15,7 @@ const Home = () => {
   }>({});
   const [date, setDate] = useState<string>("");
 
+
   useEffect(() => {
     const getProducts = async () => {
       try {

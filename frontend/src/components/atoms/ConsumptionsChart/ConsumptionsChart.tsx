@@ -21,7 +21,6 @@ interface ConsumptionsChartProps {
 
 // Infobulle
 const CustomTooltip = ({ active, payload }: any) => {
-  console.log(payload)
   if (active && payload && payload.length) {
     return (
       <div

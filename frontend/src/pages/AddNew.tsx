@@ -29,13 +29,12 @@ const AddNew = () => {
 
   const handleAddNewProduct = async () => {
     try {
-      const data = await fetchAPI(
+      await fetchAPI(
         `/user/tracked-product/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation?.id}/${currentTrackingFrequency?.id}/create/`,
         {
           method: "POST",
         }
       );
-      console.log("Product added successfully:", data);
       navigate("/");
     } catch (error) {
       console.error("Error during add new product", error);
