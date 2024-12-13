@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Icon from "../../atoms/Icon/Icon";
 import "./Toast.scss";
@@ -17,7 +17,7 @@ export default function Toast({ content, status, is_called }: ToastProps) {
       setAnimation("slide-in");
       const timeout = setTimeout(() => {
         setAnimation("slide-out");
-      }, 3000); 
+      }, 3000);
 
       return () => {
         clearTimeout(timeout);

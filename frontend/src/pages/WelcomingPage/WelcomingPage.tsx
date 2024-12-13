@@ -1,5 +1,6 @@
 import Heading from "../../components/atoms/Heading/Heading";
 import Button from "../../components/atoms/Button/Button";
+import Logo from "../../components/atoms/Logo/Logo";
 import { useNavigate } from "react-router-dom";
 import "./WelcomingPage.scss";
 
@@ -16,6 +17,7 @@ const WelcomingPage = () => {
 
   return (
     <div className="p-welcomingpage">
+      <Logo />
       <Heading
         className="title"
         level={1}
