@@ -4,21 +4,30 @@
   width: 90%;
   display: flex;
   align-items: center;
-  position: initial;
-  top : -20rem;
+  position: absolute;
+  top: -1rem;
+  left: 5%;
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: all 0.5s ease-in-out;
 
   &.slide-in {
-    animation: slideIn 0.6s forwards;
+    opacity: 1;
+    transform: translateY(0);
+    top: 2rem; // Position finale
+
   }
 
   &.slide-out {
-    animation: slideOut 0.6s forwards;
+    opacity: 0;
+    transform: translateY(-100%);
   }
 
   &.fail {
     background-color: lighten($red, 25%);
     color: $red;
     border: 2px solid $red;
+
     .a-icon,
     .a-paragraph {
       color: $red;
@@ -28,10 +37,8 @@
       margin-left: 50px;
     }
 
-    svg {
-      path {
-        fill: $red;
-      }
+    svg path {
+      fill: $red;
     }
   }
 
@@ -93,7 +100,7 @@
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    transform: translateY(10rem);
     opacity: 1;
   }
 }

@@ -29,7 +29,7 @@ const AddNew = () => {
 
   const handleAddNewProduct = async () => {
     try {
-      const data = await fetchAPI(
+      await fetchAPI(
         `/user/tracked-product/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation?.id}/${currentTrackingFrequency?.id}/create/`,
         {
           method: "POST",

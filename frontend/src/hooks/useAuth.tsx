@@ -23,7 +23,7 @@ export const useAuth = () => {
 };
 
 interface AuthProviderProps {
-  children: ReactNode; 
+  children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -82,7 +82,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await fetchAPI("/logout/", {
         method: "POST",
       });
-
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -93,9 +92,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       await fetchAPI("/delete_account/", {
         method: "DELETE",
       });
-
     } catch (error) {
-      console.error("Error during account deletion:", error);
     }
   }
 
@@ -105,14 +102,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "PATCH",
         body: { password, confirmedPassword }
       });
-
     } catch (error) {
       console.error("Error during password change:", error);
     }
   }
 
   return (
-    <AuthContext.Provider value={{isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword }}>
+    <AuthContext.Provider value={{ isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword }}>
       {children}
     </AuthContext.Provider>
   );
