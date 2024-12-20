@@ -13,11 +13,15 @@
   .loginButton {
     align-self: center;
   }
+  .resetPassword{
+    text-align: center;
+  }
   .notRegistered {
-    display: inline-flex;
+    display: flex;
     align-self: center;
     align-items: center;
-    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
 
     a {
       text-decoration: none;

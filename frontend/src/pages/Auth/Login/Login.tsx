@@ -32,14 +32,24 @@ const Login = () => {
     }, 100);
   };
 
-  const handleResetPassword = async (email: string) => {
+  const handleSendEmailResetPassword = async (email: string) => {
     try {
       await fetchAPI("/password_reset/", {
         method: "POST", body: { email: email }
       })
       closeModal()
     } catch (error) {
-      console.error("Error during fetching products:", error);
+      if (error instanceof APIError) {
+        if (error.data?.message) {
+          handleShowToast(error.data.message);
+        } else {
+          console.error("Unexpected error:", error);
+          handleShowToast("An unexpected error occurred.");
+        }
+      } else {
+        console.error("Non-API error:", error);
+        handleShowToast("An unexpected error occurred.");
+      }
     }
   }
 
@@ -71,7 +81,7 @@ const Login = () => {
   return (
     <div className="p-login">
       {isModalOpen && (
-        <Modal message="Entrez votre adresse e-mail afin de recevoir un mail de réinitialisation de votre mot de passe :" onConfirm={() => handleResetPassword(emailToResetPassword)} onCancel={closeModal} input={emailToResetPassword} handleChange={(e) => setEmailToResetPassword(e.target.value)} />)}
+        <Modal message="Entrez votre adresse e-mail afin de recevoir un mail de réinitialisation de votre mot de passe :" onConfirm={() => handleSendEmailResetPassword(emailToResetPassword)} onCancel={closeModal} input={emailToResetPassword} handleChange={(e) => setEmailToResetPassword(e.target.value)} />)}
       <Toast is_called={showErrorToast} content={error} status={"fail"} />
       <Heading className="title" level={1} content="CONNEXION" color="white" />
       <Label content="Adresse e-mail" color="white" />
@@ -95,10 +105,8 @@ const Login = () => {
         content={"Se connecter"}
         onClick={handleLogin}
       />
-      <div>
-        <div onClick={openModal}>
-          <Paragraph content="Mot de passe oublié ?" color="white" />
-        </div>
+      <div className="resetPassword" onClick={openModal}>
+        <Paragraph content="Mot de passe oublié ?" color="white" />
       </div>
       <div className="notRegistered">
         <Paragraph content="Vous n'avez pas encore de compte ?" size="medium" color="white" />
