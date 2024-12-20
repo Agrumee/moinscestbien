@@ -1,18 +1,26 @@
+import { useState } from "react";
 import Button from "../../atoms/Button/Button";
-import "./Modal.scss";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
+import Input from "../../atoms/Input/Input";
+import "./Modal.scss";
 
 interface ModalProps {
   message: string;
+  input?: string;
+  handleChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onCancel: () => void;
   onConfirm: () => void;
 }
 
-export default function Modal({ message, onCancel, onConfirm }: ModalProps) {
+export default function Modal({ message, input, handleChange, onCancel, onConfirm }: ModalProps) {
   return (
     <div className="modal">
       <div className="modal-content">
         <Paragraph content={message} className="modal-message"></Paragraph>
+        <Input className="large-input"
+          placeholder="exemple@exemple.com"
+          value={input}
+          onChange={handleChange} />
         <div className="modal-buttons">
           <Button variant="tertiary" size="tiny" onClick={onCancel}>
             Annuler

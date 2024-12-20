@@ -52,15 +52,6 @@ const Register = () => {
   return (
     <div className="p-register">
       <Toast is_called={showErrorToast} content={error} status={"fail"} />
-      <Button
-        className="registerButton"
-        variant="primary"
-        content="Test Toast"
-        onClick={() => {
-          setError("Test message for the Toast");
-          setShowErrorToast(true);
-        }}
-      />
       <Heading className="title" level={1} content="INSCRIPTION" color="white" />
       <Label content="Adresse e-mail" color="white" />
       <Input
