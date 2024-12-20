@@ -1,8 +1,18 @@
 .a-logo{
-
-    &.large {
-        width: 500px;
-        height: auto;
-    }
+    margin:10px;
+    position: absolute;
+    top:0;
+    &.tiny {
+        width: 12rem;
+        padding: 5px;
+      }
+    
+      &.small {
+        width: 18rem;
+      }
+    
+      &.large {
+        width: 24rem;
+      }
     
 }

@@ -109,8 +109,8 @@ const Home = () => {
         method: "PATCH",
       });
       setTrackedProducts((prev) =>
-      prev.filter((product) => product.id !== trackedProductId)
-    );
+        prev.filter((product) => product.id !== trackedProductId)
+      );
     } catch (error) {
       console.error("Pause tracked product failed", error);
     }
