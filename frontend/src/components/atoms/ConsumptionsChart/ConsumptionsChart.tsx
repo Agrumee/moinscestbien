@@ -46,14 +46,12 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Composant principal du graphique
 const ConsumptionsChart = ({
   consumptions,
   frequency,
   className,
 }: ConsumptionsChartProps) => {
 
-  // Formater une date en fonction de la fréquence (quotidienne, hebdomadaire, mensuelle)
   const formatDate = (date: Date, frequency: Frequency): string => {
     const options: Intl.DateTimeFormatOptions = {
       day: "2-digit",
@@ -70,7 +68,6 @@ const ConsumptionsChart = ({
 
     switch (frequency) {
       case "daily":
-        // Formater la date pour un affichage quotidien, ex : "24/11"
         label = formatDate(date, frequency);
         break;
 
@@ -81,13 +78,11 @@ const ConsumptionsChart = ({
         const weekEnd = new Date(weekStart);
         weekEnd.setDate(weekStart.getDate() + 6);
 
-        // Construire le label au format : "24/11-30/11"
         label = `${formatDate(weekStart, "daily")}-${formatDate(weekEnd, "daily")}`;
         break;
 
       case "monthly":
-        // Formater le mois en texte, ex : "Novembre"
-        label = date.toLocaleDateString("fr-FR", { month: "long" });
+        label = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString("fr-FR", { month: "long" });
         break;
 
       default:
@@ -106,20 +101,17 @@ const ConsumptionsChart = ({
   ) => {
     const grouped: { [key: string]: { name: string; [key: string]: number | string } } = {};
   
-    // Obtenir la plage de dates
     const dates = consumptions.map(c => new Date(c.date));
     const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
   
-    // Générer toutes les périodes possibles
     const allPeriods: string[] = [];
-    let currentDate = new Date(minDate);
+    let currentDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
   
     while (currentDate <= maxDate) {
       const label = formatXAxisLabels(currentDate, frequency);
       allPeriods.push(label);
   
-      // Avancer selon la fréquence
       switch (frequency) {
         case "daily":
           currentDate.setDate(currentDate.getDate() + 1);
@@ -128,16 +120,15 @@ const ConsumptionsChart = ({
           currentDate.setDate(currentDate.getDate() + 7);
           break;
         case "monthly":
-          currentDate.setMonth(currentDate.getMonth() + 1);
+          currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1); // Mois suivant
           break;
         default:
           break;
       }
     }
   
-    // Remplir les périodes avec les consommations
     allPeriods.forEach(label => {
-      if (!grouped[label]) grouped[label] = { name: label }; // Initialiser chaque période
+      if (!grouped[label]) grouped[label] = { name: label };
   
       consumptions.forEach(consumption => {
         const date = new Date(consumption.date);
@@ -151,7 +142,6 @@ const ConsumptionsChart = ({
         }
       });
   
-      // Ajouter `0` pour tous les produits suivis si aucune consommation n'existe pour la période
       consumptions.forEach(consumption => {
         const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
         if (!grouped[label][productKey]) grouped[label][productKey] = 0;
@@ -160,6 +150,7 @@ const ConsumptionsChart = ({
   
     return Object.values(grouped);
   };
+  
 
   // Regrouper les consommations par période pour les données du graphique
   const groupedData = groupConsumptions(consumptions, frequency);

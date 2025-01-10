@@ -18,7 +18,6 @@ urlpatterns = [
     path("api/authenticate/", CheckAuthView.as_view(), name="authenticate"),
     path("api/delete_account/", DeleteAccountView.as_view(), name="delete-account"),
     path("api/change_password/", ChangePasswordView.as_view(), name="change-password"),
-    # Gestion réinitilisation du mot de passe
     path(
         "api/password_reset/",
         auth_views.PasswordResetView.as_view(),

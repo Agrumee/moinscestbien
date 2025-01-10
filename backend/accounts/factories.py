@@ -10,6 +10,19 @@ from datetime import date, timedelta
 
 fake = Faker()
 
+def random_start_date():
+    today = date.today()
+    # Calculer une date 6 mois avant aujourd'hui
+    six_months_ago = today.month - 6
+    year = today.year
+    if six_months_ago <= 0:  # Ajuster l'année et le mois si nécessaire
+        six_months_ago += 12
+        year -= 1
+    # Calculer le jour en évitant les dépassements de fin de mois
+    day = min(today.day, (date(year, six_months_ago + 1, 1) - timedelta(days=1)).day)
+    return date(year, six_months_ago, day)
+
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
@@ -21,7 +34,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     first_name = factory.LazyAttribute(lambda _: fake.first_name())
     last_name = factory.LazyAttribute(lambda _: fake.last_name())
     password = factory.PostGenerationMethodCall("set_password", "password")
-
+    
     @factory.post_generation
     def tracked_products(self, create, extracted, **kwargs):
         products = Product.objects.order_by("?")[:3]
@@ -34,7 +47,7 @@ class UserFactory(factory.django.DjangoModelFactory):
                     unit=product.units.first(),
                     motivation=product.motivations.first(),
                     tracking_frequency=random.choice(tracking_frequencies),
-                    start_date=date.today().replace(month=date.today().month - 1),
+                    start_date=random_start_date(),
                 )
                 for product in products
             ]
@@ -44,7 +57,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     def consumptions(self, create, extracted, **kwargs):
         endDate = date.today()
         for tracked_product in self.tracked_products.all():
-            currentDate = date.today().replace(month=date.today().month - 1)
+            currentDate = random_start_date()
             while currentDate <= endDate:
                 tracked_product.consumptions.create(
                     quantity=random.randint(1, 100), date=currentDate

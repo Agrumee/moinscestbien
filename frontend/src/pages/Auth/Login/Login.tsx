@@ -35,9 +35,9 @@ const Login = () => {
   const handleResetPassword = async (email: string) => {
     try {
       await fetchAPI("/password_reset/", {
-        method: "POST", body: { email: email }
-      })
-      closeModal()
+        method: "POST", body: {email : email} 
+      });
+      closeModal();
     } catch (error) {
       console.error("Error during fetching products:", error);
     }
