@@ -29,7 +29,6 @@ const fetchAPI = async (
     });
 
     if (!response.ok) {
-
       const errorData = await response.json().catch(() => ({}));
       throw new APIError(`HTTP error! Status: ${response.status}`, response.status, errorData);
     }

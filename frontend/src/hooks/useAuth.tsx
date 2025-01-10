@@ -10,6 +10,7 @@ interface AuthContextType {
   logout: () => void;
   deleteAccount: () => void;
   changePassword: (password: string, confirmedPassword: string) => void;
+  resetPassword: (password: string, confirmedPassword: string, uid: string, token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -107,8 +108,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   }
 
+  const resetPassword = async (password: string, confirmedPassword: string, uid: string, token: string) => {
+    try {
+      const response = await fetchAPI("/password_reset/done/", {
+        method: "POST",
+        body: { password, confirmedPassword, uid, token }
+      });
+      console.log(response)
+      return response
+    } catch (error) {
+      console.error("Error during password change:", error);
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword }}>
+    <AuthContext.Provider value={{ isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

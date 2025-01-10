@@ -8,6 +8,8 @@ from .views import (
     DeleteAccountView,
     ChangePasswordView,
     CheckAuthView,
+    PasswordResetView,
+    PasswordResetDoneView,
 )
 
 urlpatterns = [
@@ -20,22 +22,17 @@ urlpatterns = [
     path("api/change_password/", ChangePasswordView.as_view(), name="change-password"),
     path(
         "api/password_reset/",
-        auth_views.PasswordResetView.as_view(),
+        PasswordResetView.as_view(),
         name="password_reset",
     ),
     path(
-        "password_reset/done/",
-        auth_views.PasswordResetDoneView.as_view(),
+        "api/password_reset/done/",
+        PasswordResetDoneView.as_view(),
         name="password_reset_done",
     ),
-    path(
-        "reset/<uidb64>/<token>/",
-        auth_views.PasswordResetConfirmView.as_view(),
-        name="password_reset_confirm",
-    ),
-    path(
-        "reset/done/",
-        auth_views.PasswordResetCompleteView.as_view(),
-        name="password_reset_complete",
-    ),
+    # path(
+    #     "reset/done/",
+    #     auth_views.PasswordResetCompleteView.as_view(),
+    #     name="password_reset_complete",
+    # ),
 ]
