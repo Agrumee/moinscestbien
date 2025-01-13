@@ -7,10 +7,12 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile/Profile";
 import AddNew from "./pages/AddNew";
 import Login from "./pages/Auth/Login/Login";
+import ResetPasswordForm from "./pages/Auth/ResetPasswordForm/ResetPasswordForm";
 import WelcomingPage from "./pages/WelcomingPage/WelcomingPage";
 import Register from "./pages/Auth/Register/Register";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import PausedTracking from "./pages/PausedTracking";
 import "./App.css";
 
 const LayoutManager: React.FC = () => {
@@ -22,17 +24,16 @@ const LayoutManager: React.FC = () => {
     const checkAuth = async () => {
       await authenticate();
       if (!isAuthenticated) {
-        if (!['/', '/login', '/register'].includes(location.pathname)) {
+        if (!['/', '/login', '/register', "/reset-password-confirm"].includes(location.pathname)) {
           navigate('/');
         }
       } else {
-        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home'].includes(location.pathname)) {
-          console.log(location.pathname);
+        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking'].includes(location.pathname)) {
           navigate('/home');
         }
       }
     };
-  
+
     checkAuth();
   }, [location.pathname, navigate, isAuthenticated, authenticate]);
 
@@ -40,6 +41,7 @@ const LayoutManager: React.FC = () => {
     <Logged>
       <Routes>
         <Route path="/home" element={<Home />} />
+        <Route path="/pausedtracking" element={<PausedTracking />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/addnew" element={<AddNew />} />
         <Route path="/changepassword" element={<ChangePassword />} />
@@ -52,6 +54,7 @@ const LayoutManager: React.FC = () => {
         <Route path="/" element={<WelcomingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/reset-password-confirm" element={<ResetPasswordForm />} />
       </Routes>
     </Unlogged>
   );

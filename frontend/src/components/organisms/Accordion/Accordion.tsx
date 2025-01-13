@@ -8,7 +8,7 @@ import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
-import fetchAPI from "../../../utils/fetch";
+import Modal from "../../molecules/Modal/Modal";
 import { Frequency, TrackedProduct } from "../../../types/tracked-product.model";
 import { Consumption } from "../../../types/consumption.model";
 
@@ -19,6 +19,9 @@ interface AccordionProps {
   frequency: Frequency;
   onDateChange: (date: string) => void;
   onUpdateConsumption: (quantity: number) => void;
+  deleteTracking: () => void;
+  pauseTracking?: () => void;
+  unpauseTracking?: () => void;
 }
 
 const Accordion = ({
@@ -28,13 +31,18 @@ const Accordion = ({
   frequency,
   onDateChange,
   onUpdateConsumption,
+  deleteTracking,
+  pauseTracking,
+  unpauseTracking,
 }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentFrequency, setCurrentFrequency] = useState<
     Frequency
   >(frequency);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isPaused, setIsPaused] = useState(trackedProduct.end_date !== null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -56,18 +64,17 @@ const Accordion = ({
     onUpdateConsumption(currentConsumption + value);
   };
 
-  const pauseTracking = async (trackedProductId: number) => {
-    await fetchAPI(`/user/products/${trackedProductId}/pause/`, {
-      method: "PATCH",
-    });
-    setIsPaused(true);
+  const handleDeleteClick = () => {
+    setIsModalOpen(true); // Ouvre la modal
   };
 
-  const unpauseTracking = async (trackedProductId: number) => {
-    await fetchAPI(`/user/products/${trackedProductId}/unpause/`, {
-      method: "PATCH",
-    });
-    setIsPaused(false);
+  const handleModalConfirm = () => {
+    setIsModalOpen(false); // Ferme la modal
+    deleteTracking(); // Exécute la suppression
+  };
+
+  const handleModalCancel = () => {
+    setIsModalOpen(false); // Ferme la modal sans action
   };
 
   return (
@@ -75,6 +82,7 @@ const Accordion = ({
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => {
+          if (isPaused) return;
           setIsActive(!isActive);
         }}
       >
@@ -84,8 +92,13 @@ const Accordion = ({
           content={trackedProduct.product.label}
           className="o-accordion__title__text"
         />
-
-        <div className="toggled_accordion_icon">{isActive ? "-" : "+"}</div>
+        <div className="toggled_accordion_icon">
+          {isPaused ? (
+            <div onClick={unpauseTracking}>
+              <Paragraph content="Reprendre le suivi" size="small" color="white"></Paragraph>
+            </div>
+          ) : isActive ? '-' : '+'}
+        </div>
       </div>
       {isActive && (
         <div className="o-accordion__content">
@@ -155,34 +168,32 @@ const Accordion = ({
           )}
 
           <div className="o-accordion__content__footer">
-            {!isPaused ? (
-              <Button
-                className="o-accordion__content__footer__button -pause"
-                variant="primary"
-                size="small"
-                content="Mettre en pause"
-                onClick={() => pauseTracking(trackedProduct.id)}
-              />)
-              : (
-                <div
-                  className="o-accordion__content__footer__button -play"
-                  onClick={() => unpauseTracking(trackedProduct.id)}
-                >
-                  <Icon name="play" size="large" color="white" />
-                </div>)}
+            <Button
+              className="o-accordion__content__footer__button -pause"
+              variant="tertiary"
+              size="small"
+              content="Mettre en pause"
+              onClick={pauseTracking}
+            />
             <Button
               className="o-accordion__content__footer__button -delete"
               variant="secondary"
               size="small"
               content="Ne plus suivre"
-              onClick={() => pauseTracking(trackedProduct.id)}
+              onClick={handleDeleteClick}
             />
           </div>
         </div>
       )
-      }
+      }{isModalOpen && (
+        <Modal
+          message="Êtes-vous sûr(e) de vouloir arrêter ce suivi ? Vos données seront définitivement supprimées."
+          onCancel={handleModalCancel}
+          onConfirm={handleModalConfirm}
+        />
+      )}
     </div >
   );
-}
+};
 
 export default Accordion;

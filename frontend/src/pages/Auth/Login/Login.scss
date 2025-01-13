@@ -4,6 +4,7 @@
   gap: 1rem;
   justify-content: center;
   padding: 1rem;
+  height: 90%;
 
   .title {
     text-align: center;
@@ -12,11 +13,15 @@
   .loginButton {
     align-self: center;
   }
+  .resetPassword{
+    text-align: center;
+  }
   .notRegistered {
-    display: inline-flex;
+    display: flex;
     align-self: center;
     align-items: center;
-    gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
 
     a {
       text-decoration: none;

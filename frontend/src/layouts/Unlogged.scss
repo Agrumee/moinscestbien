@@ -1,4 +1,7 @@
 .l-unlogged {
-    background-color: $dark-green;
-    height: 100vh;
+  background-color: $dark-green;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  min-height: 100vh;
 }

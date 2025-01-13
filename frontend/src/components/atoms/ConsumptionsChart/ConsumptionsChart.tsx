@@ -21,7 +21,6 @@ interface ConsumptionsChartProps {
 
 // Infobulle
 const CustomTooltip = ({ active, payload }: any) => {
-  console.log(payload)
   if (active && payload && payload.length) {
     return (
       <div
@@ -47,14 +46,12 @@ const CustomTooltip = ({ active, payload }: any) => {
   return null;
 };
 
-// Composant principal du graphique
 const ConsumptionsChart = ({
   consumptions,
   frequency,
   className,
 }: ConsumptionsChartProps) => {
 
-  // Formater une date en fonction de la fréquence (quotidienne, hebdomadaire, mensuelle)
   const formatDate = (date: Date, frequency: Frequency): string => {
     const options: Intl.DateTimeFormatOptions = {
       day: "2-digit",
@@ -71,7 +68,6 @@ const ConsumptionsChart = ({
 
     switch (frequency) {
       case "daily":
-        // Formater la date pour un affichage quotidien, ex : "24/11"
         label = formatDate(date, frequency);
         break;
 
@@ -82,13 +78,11 @@ const ConsumptionsChart = ({
         const weekEnd = new Date(weekStart);
         weekEnd.setDate(weekStart.getDate() + 6);
 
-        // Construire le label au format : "24/11-30/11"
         label = `${formatDate(weekStart, "daily")}-${formatDate(weekEnd, "daily")}`;
         break;
 
       case "monthly":
-        // Formater le mois en texte, ex : "Novembre"
-        label = date.toLocaleDateString("fr-FR", { month: "long" });
+        label = new Date(date.getFullYear(), date.getMonth(), 1).toLocaleDateString("fr-FR", { month: "long" });
         break;
 
       default:
@@ -101,30 +95,62 @@ const ConsumptionsChart = ({
 
 
 
-  const groupConsumptions = (consumptions: Consumption[], frequency: Frequency) => {
-    // Recharts prend en paramètre un indexed type. L'index correspond à l'axe des abscisses
-    const grouped: { [key: string]: { name: string;[key: string]: number | string } } = {};
-
-    consumptions.forEach((consumption) => {
-      const date = new Date(consumption.date);
-      let label = formatXAxisLabels(date, frequency);
-
-      // On crée un groupe de data lorsque la période n'a pas encore été créée.
+  const groupConsumptions = (
+    consumptions: Consumption[],
+    frequency: Frequency
+  ) => {
+    const grouped: { [key: string]: { name: string; [key: string]: number | string } } = {};
+  
+    const dates = consumptions.map(c => new Date(c.date));
+    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
+    const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
+  
+    const allPeriods: string[] = [];
+    let currentDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+  
+    while (currentDate <= maxDate) {
+      const label = formatXAxisLabels(currentDate, frequency);
+      allPeriods.push(label);
+  
+      switch (frequency) {
+        case "daily":
+          currentDate.setDate(currentDate.getDate() + 1);
+          break;
+        case "weekly":
+          currentDate.setDate(currentDate.getDate() + 7);
+          break;
+        case "monthly":
+          currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1); // Mois suivant
+          break;
+        default:
+          break;
+      }
+    }
+  
+    allPeriods.forEach(label => {
       if (!grouped[label]) grouped[label] = { name: label };
-
-      // Identifier chaque produit avec son label et son unité, ex : "Shopping (€)"
-      const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
-
-      // Initialiser la valeur à 0 si ce produit n'est pas encore dans la période
-      if (!grouped[label][productKey]) grouped[label][productKey] = 0;
-
-      // Ajouter la quantité à la clé correspondante
-      grouped[label][productKey] = (grouped[label][productKey] as number) + consumption.quantity;
+  
+      consumptions.forEach(consumption => {
+        const date = new Date(consumption.date);
+        const periodLabel = formatXAxisLabels(date, frequency);
+  
+        if (periodLabel === label) {
+          const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
+  
+          if (!grouped[label][productKey]) grouped[label][productKey] = 0;
+          grouped[label][productKey] = (grouped[label][productKey] as number) + consumption.quantity;
+        }
+      });
+  
+      consumptions.forEach(consumption => {
+        const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
+        if (!grouped[label][productKey]) grouped[label][productKey] = 0;
+      });
     });
-
-    // Retourner les valeurs sous forme de tableau
+  
     return Object.values(grouped);
   };
+  
 
   // Regrouper les consommations par période pour les données du graphique
   const groupedData = groupConsumptions(consumptions, frequency);

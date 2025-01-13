@@ -75,7 +75,7 @@ class ApiUnitsList(APIView):
 
     def get(self, *args, **kwargs):
         try:
-            product = Product.objects.get(id=kwargs["productId"])
+            product = Product.objects.get(id=kwargs["product_id"])
             units = product.units.all()
             serializer = UnitSerializer(units, many=True)
             if units:
@@ -116,7 +116,7 @@ class ApiMotivationsList(APIView):
 
     def get(self, *args, **kwargs):
         try:
-            product = Product.objects.get(id=kwargs["productId"])
+            product = Product.objects.get(id=kwargs["product_id"])
             motivations = product.motivations.all()
             serializer = MotivationSerializer(motivations, many=True)
             if motivations:
@@ -156,12 +156,15 @@ class ApiCreateTrackedProduct(APIView):
     def post(self, request, *args, **kwargs):
         try:
             user = request.user
-            product = Product.objects.get(id=kwargs["productId"])
-            unit = Unit.objects.get(id=kwargs["unitId"])
-            motivation = Motivation.objects.get(id=kwargs["motivationId"])
-            tracking_frequency = TrackingFrequency.objects.get(
-                id=kwargs["trackingFrequencyId"]
-            )
+            product_id = request.data.get("product_id")
+            unit_id = request.data.get("unit_id")
+            motivation_id = request.data.get("motivation_id")
+            tracking_frequency_id = request.data.get("tracking_frequency_id")
+
+            product = Product.objects.get(id=product_id)
+            unit = Unit.objects.get(id=unit_id)
+            motivation = Motivation.objects.get(id=motivation_id)
+            tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
 
             tracked_product, created = TrackedProduct.objects.get_or_create(
                 user=user,
@@ -270,6 +273,126 @@ class ApiTrackedProductsList(APIView):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
+    def post(self, request, *args, **kwargs):
+        print("test")
+        try:
+            user = request.user
+            product_id = request.data.get("product_id")
+            unit_id = request.data.get("unit_id")
+            motivation_id = request.data.get("motivation_id")
+            tracking_frequency_id = request.data.get("tracking_frequency_id")
+
+            product = Product.objects.get(id=product_id)
+            unit = Unit.objects.get(id=unit_id)
+            motivation = Motivation.objects.get(id=motivation_id)
+            tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
+
+            tracked_product, created = TrackedProduct.objects.get_or_create(
+                user=user,
+                product=product,
+                unit=unit,
+                motivation=motivation,
+                tracking_frequency=tracking_frequency,
+            )
+
+            if created:
+                return Response(
+                    {
+                        "success": True,
+                        "message": repr(
+                            product.name
+                            + " assigned successfully to "
+                            + user.username
+                            + "."
+                        ),
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                if tracked_product.end_date == None:
+                    return Response(
+                        {
+                            "success": False,
+                            "message": repr(
+                                product.name
+                                + " already assigned to "
+                                + user.username
+                                + "."
+                            ),
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+                else:
+                    tracked_product.end_date = None
+                    tracked_product.save()
+                    return Response(
+                        {
+                            "success": True,
+                            "message": f"{product.name} tracking reactivated for {user.username}.",
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+        except Product.DoesNotExist:
+            return Response(
+                {"success": False, "message": "No product found.", "data": []},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except User.DoesNotExist:
+            return Response(
+                {"success": False, "message": "No user found.", "data": []},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": f"An error occurred: {str(e)}",
+                    "data": [],
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+@method_decorator(ensure_csrf_cookie, name="dispatch")
+class ApiPausedTrackedProductsList(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, *args, **kwargs):
+        try:
+            user = request.user
+            tracked_products = user.tracked_products.filter(
+                end_date__isnull=False
+            ).order_by("start_date")
+            serializer = TrackedProductSerializer(tracked_products, many=True)
+            if tracked_products:
+                return Response(
+                    {
+                        "success": True,
+                        "message": "Products retrieved successfully.",
+                        "data": serializer.data,
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"success": False, "message": "No products found.", "data": []},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+        except User.DoesNotExist:
+            return Response(
+                {"success": False, "message": "No user found.", "data": []},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        except Exception as e:
+            return Response(
+                {
+                    "success": False,
+                    "message": f"An error occurred: {str(e)}",
+                    "data": [],
+                },
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
 
 @method_decorator(csrf_protect, name="dispatch")
 class ApiAddConsumption(APIView):
@@ -277,7 +400,7 @@ class ApiAddConsumption(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            tracked_product_id = kwargs.get("trackedProductId")
+            tracked_product_id = kwargs.get("tracked_product_id")
             data = request.data
             quantity = data.get("quantity")
             date = data.get("date")
@@ -399,7 +522,10 @@ class ApiConsumptionsListByTrackedProduct(APIView):
         try:
             user = request.user
             tracked_product = get_object_or_404(
-                TrackedProduct, user=user, id=kwargs["trackedProductId"], end_date=None
+                TrackedProduct,
+                user=user,
+                id=kwargs["tracked_product_id"],
+                end_date=None,
             )
             consumptions = Consumption.objects.filter(
                 tracked_product=tracked_product
@@ -445,8 +571,8 @@ class ApiConsumptionPeriodList(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            user = get_object_or_404(User, id=kwargs["userId"])
-            product = get_object_or_404(Product, id=kwargs["productId"])
+            user = get_object_or_404(User, id=kwargs["user_id"])
+            product = get_object_or_404(Product, id=kwargs["product_id"])
             start_date = kwargs["start_date"]
             end_date = kwargs["end_date"]
             tracked_product = get_object_or_404(
@@ -497,7 +623,9 @@ class ApiConsumptionDetail(APIView):
     def get(self, request, *args, **kwargs):
         try:
             date = kwargs["date"]
-            tracked_product = TrackedProduct.objects.get(id=kwargs["trackedProductId"])
+            tracked_product = TrackedProduct.objects.get(
+                id=kwargs["tracked_product_id"]
+            )
             try:
                 consumption = Consumption.objects.get(
                     tracked_product=tracked_product, date=date
@@ -637,7 +765,7 @@ class ApiDeleteTrackedProduct(APIView):
         try:
             user = request.user
             tracked_product = TrackedProduct.objects.get(
-                user=user, id=kwargs["trackedProductId"]
+                user=user, id=kwargs["tracked_product_id"]
             )
             tracked_product.delete()
             return Response(
@@ -675,7 +803,7 @@ class ApiPauseTrackedProduct(APIView):
         try:
             user = request.user
             tracked_product = TrackedProduct.objects.get(
-                user=user, id=kwargs["trackedProductId"]
+                user=user, id=kwargs["tracked_product_id"]
             )
             tracked_product.end_date = datetime.now().date()
             tracked_product.save()
@@ -714,7 +842,7 @@ class ApiUnpauseTrackedProduct(APIView):
         try:
             user = request.user
             tracked_product = TrackedProduct.objects.get(
-                user=user, id=kwargs["trackedProductId"]
+                user=user, id=kwargs["tracked_product_id"]
             )
             tracked_product.end_date = None
             tracked_product.save()

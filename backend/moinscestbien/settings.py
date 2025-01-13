@@ -126,6 +126,12 @@ DATABASES = {
     }
 }
 
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "mailhog"
+EMAIL_PORT = 1025
+DEFAULT_FROM_EMAIL = "support@moinscestbien.fr"
+EMAIL_USE_TLS = False
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

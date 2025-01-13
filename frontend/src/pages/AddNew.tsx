@@ -29,13 +29,18 @@ const AddNew = () => {
 
   const handleAddNewProduct = async () => {
     try {
-      const data = await fetchAPI(
-        `/user/tracked-product/${currentProduct?.id}/${currentUnit?.id}/${currentMotivation?.id}/${currentTrackingFrequency?.id}/create/`,
+      await fetchAPI(
+        `/consumptions/tracked-products`,
         {
           method: "POST",
+          body: {
+            product_id: currentProduct?.id,
+            unit_id: currentUnit?.id,
+            motivation_id: currentMotivation?.id,
+            tracking_frequency_id: currentTrackingFrequency?.id,
+          },
         }
       );
-      console.log("Product added successfully:", data);
       navigate("/");
     } catch (error) {
       console.error("Error during add new product", error);
@@ -44,7 +49,7 @@ const AddNew = () => {
 
   const getProductsList = async () => {
     try {
-      const response = await fetchAPI(`/products/`, {
+      const response = await fetchAPI(`/consumptions/products`, {
         method: "GET",
       });
       setProductsList(response.data);
@@ -55,7 +60,7 @@ const AddNew = () => {
 
   const getUnitsList = async (productId: number) => {
     try {
-      const response = await fetchAPI(`/units/${productId}`, {
+      const response = await fetchAPI(`/consumptions/products/${productId}/units`, {
         method: "GET",
       });
       setUnitsList(response.data);
@@ -66,7 +71,7 @@ const AddNew = () => {
 
   const getMotivationsList = async (productId: number) => {
     try {
-      const response = await fetchAPI(`/motivations/${productId}`, {
+      const response = await fetchAPI(`/consumptions/products/${productId}/motivations`, {
         method: "GET",
       });
       setMotivationsList(response.data);
@@ -77,7 +82,7 @@ const AddNew = () => {
 
   const getTrackingFrequenciesList = async () => {
     try {
-      const response = await fetchAPI(`/tracking-frequencies/`, {
+      const response = await fetchAPI(`/consumptions/tracking-frequencies`, {
         method: "GET",
       });
       setTrackingFrequenciesList(response.data);

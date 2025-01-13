@@ -10,6 +10,14 @@ from rest_framework import status
 import re
 
 
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail
+from django.conf import settings
+from django.urls import reverse
+
+
 @method_decorator(csrf_protect, name="dispatch")
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
@@ -177,4 +185,83 @@ class ChangePasswordView(APIView):
             return Response(
                 {"message": f"Error changing password: {str(e)}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+
+@method_decorator(csrf_protect, name="dispatch")
+class PasswordResetView(APIView):
+    permission_classes = (permissions.AllowAny,)
+    """
+    Gère la demande de réinitialisation de mot de passe.
+    """
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        if not email:
+            return Response(
+                {"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Vérifier si l'utilisateur existe avec cet email
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response(
+                {"message": "Email not found."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Générer un token sécurisé
+        uid = urlsafe_base64_encode(force_bytes(user.pk))
+        token = default_token_generator.make_token(user)
+        reset_url = (
+            f"http://127.0.0.1:5173/reset-password-confirm?uid={uid}&token={token}"
+        )
+
+        # Envoyer l'email
+        subject = "Password Reset Request"
+        message = f"Hello {user.username},\n\nTo reset your password, click the link below:\n{reset_url}\n\nIf you didn't request this, please ignore this email."
+        from_email = settings.DEFAULT_FROM_EMAIL
+        send_mail(subject, message, from_email, [user.email])
+
+        return Response(
+            {"message": "Password reset email sent."}, status=status.HTTP_200_OK
+        )
+
+
+class PasswordResetDoneView(APIView):
+    permission_classes = (permissions.AllowAny,)
+
+    def post(self, request, *args, **kwargs):
+        password = request.data.get("password")
+        confirmed_password = request.data.get("confirmedPassword")
+        uidb64 = request.data.get("uid")
+        token = request.data.get("token")
+        try:
+            uid = urlsafe_base64_decode(uidb64).decode()
+            user = User.objects.get(pk=uid)
+        except (User.DoesNotExist, ValueError, TypeError):
+            return Response(
+                {"error": "Invalid token or user"}, status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if default_token_generator.check_token(user, token):
+            if password == confirmed_password:
+                user.set_password(password)
+                user.save()
+                return Response(
+                    {
+                        "message": "Password was reset successfully",
+                    },
+                    status=status.HTTP_200_OK,
+                )
+            else:
+                return Response(
+                    {"message": "Passwords do not match"},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+        else:
+            return Response(
+                {"error": "Token is invalid or expired"},
+                status=status.HTTP_400_BAD_REQUEST,
             )

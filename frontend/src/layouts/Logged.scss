@@ -1,5 +1,8 @@
 .l-logged {
   background-color: $light-green;
   padding-top: 2rem;
-  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  min-height: 100vh;
 }

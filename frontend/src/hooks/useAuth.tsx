@@ -1,7 +1,6 @@
 import { useState, createContext, useContext, ReactNode } from 'react';
 import fetchAPI from '../utils/fetch';
 
-
 interface AuthContextType {
   isAuthenticated: boolean;
   authenticate: () => void;
@@ -10,6 +9,7 @@ interface AuthContextType {
   logout: () => void;
   deleteAccount: () => void;
   changePassword: (password: string, confirmedPassword: string) => void;
+  resetPassword: (password: string, confirmedPassword: string, uid: string, token: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -23,7 +23,7 @@ export const useAuth = () => {
 };
 
 interface AuthProviderProps {
-  children: ReactNode; 
+  children: ReactNode;
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const authenticate = async () => {
     try {
-      const data = await fetchAPI("/authenticate/", {
+      const data = await fetchAPI("/accounts/authenticate", {
         method: "GET",
       });
 
@@ -39,19 +39,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } catch (error) {
       console.error("Error during authentication:", error);
     }
-  }
+  };
 
   const login = async (email: string, password: string) => {
     try {
-      await fetchAPI("/csrf_cookie/", {
+      await fetchAPI("/accounts/csrf-cookie", {
         method: "GET",
       });
 
-      await fetchAPI("/login/", {
+      await fetchAPI("/accounts/login", {
         method: "POST",
         body: { email, password }
       });
-
 
     } catch (error) {
       console.error('Login failed', error);
@@ -61,11 +60,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (email: string, password: string, confirmedPassword: string) => {
     try {
-      await fetchAPI("/csrf_cookie/", {
+      await fetchAPI("/accounts/csrf-cookie", {
         method: "GET",
       });
 
-      await fetchAPI("/register/", {
+      await fetchAPI("/accounts/register", {
         method: "POST",
         body: { email, password, confirmedPassword }
       });
@@ -79,11 +78,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const logout = async () => {
     try {
-      await fetchAPI("/logout/", {
+      await fetchAPI("/accounts/logout", {
         method: "POST",
       });
-
-      console.log("User logged out successfully.");
     } catch (error) {
       console.error("Error during logout:", error);
     }
@@ -91,31 +88,40 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const deleteAccount = async () => {
     try {
-      await fetchAPI("/delete_account/", {
+      await fetchAPI("/accounts/delete-account", {
         method: "DELETE",
       });
-
-      console.log("User account deleted successfully.");
     } catch (error) {
       console.error("Error during account deletion:", error);
     }
-  }
+  };
 
   const changePassword = async (password: string, confirmedPassword: string) => {
     try {
-      await fetchAPI("/change_password/", {
+      await fetchAPI("/accounts/change-password", {
         method: "PATCH",
         body: { password, confirmedPassword }
       });
-
-      console.log("Password changed successfully.");
     } catch (error) {
       console.error("Error during password change:", error);
     }
-  }
+  };
+
+  const resetPassword = async (password: string, confirmedPassword: string, uid: string, token: string) => {
+    try {
+      const response = await fetchAPI("/accounts/password-reset/done", {
+        method: "POST",
+        body: { password, confirmedPassword, uid, token }
+      });
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.error("Error during password reset:", error);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword }}>
+    <AuthContext.Provider value={{ isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );
