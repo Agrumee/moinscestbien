@@ -3,6 +3,8 @@ import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
 import { TrackedProduct } from "../types/tracked-product.model";
 import { ConsumptionsListByTrackedProductId } from "../types/consumption.model";
+import "./Home.scss"
+
 
 const PausedTracking = () => {
   const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
@@ -122,7 +124,7 @@ const PausedTracking = () => {
   }
 
   return (
-    <div>
+    <div className="p-home">
       {trackedProducts.map((trackedProduct: TrackedProduct) => (
         <Accordion
           trackedProduct={trackedProduct}
