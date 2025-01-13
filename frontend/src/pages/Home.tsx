@@ -19,7 +19,7 @@ const Home = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await fetchAPI("/user/tracked-products/", {
+        const response = await fetchAPI("/consumptions/tracked-products", {
           method: "GET",
         });
         setTrackedProducts(response.data);
@@ -40,7 +40,7 @@ const Home = () => {
 
   const getConsumptions = async (productId: number) => {
     try {
-      const response = await fetchAPI(`/consumptions/${productId}`, {
+      const response = await fetchAPI(`/consumptions/tracked-products/${productId}/consumptions`, {
         method: "GET",
       });
       setConsumptionsListByTrackedProductId((previousConsumptions) => ({
@@ -54,7 +54,7 @@ const Home = () => {
 
   const handleDateChange = async (trackedProductId: number, date: string) => {
     try {
-      const data = await fetchAPI(`/consumption/${trackedProductId}/${date}/`, {
+      const data = await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/consumptions/${date}`, {
         method: "GET",
       });
       setCurrentConsumptionByTrackedProductId((prev) => ({
@@ -73,7 +73,7 @@ const Home = () => {
     quantity: number
   ) => {
     try {
-      const response = await fetchAPI(`/consumption/${trackedProductId}/add-consumption/`, {
+      const response = await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/consumptions/add-consumption`, {
         method: "POST",
         body: { date: date, quantity: quantity },
         headers: {
@@ -92,7 +92,7 @@ const Home = () => {
 
   const handleDeleteTracking = async (trackedProductId: number) => {
     try {
-      await fetchAPI(`/user/products/${trackedProductId}/delete/`, {
+      await fetchAPI(`/consumptions/tracked-products/${trackedProductId}`, {
         method: "DELETE",
       });
       setTrackedProducts((prev) =>
@@ -105,7 +105,7 @@ const Home = () => {
 
   const handlePauseTracking = async (trackedProductId: number) => {
     try {
-      await fetchAPI(`/user/products/${trackedProductId}/pause/`, {
+      await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/pause`, {
         method: "PATCH",
       });
       setTrackedProducts((prev) =>

@@ -76,11 +76,11 @@ class TrackedProductsListTest(TestCase):
         ]
 
         self.client = APIClient()
-        self.tracked_products_list_url = reverse("user-products-list")
+        self.tracked_products_url = reverse("tracked-products")
         self.client.login(username="user@example.com", password="password123")
 
     def test_user_product_lists_order_by_date(self):
-        response = self.client.get(self.tracked_products_list_url)
+        response = self.client.get(self.tracked_products_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -132,13 +132,13 @@ class ApiConsumptionsListByProductTest(TestCase):
                 self.consumptions.append(consumption)
 
         self.client = APIClient()
-        self.consumptions_list_url = reverse(
-            "consumptions-list-by-product", args=[self.trackedProduct.id]
+        self.consumptions_url = reverse(
+            "consumptions-by-product", args=[self.trackedProduct.id]
         )
         self.client.login(username="user@example.com", password="password123")
 
     def test_user_can_consult_all_consumptions(self):
-        response = self.client.get(self.consumptions_list_url)
+        response = self.client.get(self.consumptions_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -284,24 +284,25 @@ class ApiCreateTrackedProductTest(TestCase):
         self.client = APIClient()
         self.client.login(username="user@example.com", password="password123")
 
-        self.add_product_url = reverse(
-            "add-product",
-            args=[
-                self.product.id,
-                self.unit.id,
-                self.motivation.id,
-                self.tracking_frequency.id,
-            ],
-        )
+        self.add_product_url = reverse("tracked-products")
 
     def test_user_can_add_product(self):
-        response = self.client.post(self.add_product_url)
+        data = {
+            "product_id": self.product.id,
+            "unit_id": self.unit.id,
+            "motivation_id": self.motivation.id,
+            "tracking_frequency_id": self.tracking_frequency.id,
+        }
+
+        response = self.client.post(self.add_product_url, data)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("success", response.data)
         self.assertEqual(TrackedProduct.objects.count(), 1)
         self.assertEqual(TrackedProduct.objects.first().product, self.product)
 
     def test_user_can_add_untracked_product_anymore(self):
+        # Create a previously tracked product with an end date in the past
         self.tracked_product = TrackedProduct.objects.create(
             user=self.user,
             product=self.product,
@@ -310,7 +311,16 @@ class ApiCreateTrackedProductTest(TestCase):
             tracking_frequency=self.tracking_frequency,
             end_date=date.today() - relativedelta(months=4),
         )
-        response = self.client.post(self.add_product_url)
+
+        data = {
+            "product_id": self.product.id,
+            "unit_id": self.unit.id,
+            "motivation_id": self.motivation.id,
+            "tracking_frequency_id": self.tracking_frequency.id,
+        }
+
+        response = self.client.post(self.add_product_url, data)
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("success", response.data)
         self.assertEqual(TrackedProduct.objects.count(), 1)
@@ -325,7 +335,16 @@ class ApiCreateTrackedProductTest(TestCase):
             tracking_frequency=self.tracking_frequency,
             end_date=None,
         )
-        response = self.client.post(self.add_product_url)
+
+        data = {
+            "product_id": self.product.id,
+            "unit_id": self.unit.id,
+            "motivation_id": self.motivation.id,
+            "tracking_frequency_id": self.tracking_frequency.id,
+        }
+
+        response = self.client.post(self.add_product_url, data)
+
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("already assigned", response.data["message"])
 
