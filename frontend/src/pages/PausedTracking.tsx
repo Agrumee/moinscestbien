@@ -19,7 +19,7 @@ const PausedTracking = () => {
   useEffect(() => {
     const getProducts = async () => {
       try {
-        const response = await fetchAPI("/user/tracked-products/paused/", {
+        const response = await fetchAPI("/consumptions/tracked-products/paused", {
           method: "GET",
         });
         setTrackedProducts(response.data);
@@ -59,7 +59,7 @@ const PausedTracking = () => {
   //Récupération de la date à updater
   const handleDateChange = async (trackedProductId: number, date: string) => {
     try {
-      const data = await fetchAPI(`/consumption/${trackedProductId}/${date}/`, {
+      const data = await fetchAPI(`/consumptions/${trackedProductId}/${date}/`, {
         method: "GET",
       });
       setCurrentConsumptionByTrackedProductId((prev) => ({
@@ -80,7 +80,7 @@ const PausedTracking = () => {
     quantity: number
   ) => {
     try {
-      const response = await fetchAPI(`/consumption/${trackedProductId}/add-consumption/`, {
+      const response = await fetchAPI(`/consumptions/${trackedProductId}/add-consumption/`, {
         method: "POST",
         body: { date: date, quantity: quantity },
         headers: {
@@ -99,7 +99,7 @@ const PausedTracking = () => {
 
   const handleDeleteTracking = async (trackedProductId: number) => {
     try {
-      await fetchAPI(`/user/products/${trackedProductId}/delete/`, {
+      await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/delete`, {
         method: "DELETE",
       });
       setTrackedProducts((prev) =>
@@ -112,7 +112,7 @@ const PausedTracking = () => {
 
   const handleUnPauseTracking = async (trackedProductId: number) => {
     try {
-      await fetchAPI(`/user/products/${trackedProductId}/unpause/`, {
+      await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/unpause`, {
         method: "PATCH",
       });
       setTrackedProducts((prev) =>

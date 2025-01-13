@@ -3,12 +3,9 @@ from .views import (
     ApiProductsList,
     ApiUnitsList,
     ApiMotivationsList,
-    ApiCreateTrackedProduct,
     ApiTrackedProductsList,
     ApiAddConsumption,
     ApiConsumptionDetail,
-    # ApiConsumptionsList,
-    # ApiConsumptionPeriodList,
     ApiConsumptionsListByTrackedProduct,
     ApiTrackingFrequenciesList,
     ApiDeleteTrackedProduct,
@@ -18,67 +15,56 @@ from .views import (
 )
 
 urlpatterns = [
-    path("products/", ApiProductsList.as_view(), name="products-list"),
-    path("units/<int:productId>/", ApiUnitsList.as_view(), name="units-list"),
+    path("products", ApiProductsList.as_view(), name="products"),
+    path("products/<int:product_id>/units", ApiUnitsList.as_view(), name="units"),
     path(
-        "motivations/<int:productId>/",
+        "products/<int:product_id>/motivations",
         ApiMotivationsList.as_view(),
-        name="motivations-list",
-    ),
-    # Modification du nom de l'api pour une meilleure clarté de son action, ApiAddProduct, evoque plus la possibilité pour un utilisateur de créer un nouveau produit.
-    path(
-        "user/tracked-product/<int:productId>/<int:unitId>/<int:motivationId>/<int:trackingFrequencyId>/create/",
-        ApiCreateTrackedProduct.as_view(),
-        name="add-product",
+        name="motivations",
     ),
     path(
-        "user/tracked-products/",
+        "tracked-products",
         ApiTrackedProductsList.as_view(),
-        name="user-products-list",
+        name="tracked-products",
     ),
     path(
-        "user/tracked-products/paused/",
+        "tracked-products/paused",
         ApiPausedTrackedProductsList.as_view(),
-        name="user-paused-products-list",
-    ),
-    # Ici il vaut mieux passer directement l'id du tracked-product car on met à jour la consommation sur un tracked product et non sur un product directement
-    path(
-        "consumption/<int:trackedProductId>/add-consumption/",
-        ApiAddConsumption.as_view(),
-        name="add-consumption",
+        name="paused-tracked-products",
     ),
     path(
-        "consumption/<int:trackedProductId>/<str:date>/",
-        ApiConsumptionDetail.as_view(),
-        name="consumption-detail",
-    ),
-    path(
-        "tracking-frequencies/",
-        ApiTrackingFrequenciesList.as_view(),
-        name="tracking-frequencies-list",
-    ),
-    # API non utilisée, pourrait être utile dans un futur déploiement de l'app mais devrait être réécrite car l'uuid de l'user n'est pas utile
-    # path('consumptions/<uuid:userId>/<int:productId>/<str:start_date>/<str:end_date>/', ApiConsumptionPeriodList.as_view(), name='consumption-period-list'),
-    path(
-        "consumptions/<int:trackedProductId>/",
-        ApiConsumptionsListByTrackedProduct.as_view(),
-        name="consumptions-list-by-product",
-    ),
-    # API non utilisée, pourrait être utile dans un futur déploiement de l'app mais devrait être réécrite car l'uuid de l'user n'est pas utile
-    # path('consumptions/<uuid:userId>/<str:start_date>/<str:end_date>/', ApiConsumptionsList.as_view(), name='consumptions-list'),
-    path(
-        "user/products/<int:trackedProductId>/delete/",
+        "tracked-products/<int:tracked_product_id>",
         ApiDeleteTrackedProduct.as_view(),
         name="delete-tracked-product",
     ),
     path(
-        "user/products/<int:trackedProductId>/pause/",
+        "tracked-products/<int:tracked_product_id>/consumptions",
+        ApiConsumptionsListByTrackedProduct.as_view(),
+        name="consumptions-by-product",
+    ),
+    path(
+        "tracked-products/<int:tracked_product_id>/consumptions/add-consumption",
+        ApiAddConsumption.as_view(),
+        name="add-consumption",
+    ),
+    path(
+        "tracked-products/<int:tracked_product_id>/consumptions/<str:date>",
+        ApiConsumptionDetail.as_view(),
+        name="consumptions-by-date",
+    ),
+    path(
+        "tracked-products/<int:tracked_product_id>/pause",
         ApiPauseTrackedProduct.as_view(),
         name="pause-tracked-product",
     ),
     path(
-        "user/products/<int:trackedProductId>/unpause/",
+        "tracked-products/<int:tracked_product_id>/unpause",
         ApiUnpauseTrackedProduct.as_view(),
         name="unpause-tracked-product",
+    ),
+    path(
+        "tracking-frequencies",
+        ApiTrackingFrequenciesList.as_view(),
+        name="tracking-frequencies",
     ),
 ]

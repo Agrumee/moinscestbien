@@ -13,26 +13,17 @@ from .views import (
 )
 
 urlpatterns = [
-    path("api/login/", LoginView.as_view(), name="login"),
-    path("api/register/", RegisterView.as_view(), name="register"),
-    path("api/logout/", LogoutView.as_view(), name="logout"),
-    path("api/csrf_cookie/", GetCSRFToken.as_view(), name="csrf-cookie"),
-    path("api/authenticate/", CheckAuthView.as_view(), name="authenticate"),
-    path("api/delete_account/", DeleteAccountView.as_view(), name="delete-account"),
-    path("api/change_password/", ChangePasswordView.as_view(), name="change-password"),
+    path("login", LoginView.as_view(), name="login"),
+    path("register", RegisterView.as_view(), name="register"),
+    path("logout", LogoutView.as_view(), name="logout"),
+    path("csrf-cookie", GetCSRFToken.as_view(), name="csrf-cookie"),
+    path("authenticate", CheckAuthView.as_view(), name="authenticate"),
+    path("delete-account", DeleteAccountView.as_view(), name="delete-account"),
+    path("change-password", ChangePasswordView.as_view(), name="change-password"),
+    path("password-reset", PasswordResetView.as_view(), name="password-reset"),
     path(
-        "api/password_reset/",
-        PasswordResetView.as_view(),
-        name="password_reset",
-    ),
-    path(
-        "api/password_reset/done/",
+        "password-reset/done",
         PasswordResetDoneView.as_view(),
-        name="password_reset_done",
+        name="password-reset-done",
     ),
-    # path(
-    #     "reset/done/",
-    #     auth_views.PasswordResetCompleteView.as_view(),
-    #     name="password_reset_complete",
-    # ),
 ]
