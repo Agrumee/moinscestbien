@@ -5,7 +5,6 @@ from django.utils.timezone import datetime
 import random
 from accounts.models import User
 from consumptions.models import Habit, TrackedHabit, TrackingFrequency
-import uuid
 from datetime import date, timedelta
 
 fake = Faker()
@@ -28,7 +27,6 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    id = factory.LazyAttribute(lambda _: uuid.uuid4())
     email = factory.LazyAttribute(lambda _: fake.email())
     username = factory.SelfAttribute("email")
     first_name = factory.LazyAttribute(lambda _: fake.first_name())
