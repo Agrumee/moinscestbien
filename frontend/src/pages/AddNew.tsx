@@ -8,12 +8,12 @@ import { useNavigate } from "react-router-dom";
 import fetchAPI from "../utils/fetch";
 
 import "./AddNew.scss";
-import { Product, Unit, Motivation, TrackingFrequency, Frequency } from "../types/tracked-product.model";
+import { Habit, Unit, Motivation, TrackingFrequency, Frequency } from "../types/tracked-habit.model";
 
 
 const AddNew = () => {
   const navigate = useNavigate();
-  const [currentProduct, setCurrentProduct] = useState<Product | null>(
+  const [currentHabit, setCurrentHabit] = useState<Habit | null>(
     null
   );
   const [currentUnit, setCurrentUnit] = useState<Unit | null>(null);
@@ -21,20 +21,20 @@ const AddNew = () => {
     useState<Motivation | null>(null);
   const [currentTrackingFrequency, setCurrentTrackingFrequency] =
     useState<TrackingFrequency | null>(null);
-  const [productsList, setProductsList] = useState<Product[]>([]);
+  const [habitsList, setHabitsList] = useState<Habit[]>([]);
   const [unitsList, setUnitsList] = useState<Unit[]>([]);
   const [motivationsList, setMotivationsList] = useState<Motivation[]>([]);
   const [trackingFrequenciesList, setTrackingFrequenciesList] =
     useState<TrackingFrequency[]>([]);
 
-  const handleAddNewProduct = async () => {
+  const handleAddNewHabit = async () => {
     try {
       await fetchAPI(
-        `/consumptions/tracked-products`,
+        `/consumptions/tracked-habits`,
         {
           method: "POST",
           body: {
-            product_id: currentProduct?.id,
+            habit_id: currentHabit?.id,
             unit_id: currentUnit?.id,
             motivation_id: currentMotivation?.id,
             tracking_frequency_id: currentTrackingFrequency?.id,
@@ -43,24 +43,24 @@ const AddNew = () => {
       );
       navigate("/");
     } catch (error) {
-      console.error("Error during add new product", error);
+      console.error("Error during add new habit", error);
     }
   };
 
-  const getProductsList = async () => {
+  const getHabitsList = async () => {
     try {
-      const response = await fetchAPI(`/consumptions/products`, {
+      const response = await fetchAPI(`/consumptions/habits`, {
         method: "GET",
       });
-      setProductsList(response.data);
+      setHabitsList(response.data);
     } catch (error) {
-      console.error("Error during fetching products:", error);
+      console.error("Error during fetching habits:", error);
     }
   };
 
-  const getUnitsList = async (productId: number) => {
+  const getUnitsList = async (habitId: number) => {
     try {
-      const response = await fetchAPI(`/consumptions/products/${productId}/units`, {
+      const response = await fetchAPI(`/consumptions/habits/${habitId}/units`, {
         method: "GET",
       });
       setUnitsList(response.data);
@@ -69,9 +69,9 @@ const AddNew = () => {
     }
   };
 
-  const getMotivationsList = async (productId: number) => {
+  const getMotivationsList = async (habitId: number) => {
     try {
-      const response = await fetchAPI(`/consumptions/products/${productId}/motivations`, {
+      const response = await fetchAPI(`/consumptions/habits/${habitId}/motivations`, {
         method: "GET",
       });
       setMotivationsList(response.data);
@@ -92,33 +92,33 @@ const AddNew = () => {
   }
 
   useEffect(() => {
-    getProductsList();
+    getHabitsList();
     getTrackingFrequenciesList();
   }, []);
 
   useEffect(() => {
-    if (currentProduct) {
-      getUnitsList(currentProduct.id);
-      getMotivationsList(currentProduct.id);
+    if (currentHabit) {
+      getUnitsList(currentHabit.id);
+      getMotivationsList(currentHabit.id);
     }
-  }, [currentProduct]);
+  }, [currentHabit]);
 
   return (
     <div className="p-addnew">
       <Heading
         className="a-add-new-title"
         level={1}
-        content="Suivre un nouveau produit"
+        content="Suivre une nouvelle habitude"
       />
       <div>
-        <Label content="Produit :" />
+        <Label content="Habitude :" />
         <Dropdown
           label={
-            currentProduct ? currentProduct.name : "Que voulez-vous suivre ?"
+            currentHabit ? currentHabit.name : "Que voulez-vous suivre ?"
           }
-          contentList={productsList}
-          onSelect={(selectedProduct: Product) =>
-            setCurrentProduct(selectedProduct)
+          contentList={habitsList}
+          onSelect={(selectedHabit: Habit) =>
+            setCurrentHabit(selectedHabit)
           }
         />
       </div>
@@ -159,8 +159,8 @@ const AddNew = () => {
         variant="primary"
         size="large"
         content="Ajouter"
-        onClick={handleAddNewProduct}
-        disabled={!currentProduct || !currentUnit || !currentMotivation || !currentTrackingFrequency}
+        onClick={handleAddNewHabit}
+        disabled={!currentHabit || !currentUnit || !currentMotivation || !currentTrackingFrequency}
       />
     </div>
   );

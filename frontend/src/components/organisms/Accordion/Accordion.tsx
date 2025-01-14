@@ -9,11 +9,11 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
 import Modal from "../../molecules/Modal/Modal"; 
-import { Frequency, TrackedProduct } from "../../../types/tracked-product.model";
+import { Frequency, TrackedHabit } from "../../../types/tracked-habit.model";
 import { Consumption } from "../../../types/consumption.model";
 
 interface AccordionProps {
-  trackedProduct: TrackedProduct;
+  trackedHabit: TrackedHabit;
   consumptions: Consumption[];
   currentConsumption: number;
   frequency: Frequency;
@@ -25,7 +25,7 @@ interface AccordionProps {
 }
 
 const Accordion = ({
-  trackedProduct,
+  trackedHabit,
   consumptions,
   currentConsumption,
   frequency,
@@ -40,7 +40,7 @@ const Accordion = ({
   const [currentFrequency, setCurrentFrequency] = useState<
     Frequency
   >(frequency);
-  const [isPaused, setIsPaused] = useState(trackedProduct.end_date !== null);
+  const [isPaused, setIsPaused] = useState(trackedHabit.end_date !== null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -78,7 +78,7 @@ const Accordion = ({
   };
 
   return (
-    <div className="o-accordion" key={trackedProduct.id}>
+    <div className="o-accordion" key={trackedHabit.id}>
       <div
         className={`o-accordion__title ${isActive ? "active" : ""}`}
         onClick={() => {
@@ -89,7 +89,7 @@ const Accordion = ({
         <Heading
           level={2}
           color="white"
-          content={trackedProduct.product.label}
+          content={trackedHabit.habit.label}
           className="o-accordion__title__text"
         />
         <div className="toggled_accordion_icon">
@@ -106,7 +106,7 @@ const Accordion = ({
             <CalendarButton
               initialDate={currentDate}
               onDateChange={handleDateChange}
-              startDate={trackedProduct.start_date}
+              startDate={trackedHabit.start_date}
             />
           </div>
           <div className="o-accordion__content__counter">

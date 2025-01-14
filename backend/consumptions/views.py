@@ -4,20 +4,20 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from .models import (
-    Product,
+    Habit,
     Consumption,
-    TrackedProduct,
+    TrackedHabit,
     Unit,
     Motivation,
     TrackingFrequency,
 )
 from accounts.models import User
 from .serializers import (
-    ProductSerializer,
+    HabitSerializer,
     UnitSerializer,
     ConsumptionSerializer,
     MotivationSerializer,
-    TrackedProductSerializer,
+    TrackedHabitSerializer,
     TrackingFrequencySerializer,
 )
 from datetime import datetime
@@ -28,7 +28,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiProductsList(APIView):
+class ApiHabitsList(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -36,24 +36,22 @@ class ApiProductsList(APIView):
     def get(self, request):
         try:
             user = request.user
-            user_tracked_products = TrackedProduct.objects.filter(
+            user_tracked_habits = TrackedHabit.objects.filter(
                 user=user, end_date=None
-            ).values_list("product", flat=True)
-            user_untracked_products = Product.objects.exclude(
-                id__in=user_tracked_products
-            )
-            serializer = ProductSerializer(user_untracked_products, many=True)
+            ).values_list("habit", flat=True)
+            user_untracked_habits = Habit.objects.exclude(id__in=user_tracked_habits)
+            serializer = HabitSerializer(user_untracked_habits, many=True)
             return Response(
                 {
                     "success": True,
-                    "message": "Products retrieved successfully.",
+                    "message": "Habits retrieved successfully.",
                     "data": serializer.data,
                 },
                 status=status.HTTP_200_OK,
             )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "No products found.", "data": []},
+                {"success": False, "message": "No habits found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -75,8 +73,8 @@ class ApiUnitsList(APIView):
 
     def get(self, *args, **kwargs):
         try:
-            product = Product.objects.get(id=kwargs["product_id"])
-            units = product.units.all()
+            habit = Habit.objects.get(id=kwargs["habit_id"])
+            units = habit.units.all()
             serializer = UnitSerializer(units, many=True)
             if units:
                 return Response(
@@ -92,9 +90,9 @@ class ApiUnitsList(APIView):
                     {"success": False, "message": "No units found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "No product found.", "data": []},
+                {"success": False, "message": "No habit found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -116,8 +114,8 @@ class ApiMotivationsList(APIView):
 
     def get(self, *args, **kwargs):
         try:
-            product = Product.objects.get(id=kwargs["product_id"])
-            motivations = product.motivations.all()
+            habit = Habit.objects.get(id=kwargs["habit_id"])
+            motivations = habit.motivations.all()
             serializer = MotivationSerializer(motivations, many=True)
             if motivations:
                 return Response(
@@ -133,9 +131,9 @@ class ApiMotivationsList(APIView):
                     {"success": False, "message": "No Motivations found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "No product found.", "data": []},
+                {"success": False, "message": "No habit found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -150,25 +148,25 @@ class ApiMotivationsList(APIView):
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class ApiCreateTrackedProduct(APIView):
+class ApiCreateTrackedHabit(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request, *args, **kwargs):
         try:
             user = request.user
-            product_id = request.data.get("product_id")
+            habit_id = request.data.get("habit_id")
             unit_id = request.data.get("unit_id")
             motivation_id = request.data.get("motivation_id")
             tracking_frequency_id = request.data.get("tracking_frequency_id")
 
-            product = Product.objects.get(id=product_id)
+            habit = Habit.objects.get(id=habit_id)
             unit = Unit.objects.get(id=unit_id)
             motivation = Motivation.objects.get(id=motivation_id)
             tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
 
-            tracked_product, created = TrackedProduct.objects.get_or_create(
+            tracked_habit, created = TrackedHabit.objects.get_or_create(
                 user=user,
-                product=product,
+                habit=habit,
                 unit=unit,
                 motivation=motivation,
                 tracking_frequency=tracking_frequency,
@@ -179,7 +177,7 @@ class ApiCreateTrackedProduct(APIView):
                     {
                         "success": True,
                         "message": repr(
-                            product.name
+                            habit.name
                             + " assigned successfully to "
                             + user.username
                             + "."
@@ -188,12 +186,12 @@ class ApiCreateTrackedProduct(APIView):
                     status=status.HTTP_200_OK,
                 )
             else:
-                if tracked_product.end_date == None:
+                if tracked_habit.end_date == None:
                     return Response(
                         {
                             "success": False,
                             "message": repr(
-                                product.name
+                                habit.name
                                 + " already assigned to "
                                 + user.username
                                 + "."
@@ -202,19 +200,19 @@ class ApiCreateTrackedProduct(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 else:
-                    tracked_product.end_date = None
-                    tracked_product.save()
+                    tracked_habit.end_date = None
+                    tracked_habit.save()
                     return Response(
                         {
                             "success": True,
-                            "message": f"{product.name} tracking reactivated for {user.username}.",
+                            "message": f"{habit.name} tracking reactivated for {user.username}.",
                         },
                         status=status.HTTP_200_OK,
                     )
 
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "No product found.", "data": []},
+                {"success": False, "message": "No habit found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except User.DoesNotExist:
@@ -234,28 +232,28 @@ class ApiCreateTrackedProduct(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiTrackedProductsList(APIView):
+class ApiTrackedHabitsList(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_products = user.tracked_products.filter(end_date=None).order_by(
+            tracked_habits = user.tracked_habits.filter(end_date=None).order_by(
                 "start_date"
             )
-            serializer = TrackedProductSerializer(tracked_products, many=True)
-            if tracked_products:
+            serializer = TrackedHabitSerializer(tracked_habits, many=True)
+            if tracked_habits:
                 return Response(
                     {
                         "success": True,
-                        "message": "Products retrieved successfully.",
+                        "message": "Habits retrieved successfully.",
                         "data": serializer.data,
                     },
                     status=status.HTTP_200_OK,
                 )
             else:
                 return Response(
-                    {"success": False, "message": "No products found.", "data": []},
+                    {"success": False, "message": "No habits found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
         except User.DoesNotExist:
@@ -277,19 +275,19 @@ class ApiTrackedProductsList(APIView):
         print("test")
         try:
             user = request.user
-            product_id = request.data.get("product_id")
+            habit_id = request.data.get("habit_id")
             unit_id = request.data.get("unit_id")
             motivation_id = request.data.get("motivation_id")
             tracking_frequency_id = request.data.get("tracking_frequency_id")
 
-            product = Product.objects.get(id=product_id)
+            habit = Habit.objects.get(id=habit_id)
             unit = Unit.objects.get(id=unit_id)
             motivation = Motivation.objects.get(id=motivation_id)
             tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
 
-            tracked_product, created = TrackedProduct.objects.get_or_create(
+            tracked_habit, created = TrackedHabit.objects.get_or_create(
                 user=user,
-                product=product,
+                habit=habit,
                 unit=unit,
                 motivation=motivation,
                 tracking_frequency=tracking_frequency,
@@ -300,7 +298,7 @@ class ApiTrackedProductsList(APIView):
                     {
                         "success": True,
                         "message": repr(
-                            product.name
+                            habit.name
                             + " assigned successfully to "
                             + user.username
                             + "."
@@ -309,12 +307,12 @@ class ApiTrackedProductsList(APIView):
                     status=status.HTTP_200_OK,
                 )
             else:
-                if tracked_product.end_date == None:
+                if tracked_habit.end_date == None:
                     return Response(
                         {
                             "success": False,
                             "message": repr(
-                                product.name
+                                habit.name
                                 + " already assigned to "
                                 + user.username
                                 + "."
@@ -323,18 +321,18 @@ class ApiTrackedProductsList(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
                 else:
-                    tracked_product.end_date = None
-                    tracked_product.save()
+                    tracked_habit.end_date = None
+                    tracked_habit.save()
                     return Response(
                         {
                             "success": True,
-                            "message": f"{product.name} tracking reactivated for {user.username}.",
+                            "message": f"{habit.name} tracking reactivated for {user.username}.",
                         },
                         status=status.HTTP_200_OK,
                     )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "No product found.", "data": []},
+                {"success": False, "message": "No habit found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except User.DoesNotExist:
@@ -354,28 +352,28 @@ class ApiTrackedProductsList(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiPausedTrackedProductsList(APIView):
+class ApiPausedTrackedHabitsList(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_products = user.tracked_products.filter(
+            tracked_habits = user.tracked_habits.filter(
                 end_date__isnull=False
             ).order_by("start_date")
-            serializer = TrackedProductSerializer(tracked_products, many=True)
-            if tracked_products:
+            serializer = TrackedHabitSerializer(tracked_habits, many=True)
+            if tracked_habits:
                 return Response(
                     {
                         "success": True,
-                        "message": "Products retrieved successfully.",
+                        "message": "Habits retrieved successfully.",
                         "data": serializer.data,
                     },
                     status=status.HTTP_200_OK,
                 )
             else:
                 return Response(
-                    {"success": False, "message": "No products found.", "data": []},
+                    {"success": False, "message": "No habits found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
         except User.DoesNotExist:
@@ -400,7 +398,7 @@ class ApiAddConsumption(APIView):
 
     def post(self, request, *args, **kwargs):
         try:
-            tracked_product_id = kwargs.get("tracked_product_id")
+            tracked_habit_id = kwargs.get("tracked_habit_id")
             data = request.data
             quantity = data.get("quantity")
             date = data.get("date")
@@ -441,14 +439,14 @@ class ApiAddConsumption(APIView):
 
             user = request.user
             try:
-                tracked_product = TrackedProduct.objects.get(id=tracked_product_id)
+                tracked_habit = TrackedHabit.objects.get(id=tracked_habit_id)
 
                 # Vérifiez si le produit appartient à l'utilisateur
-                if tracked_product.user != user:
+                if tracked_habit.user != user:
                     return Response(
                         {
                             "success": False,
-                            "message": "The product is not tracked by this user.",
+                            "message": "The habit is not tracked by this user.",
                             "data": [],
                         },
                         status=status.HTTP_401_UNAUTHORIZED,
@@ -461,22 +459,22 @@ class ApiAddConsumption(APIView):
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
-                if date < tracked_product.start_date:
+                if date < tracked_habit.start_date:
                     return Response(
                         {
-                            "error": "The date is earlier than the product's tracking start date."
+                            "error": "The date is earlier than the habit's tracking start date."
                         },
                         status=status.HTTP_400_BAD_REQUEST,
                     )
 
-            except TrackedProduct.DoesNotExist:
+            except TrackedHabit.DoesNotExist:
                 return Response(
-                    {"error": "Tracked product not found."},
+                    {"error": "Tracked habit not found."},
                     status=status.HTTP_404_NOT_FOUND,
                 )
 
             consumption, created = Consumption.objects.get_or_create(
-                tracked_product=tracked_product,
+                tracked_habit=tracked_habit,
                 date=date,
                 defaults={"quantity": quantity},
             )
@@ -490,7 +488,7 @@ class ApiAddConsumption(APIView):
                     "success": True,
                     "message": "Consumption added/updated successfully.",
                     "data": {
-                        "product": tracked_product.product.name,
+                        "habit": tracked_habit.habit.name,
                         "quantity": consumption.quantity,
                         "date": str(consumption.date),
                     },
@@ -498,9 +496,9 @@ class ApiAddConsumption(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Product not found.", "data": []},
+                {"success": False, "message": "Habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -515,20 +513,20 @@ class ApiAddConsumption(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiConsumptionsListByTrackedProduct(APIView):
+class ApiConsumptionsListByTrackedHabit(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_product = get_object_or_404(
-                TrackedProduct,
+            tracked_habit = get_object_or_404(
+                TrackedHabit,
                 user=user,
-                id=kwargs["tracked_product_id"],
+                id=kwargs["tracked_habit_id"],
                 end_date=None,
             )
             consumptions = Consumption.objects.filter(
-                tracked_product=tracked_product
+                tracked_habit=tracked_habit
             ).order_by("date")
             serializer = ConsumptionSerializer(consumptions, many=True)
             return Response(
@@ -544,14 +542,14 @@ class ApiConsumptionsListByTrackedProduct(APIView):
                 {"success": False, "message": "User not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Product not found.", "data": []},
+                {"success": False, "message": "Habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except TrackedProduct.DoesNotExist:
+        except TrackedHabit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Tracked product not found.", "data": []},
+                {"success": False, "message": "Tracked habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -572,14 +570,14 @@ class ApiConsumptionPeriodList(APIView):
     def get(self, request, *args, **kwargs):
         try:
             user = get_object_or_404(User, id=kwargs["user_id"])
-            product = get_object_or_404(Product, id=kwargs["product_id"])
+            habit = get_object_or_404(Habit, id=kwargs["habit_id"])
             start_date = kwargs["start_date"]
             end_date = kwargs["end_date"]
-            tracked_product = get_object_or_404(
-                TrackedProduct, user=user, product=product, end_date=None
+            tracked_habit = get_object_or_404(
+                TrackedHabit, user=user, habit=habit, end_date=None
             )
             consumptions = Consumption.objects.filter(
-                tracked_product=tracked_product, date__range=[start_date, end_date]
+                tracked_habit=tracked_habit, date__range=[start_date, end_date]
             )
             serializer = ConsumptionSerializer(consumptions, many=True)
             return Response(
@@ -595,14 +593,14 @@ class ApiConsumptionPeriodList(APIView):
                 {"success": False, "message": "User not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Product not found.", "data": []},
+                {"success": False, "message": "Habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except TrackedProduct.DoesNotExist:
+        except TrackedHabit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Tracked product not found.", "data": []},
+                {"success": False, "message": "Tracked habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -623,16 +621,14 @@ class ApiConsumptionDetail(APIView):
     def get(self, request, *args, **kwargs):
         try:
             date = kwargs["date"]
-            tracked_product = TrackedProduct.objects.get(
-                id=kwargs["tracked_product_id"]
-            )
+            tracked_habit = TrackedHabit.objects.get(id=kwargs["tracked_habit_id"])
             try:
                 consumption = Consumption.objects.get(
-                    tracked_product=tracked_product, date=date
+                    tracked_habit=tracked_habit, date=date
                 )
             except Consumption.DoesNotExist:
                 consumption = Consumption.objects.create(
-                    tracked_product=tracked_product, date=date, quantity=0
+                    tracked_habit=tracked_habit, date=date, quantity=0
                 )
 
             serializer = ConsumptionSerializer(consumption)
@@ -650,14 +646,14 @@ class ApiConsumptionDetail(APIView):
                 {"success": False, "message": "User not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except Product.DoesNotExist:
+        except Habit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Product not found.", "data": []},
+                {"success": False, "message": "Habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
-        except TrackedProduct.DoesNotExist:
+        except TrackedHabit.DoesNotExist:
             return Response(
-                {"success": False, "message": "Tracked product not found.", "data": []},
+                {"success": False, "message": "Tracked habit not found.", "data": []},
                 status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
@@ -687,7 +683,7 @@ class ApiConsumptionDetail(APIView):
 
 #             # Filtrer les consommations pour l'utilisateur et la plage de dates
 #             consumptions = Consumption.objects.filter(
-#                 tracked_product__user=user, date__range=[start_date, end_date]
+#                 tracked_habit__user=user, date__range=[start_date, end_date]
 #             )
 
 #             # Utiliser le sérialiseur modifié
@@ -756,7 +752,7 @@ class ApiTrackingFrequenciesList(APIView):
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class ApiDeleteTrackedProduct(APIView):
+class ApiDeleteTrackedHabit(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -764,22 +760,22 @@ class ApiDeleteTrackedProduct(APIView):
     def delete(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_product = TrackedProduct.objects.get(
-                user=user, id=kwargs["tracked_product_id"]
+            tracked_habit = TrackedHabit.objects.get(
+                user=user, id=kwargs["tracked_habit_id"]
             )
-            tracked_product.delete()
+            tracked_habit.delete()
             return Response(
                 {
                     "success": True,
-                    "message": "Tracked product deleted successfully.",
+                    "message": "Tracked habit deleted successfully.",
                 },
                 status=status.HTTP_200_OK,
             )
-        except TrackedProduct.DoesNotExist:
+        except TrackedHabit.DoesNotExist:
             return Response(
                 {
                     "success": False,
-                    "message": "Tracked product not found.",
+                    "message": "Tracked habit not found.",
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
@@ -794,7 +790,7 @@ class ApiDeleteTrackedProduct(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiPauseTrackedProduct(APIView):
+class ApiPauseTrackedHabit(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -802,23 +798,23 @@ class ApiPauseTrackedProduct(APIView):
     def patch(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_product = TrackedProduct.objects.get(
-                user=user, id=kwargs["tracked_product_id"]
+            tracked_habit = TrackedHabit.objects.get(
+                user=user, id=kwargs["tracked_habit_id"]
             )
-            tracked_product.end_date = datetime.now().date()
-            tracked_product.save()
+            tracked_habit.end_date = datetime.now().date()
+            tracked_habit.save()
             return Response(
                 {
                     "success": True,
-                    "message": "Tracked product paused successfully.",
+                    "message": "Tracked habit paused successfully.",
                 },
                 status=status.HTTP_200_OK,
             )
-        except TrackedProduct.DoesNotExist:
+        except TrackedHabit.DoesNotExist:
             return Response(
                 {
                     "success": False,
-                    "message": "Tracked product not found.",
+                    "message": "Tracked habit not found.",
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )
@@ -833,7 +829,7 @@ class ApiPauseTrackedProduct(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class ApiUnpauseTrackedProduct(APIView):
+class ApiUnpauseTrackedHabit(APIView):
     permission_classes = [
         IsAuthenticated,
     ]
@@ -841,24 +837,24 @@ class ApiUnpauseTrackedProduct(APIView):
     def patch(self, request, *args, **kwargs):
         try:
             user = request.user
-            tracked_product = TrackedProduct.objects.get(
-                user=user, id=kwargs["tracked_product_id"]
+            tracked_habit = TrackedHabit.objects.get(
+                user=user, id=kwargs["tracked_habit_id"]
             )
-            tracked_product.end_date = None
-            tracked_product.save()
+            tracked_habit.end_date = None
+            tracked_habit.save()
 
             return Response(
                 {
                     "success": True,
-                    "message": "Tracked product reactivated successfully.",
+                    "message": "Tracked habit reactivated successfully.",
                 },
                 status=status.HTTP_200_OK,
             )
-        except TrackedProduct.DoesNotExist:
+        except TrackedHabit.DoesNotExist:
             return Response(
                 {
                     "success": False,
-                    "message": "Tracked product not found.",
+                    "message": "Tracked habit not found.",
                 },
                 status=status.HTTP_404_NOT_FOUND,
             )

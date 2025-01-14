@@ -1,13 +1,13 @@
-import { TrackedProduct } from "./tracked-product.model";
+import { TrackedHabit } from "./tracked-habit.model";
 
 export type Consumption = {
     quantity: number;
     date: Date;
-    tracked_product: TrackedProduct;
+    tracked_habit: TrackedHabit;
 }
 
 // indexed type
-export type ConsumptionsListByTrackedProductId = {
+export type ConsumptionsListByTrackedHabitId = {
     [key: number]: Consumption[];
 }
 

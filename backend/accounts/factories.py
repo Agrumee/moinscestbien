@@ -4,7 +4,7 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import datetime
 import random
 from accounts.models import User
-from consumptions.models import Product, TrackedProduct, TrackingFrequency
+from consumptions.models import Habit, TrackedHabit, TrackingFrequency
 import uuid
 from datetime import date, timedelta
 
@@ -36,30 +36,30 @@ class UserFactory(factory.django.DjangoModelFactory):
     password = factory.PostGenerationMethodCall("set_password", "password")
 
     @factory.post_generation
-    def tracked_products(self, create, extracted, **kwargs):
-        products = Product.objects.order_by("?")[:3]
+    def tracked_habits(self, create, extracted, **kwargs):
+        habits = Habit.objects.order_by("?")[:3]
         tracking_frequencies = list(TrackingFrequency.objects.all())
-        TrackedProduct.objects.bulk_create(
+        TrackedHabit.objects.bulk_create(
             [
-                TrackedProduct(
+                TrackedHabit(
                     user=self,
-                    product=product,
-                    unit=product.units.first(),
-                    motivation=product.motivations.first(),
+                    habit=habit,
+                    unit=habit.units.first(),
+                    motivation=habit.motivations.first(),
                     tracking_frequency=random.choice(tracking_frequencies),
                     start_date=random_start_date(),
                 )
-                for product in products
+                for habit in habits
             ]
         )
 
     @factory.post_generation
     def consumptions(self, create, extracted, **kwargs):
         endDate = date.today()
-        for tracked_product in self.tracked_products.all():
+        for tracked_habit in self.tracked_habits.all():
             currentDate = random_start_date()
             while currentDate <= endDate:
-                tracked_product.consumptions.create(
+                tracked_habit.consumptions.create(
                     quantity=random.randint(1, 100), date=currentDate
                 )
                 currentDate += timedelta(days=1)
