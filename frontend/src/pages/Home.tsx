@@ -1,65 +1,65 @@
 import { useEffect, useState } from "react";
 import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
-import { TrackedProduct } from "../types/tracked-product.model";
-import { ConsumptionsListByTrackedProductId } from "../types/consumption.model";
+import { TrackedHabit } from "../types/tracked-habit.model";
+import { ConsumptionsListByTrackedHabitId } from "../types/consumption.model";
 import "./Home.scss"
 
 const Home = () => {
-  const [trackedProducts, setTrackedProducts] = useState<TrackedProduct[]>([]);
-  const [ConsumptionsListByTrackedProductId, setConsumptionsListByTrackedProductId] = useState<ConsumptionsListByTrackedProductId>(
+  const [trackedHabits, setTrackedHabits] = useState<TrackedHabit[]>([]);
+  const [ConsumptionsListByTrackedHabitId, setConsumptionsListByTrackedHabitId] = useState<ConsumptionsListByTrackedHabitId>(
     {}
   );
-  const [currentConsumptionByTrackedProductId, setCurrentConsumptionByTrackedProductId] = useState<{
+  const [currentConsumptionByTrackedHabitId, setCurrentConsumptionByTrackedHabitId] = useState<{
     [key: number]: number;
   }>({});
   const [date, setDate] = useState<string>("");
 
 
   useEffect(() => {
-    const getProducts = async () => {
+    const getHabits = async () => {
       try {
-        const response = await fetchAPI("/consumptions/tracked-products", {
+        const response = await fetchAPI("/consumptions/tracked-habits", {
           method: "GET",
         });
-        setTrackedProducts(response.data);
+        setTrackedHabits(response.data);
       } catch (error) {
-        console.error("Get products failed", error);
+        console.error("Get habits failed", error);
         throw error;
       }
     };
 
-    getProducts();
+    getHabits();
   }, []);
 
   useEffect(() => {
-    for (let productId in currentConsumptionByTrackedProductId) {
-      getConsumptions(Number(productId));
+    for (let habitId in currentConsumptionByTrackedHabitId) {
+      getConsumptions(Number(habitId));
     }
-  }, [currentConsumptionByTrackedProductId]);
+  }, [currentConsumptionByTrackedHabitId]);
 
-  const getConsumptions = async (productId: number) => {
+  const getConsumptions = async (habitId: number) => {
     try {
-      const response = await fetchAPI(`/consumptions/tracked-products/${productId}/consumptions`, {
+      const response = await fetchAPI(`/consumptions/tracked-habits/${habitId}/consumptions`, {
         method: "GET",
       });
-      setConsumptionsListByTrackedProductId((previousConsumptions) => ({
+      setConsumptionsListByTrackedHabitId((previousConsumptions) => ({
         ...previousConsumptions,
-        [productId]: response.data,
+        [habitId]: response.data,
       }));
     } catch (error) {
       console.error("Get consumptions failed", error);
     }
   };
 
-  const handleDateChange = async (trackedProductId: number, date: string) => {
+  const handleDateChange = async (trackedHabitId: number, date: string) => {
     try {
-      const data = await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/consumptions/${date}`, {
+      const data = await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}/consumptions/${date}`, {
         method: "GET",
       });
-      setCurrentConsumptionByTrackedProductId((prev) => ({
+      setCurrentConsumptionByTrackedHabitId((prev) => ({
         ...prev,
-        [trackedProductId]: data.data.quantity,
+        [trackedHabitId]: data.data.quantity,
       }));
       setDate(date);
     } catch (error) {
@@ -68,12 +68,12 @@ const Home = () => {
   };
 
   const handleUpdateConsumption = async (
-    trackedProductId: number,
+    trackedHabitId: number,
     date: string,
     quantity: number
   ) => {
     try {
-      const response = await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/consumptions/add-consumption`, {
+      const response = await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}/consumptions/add-consumption`, {
         method: "POST",
         body: { date: date, quantity: quantity },
         headers: {
@@ -81,56 +81,56 @@ const Home = () => {
         },
       });
 
-      setCurrentConsumptionByTrackedProductId((prev) => ({
+      setCurrentConsumptionByTrackedHabitId((prev) => ({
         ...prev,
-        [trackedProductId]: response.data.quantity,
+        [trackedHabitId]: response.data.quantity,
       }));
     } catch (error) {
       console.error("Update consumption failed", error);
     }
   };
 
-  const handleDeleteTracking = async (trackedProductId: number) => {
+  const handleDeleteTracking = async (trackedHabitId: number) => {
     try {
-      await fetchAPI(`/consumptions/tracked-products/${trackedProductId}`, {
+      await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}`, {
         method: "DELETE",
       });
-      setTrackedProducts((prev) =>
-        prev.filter((product) => product.id !== trackedProductId)
+      setTrackedHabits((prev) =>
+        prev.filter((habit) => habit.id !== trackedHabitId)
       );
     } catch (error) {
-      console.error("Delete tracked product failed", error);
+      console.error("Delete tracked habit failed", error);
     }
   };
 
-  const handlePauseTracking = async (trackedProductId: number) => {
+  const handlePauseTracking = async (trackedHabitId: number) => {
     try {
-      await fetchAPI(`/consumptions/tracked-products/${trackedProductId}/pause`, {
+      await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}/pause`, {
         method: "PATCH",
       });
-      setTrackedProducts((prev) =>
-        prev.filter((product) => product.id !== trackedProductId)
+      setTrackedHabits((prev) =>
+        prev.filter((habit) => habit.id !== trackedHabitId)
       );
     } catch (error) {
-      console.error("Pause tracked product failed", error);
+      console.error("Pause tracked habit failed", error);
     }
   };
 
   return (
     <div className="p-home">
-      {trackedProducts.map((trackedProduct: TrackedProduct) => (
+      {trackedHabits.map((trackedHabit: TrackedHabit) => (
         <Accordion
-          key={trackedProduct.id}
-          trackedProduct={trackedProduct}
-          consumptions={ConsumptionsListByTrackedProductId[trackedProduct.id] || []}
-          currentConsumption={currentConsumptionByTrackedProductId[trackedProduct.id] || 0}
-          onDateChange={(date) => handleDateChange(trackedProduct.id, date)}
+          key={trackedHabit.id}
+          trackedHabit={trackedHabit}
+          consumptions={ConsumptionsListByTrackedHabitId[trackedHabit.id] || []}
+          currentConsumption={currentConsumptionByTrackedHabitId[trackedHabit.id] || 0}
+          onDateChange={(date) => handleDateChange(trackedHabit.id, date)}
           onUpdateConsumption={(quantity) =>
-            handleUpdateConsumption(trackedProduct.id, date, quantity)
+            handleUpdateConsumption(trackedHabit.id, date, quantity)
           }
-          frequency={trackedProduct.tracking_frequency.name}
-          deleteTracking={() => handleDeleteTracking(trackedProduct.id)}
-          pauseTracking={() => handlePauseTracking(trackedProduct.id)}
+          frequency={trackedHabit.tracking_frequency.name}
+          deleteTracking={() => handleDeleteTracking(trackedHabit.id)}
+          pauseTracking={() => handlePauseTracking(trackedHabit.id)}
         />
       ))}
     </div>

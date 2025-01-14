@@ -7,22 +7,22 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("consumptions", "0009_trackingfrequency_alter_trackedproduct_start_date"),
+        ("consumptions", "0009_trackingfrequency_alter_trackedhabit_start_date"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name="trackedproduct",
+            model_name="trackedhabit",
             name="tracking_frequency",
             field=models.ForeignKey(
                 default=1,
                 on_delete=django.db.models.deletion.CASCADE,
-                related_name="tracked_products",
+                related_name="tracked_habits",
                 to="consumptions.trackingfrequency",
             ),
         ),
         migrations.AlterField(
-            model_name="trackedproduct",
+            model_name="trackedhabit",
             name="start_date",
             field=models.DateField(default=datetime.date.today),
         ),

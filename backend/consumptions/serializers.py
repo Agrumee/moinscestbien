@@ -1,17 +1,17 @@
 from rest_framework import serializers
 from .models import (
-    Product,
+    Habit,
     Unit,
     Motivation,
     Consumption,
-    TrackedProduct,
+    TrackedHabit,
     TrackingFrequency,
 )
 
 
-class ProductSerializer(serializers.ModelSerializer):
+class HabitSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Product
+        model = Habit
         fields = ["id", "name", "label"]
 
 
@@ -33,17 +33,17 @@ class TrackingFrequencySerializer(serializers.ModelSerializer):
         fields = ["id", "name", "label"]
 
 
-class TrackedProductSerializer(serializers.ModelSerializer):
-    product = ProductSerializer()
+class TrackedHabitSerializer(serializers.ModelSerializer):
+    habit = HabitSerializer()
     unit = UnitSerializer()
     motivation = MotivationSerializer()
     tracking_frequency = TrackingFrequencySerializer()
 
     class Meta:
-        model = TrackedProduct
+        model = TrackedHabit
         fields = [
             "id",
-            "product",
+            "habit",
             "unit",
             "motivation",
             "tracking_frequency",
@@ -53,12 +53,12 @@ class TrackedProductSerializer(serializers.ModelSerializer):
 
 
 class ConsumptionSerializer(serializers.ModelSerializer):
-    tracked_product = TrackedProductSerializer()
+    tracked_habit = TrackedHabitSerializer()
 
     class Meta:
         model = Consumption
         fields = [
             "quantity",
             "date",
-            "tracked_product",
+            "tracked_habit",
         ]

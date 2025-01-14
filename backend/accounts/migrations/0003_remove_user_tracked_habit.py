@@ -5,12 +5,12 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("accounts", "0002_user_tracked_product"),
+        ("accounts", "0002_user_tracked_habit"),
     ]
 
     operations = [
         migrations.RemoveField(
             model_name="user",
-            name="tracked_product",
+            name="tracked_habit",
         ),
     ]

@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import "./ConsumptionsChart.scss";
 import { Consumption } from "../../../types/consumption.model";
-import { Frequency } from "../../../types/tracked-product.model";
+import { Frequency } from "../../../types/tracked-habit.model";
 
 
 interface ConsumptionsChartProps {
@@ -135,16 +135,16 @@ const ConsumptionsChart = ({
         const periodLabel = formatXAxisLabels(date, frequency);
   
         if (periodLabel === label) {
-          const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
+          const habitKey = `${consumption.tracked_habit.habit.label} (${consumption.tracked_habit.unit.code})`;
   
-          if (!grouped[label][productKey]) grouped[label][productKey] = 0;
-          grouped[label][productKey] = (grouped[label][productKey] as number) + consumption.quantity;
+          if (!grouped[label][habitKey]) grouped[label][habitKey] = 0;
+          grouped[label][habitKey] = (grouped[label][habitKey] as number) + consumption.quantity;
         }
       });
   
       consumptions.forEach(consumption => {
-        const productKey = `${consumption.tracked_product.product.label} (${consumption.tracked_product.unit.code})`;
-        if (!grouped[label][productKey]) grouped[label][productKey] = 0;
+        const habitKey = `${consumption.tracked_habit.habit.label} (${consumption.tracked_habit.unit.code})`;
+        if (!grouped[label][habitKey]) grouped[label][habitKey] = 0;
       });
     });
   
@@ -156,8 +156,8 @@ const ConsumptionsChart = ({
   const groupedData = groupConsumptions(consumptions, frequency);
 
   // Extraire les clés des produits pour créer des lignes distinctes
-  const trackedProductKey =
-    `${consumptions[0].tracked_product?.product.label} (${consumptions[0].tracked_product?.unit.code})`;
+  const trackedHabitKey =
+    `${consumptions[0].tracked_habit?.habit.label} (${consumptions[0].tracked_habit?.unit.code})`;
 
   // Si aucune donnée n'est disponible, afficher un message
   if (!groupedData.length) {
@@ -180,10 +180,10 @@ const ConsumptionsChart = ({
           {/* Créer une ligne pour chaque produit suivi */}
 
           <Line
-            key={trackedProductKey}
+            key={trackedHabitKey}
             type="monotone" // Ligne lisse
-            dataKey={trackedProductKey} // Clé correspondant à ce produit
-            name={trackedProductKey} // Nom affiché dans la légende et le Tooltip
+            dataKey={trackedHabitKey} // Clé correspondant à ce produit
+            name={trackedHabitKey} // Nom affiché dans la légende et le Tooltip
             stroke={'#f9bc60'} // Couleur de la ligne
             strokeWidth={2} // Épaisseur de la ligne
             dot={{ r: 4 }} // Taille des points sur la ligne

@@ -19,9 +19,9 @@ def populate_units(apps, schema_editor):
             Unit(name="cups", label="Tasses", code="tasse"),
             Unit(name="deliveries", label="Livraisons", code="livraison"),
             Unit(name="bets", label="Paris", code="paris"),
-            Unit(name="bought-products", label="Produits achetés", code="produit"),
+            Unit(name="bought-habits", label="Produits achetés", code="produit"),
             Unit(name="meals", label="Repas", code="repas"),
-            Unit(name="products", label="Produits", code="produit"),
+            Unit(name="habits", label="Produits", code="produit"),
             Unit(name="kilogrammes", label="Kilogrammes", code="kg"),
         ]
     )
