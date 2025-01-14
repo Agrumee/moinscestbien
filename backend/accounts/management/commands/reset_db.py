@@ -24,9 +24,6 @@ class Command(BaseCommand):
         # Recréez le schéma de la base de données et appliquez les migrations
         call_command("migrate")
 
-        # Appel à d'autres commandes si nécessaire, par exemple :
-        # call_command('populate_users', 10)
-
         self.stdout.write(
             self.style.SUCCESS("Database has been reset and migrations applied")
         )
