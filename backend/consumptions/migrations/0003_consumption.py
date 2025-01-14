@@ -6,7 +6,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("consumptions", "0002_tracked_products"),
+        ("consumptions", "0002_tracked_habits"),
     ]
 
     operations = [
@@ -25,16 +25,16 @@ class Migration(migrations.Migration):
                 ("quantity", models.FloatField()),
                 ("date", models.DateField()),
                 (
-                    "tracked_product",
+                    "tracked_habit",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
                         related_name="consumptions",
-                        to="consumptions.TrackedProduct",
+                        to="consumptions.TrackedHabit",
                     ),
                 ),
             ],
             options={
-                "unique_together": {("tracked_product", "date")},
+                "unique_together": {("tracked_habit", "date")},
             },
         ),
     ]

@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name="Product",
+            name="Habit",
             fields=[
                 (
                     "id",
@@ -60,14 +60,14 @@ class Migration(migrations.Migration):
                     "motivations",
                     models.ManyToManyField(
                         blank=True,
-                        related_name="products",
+                        related_name="habits",
                         to="consumptions.motivation",
                     ),
                 ),
                 (
                     "units",
                     models.ManyToManyField(
-                        related_name="products", to="consumptions.unit"
+                        related_name="habits", to="consumptions.unit"
                     ),
                 ),
             ],

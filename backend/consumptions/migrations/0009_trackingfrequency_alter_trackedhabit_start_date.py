@@ -17,7 +17,7 @@ def populate_tracking_frequencies(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("consumptions", "0008_products_motivations_populate"),
+        ("consumptions", "0008_habits_motivations_populate"),
     ]
 
     operations = [

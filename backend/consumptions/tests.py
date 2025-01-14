@@ -3,8 +3,8 @@ from accounts.models import User
 from consumptions.models import (
     Motivation,
     Unit,
-    Product,
-    TrackedProduct,
+    Habit,
+    TrackedHabit,
     Consumption,
     TrackingFrequency,
 )
@@ -18,15 +18,15 @@ import random
 
 
 User = apps.get_model("accounts", "User")
-Product = apps.get_model("consumptions", "Product")
+Habit = apps.get_model("consumptions", "Habit")
 Unit = apps.get_model("consumptions", "Unit")
 Motivation = apps.get_model("consumptions", "Motivation")
 TrackingFrequency = apps.get_model("consumptions", "TrackingFrequency")
-TrackedProduct = apps.get_model("consumptions", "TrackedProduct")
+TrackedHabit = apps.get_model("consumptions", "TrackedHabit")
 Consumption = apps.get_model("consumptions", "Consumption")
 
 
-class TrackedProductsListTest(TestCase):
+class TrackedHabitsListTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -34,28 +34,28 @@ class TrackedProductsListTest(TestCase):
             password="password123",
         )
 
-        self.trackedProducts = [
-            TrackedProduct.objects.create(
+        self.trackedHabits = [
+            TrackedHabit.objects.create(
                 user=self.user,
-                product=Product.objects.get(name="coffee"),
+                habit=Habit.objects.get(name="coffee"),
                 unit=Unit.objects.get(name="cups"),
                 motivation=Motivation.objects.get(name="health"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
                 start_date=date.today() - relativedelta(months=4),
                 end_date=None,
             ),
-            TrackedProduct.objects.create(
+            TrackedHabit.objects.create(
                 user=self.user,
-                product=Product.objects.get(name="alcohol"),
+                habit=Habit.objects.get(name="alcohol"),
                 unit=Unit.objects.get(name="glasses"),
                 motivation=Motivation.objects.get(name="health"),
                 tracking_frequency=TrackingFrequency.objects.get(name="monthly"),
                 start_date=date.today() - relativedelta(months=1),
                 end_date=None,
             ),
-            TrackedProduct.objects.create(
+            TrackedHabit.objects.create(
                 user=self.user,
-                product=Product.objects.get(name="car"),
+                habit=Habit.objects.get(name="car"),
                 unit=Unit.objects.get(name="kilometers"),
                 motivation=Motivation.objects.get(name="ecology"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
@@ -64,9 +64,9 @@ class TrackedProductsListTest(TestCase):
                 - relativedelta(days=4),
                 end_date=None,
             ),
-            TrackedProduct.objects.create(
+            TrackedHabit.objects.create(
                 user=self.user,
-                product=Product.objects.get(name="bets"),
+                habit=Habit.objects.get(name="bets"),
                 unit=Unit.objects.get(name="euros"),
                 motivation=Motivation.objects.get(name="money"),
                 tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
@@ -76,11 +76,11 @@ class TrackedProductsListTest(TestCase):
         ]
 
         self.client = APIClient()
-        self.tracked_products_url = reverse("tracked-products")
+        self.tracked_habits_url = reverse("tracked-habits")
         self.client.login(username="user@example.com", password="password123")
 
-    def test_user_product_lists_order_by_date(self):
-        response = self.client.get(self.tracked_products_url)
+    def test_user_habit_lists_order_by_date(self):
+        response = self.client.get(self.tracked_habits_url)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -88,15 +88,15 @@ class TrackedProductsListTest(TestCase):
         self.assertEqual(len(data), 3)
 
         dates = []
-        for trackedProduct in data:
-            date_str = trackedProduct["start_date"]
+        for trackedHabit in data:
+            date_str = trackedHabit["start_date"]
             date_obj = date.fromisoformat(date_str)
             dates.append(date_obj)
 
         self.assertEqual(dates, sorted(dates))
 
 
-class ApiConsumptionsListByProductTest(TestCase):
+class ApiConsumptionsListByHabitTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -104,9 +104,9 @@ class ApiConsumptionsListByProductTest(TestCase):
             password="password123",
         )
 
-        self.trackedProduct = TrackedProduct.objects.create(
+        self.trackedHabit = TrackedHabit.objects.create(
             user=self.user,
-            product=Product.objects.get(name="coffee"),
+            habit=Habit.objects.get(name="coffee"),
             unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
@@ -116,16 +116,16 @@ class ApiConsumptionsListByProductTest(TestCase):
 
         self.consumptions = []
         for _ in range(100):
-            random_date = self.trackedProduct.start_date + timedelta(
+            random_date = self.trackedHabit.start_date + timedelta(
                 days=random.randint(
-                    0, (date.today() - self.trackedProduct.start_date).days
+                    0, (date.today() - self.trackedHabit.start_date).days
                 )
             )
             if not Consumption.objects.filter(
-                tracked_product=self.trackedProduct, date=random_date
+                tracked_habit=self.trackedHabit, date=random_date
             ):
                 consumption = Consumption.objects.create(
-                    tracked_product=self.trackedProduct,
+                    tracked_habit=self.trackedHabit,
                     quantity=round(random.uniform(0, 40), 1),
                     date=random_date,
                 )
@@ -133,7 +133,7 @@ class ApiConsumptionsListByProductTest(TestCase):
 
         self.client = APIClient()
         self.consumptions_url = reverse(
-            "consumptions-by-product", args=[self.trackedProduct.id]
+            "consumptions-by-habit", args=[self.trackedHabit.id]
         )
         self.client.login(username="user@example.com", password="password123")
 
@@ -150,16 +150,16 @@ class ApiConsumptionsListByProductTest(TestCase):
 
 class ApiAddConsumption(TestCase):
     def setUp(self):
-        self.product = Product.objects.get(name="coffee")
+        self.habit = Habit.objects.get(name="coffee")
         self.user = User.objects.create_user(
             email="user@example.com",
             username="user@example.com",
             password="password123",
         )
 
-        self.user_tracked_product = TrackedProduct.objects.create(
+        self.user_tracked_habit = TrackedHabit.objects.create(
             user=self.user,
-            product=self.product,
+            habit=self.habit,
             unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
@@ -172,9 +172,9 @@ class ApiAddConsumption(TestCase):
             password="password123",
         )
 
-        self.other_user_tracked_product = TrackedProduct.objects.create(
+        self.other_user_tracked_habit = TrackedHabit.objects.create(
             user=self.other_user,
-            product=self.product,
+            habit=self.habit,
             unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
@@ -184,14 +184,14 @@ class ApiAddConsumption(TestCase):
         self.client = APIClient()
         self.client.login(username="user@example.com", password="password123")
         self.add_user_consumption_url = reverse(
-            "add-consumption", args=[self.user_tracked_product.id]
+            "add-consumption", args=[self.user_tracked_habit.id]
         )
         self.add_other_user_consumption_url = reverse(
-            "add-consumption", args=[self.other_user_tracked_product.id]
+            "add-consumption", args=[self.other_user_tracked_habit.id]
         )
         self.payload = {"date": date.today().isoformat(), "quantity": 5}
 
-    def test_user_cannot_update_consumptions_of_product_tracked_by_another_user(self):
+    def test_user_cannot_update_consumptions_of_habit_tracked_by_another_user(self):
         response = self.client.post(
             self.add_other_user_consumption_url, data=self.payload, format="json"
         )
@@ -205,7 +205,7 @@ class ApiAddConsumption(TestCase):
 
         self.assertTrue(
             Consumption.objects.filter(
-                tracked_product=self.user_tracked_product, date=self.payload["date"]
+                tracked_habit=self.user_tracked_habit, date=self.payload["date"]
             ).exists()
         )
 
@@ -219,7 +219,7 @@ class ApiAddConsumption(TestCase):
 
         self.assertTrue(
             Consumption.objects.filter(
-                tracked_product=self.user_tracked_product, date=self.payload["date"]
+                tracked_habit=self.user_tracked_habit, date=self.payload["date"]
             ).exists()
         )
 
@@ -240,16 +240,16 @@ class ApiAddConsumption(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
-class DeleteTrackedProductTest(TestCase):
+class DeleteTrackedHabitTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="test@test.test",
             username="username",
             password="password123",
         )
-        self.trackedProduct = TrackedProduct.objects.create(
+        self.trackedHabit = TrackedHabit.objects.create(
             user=self.user,
-            product=Product.objects.get(name="coffee"),
+            habit=Habit.objects.get(name="coffee"),
             unit=Unit.objects.get(name="cups"),
             motivation=Motivation.objects.get(name="health"),
             tracking_frequency=TrackingFrequency.objects.get(name="weekly"),
@@ -258,17 +258,17 @@ class DeleteTrackedProductTest(TestCase):
         )
         self.client = APIClient()
         self.client.login(username="username", password="password123")
-        self.delete_tracked_product_url = reverse(
-            "delete-tracked-product", args=[self.trackedProduct.id]
+        self.delete_tracked_habit_url = reverse(
+            "delete-tracked-habit", args=[self.trackedHabit.id]
         )
 
-    def test_user_can_delete_tracked_product(self):
-        response = self.client.delete(self.delete_tracked_product_url)
+    def test_user_can_delete_tracked_habit(self):
+        response = self.client.delete(self.delete_tracked_habit_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(TrackedProduct.objects.count(), 0)
+        self.assertEqual(TrackedHabit.objects.count(), 0)
 
 
-class ApiCreateTrackedProductTest(TestCase):
+class ApiCreateTrackedHabitTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -276,7 +276,7 @@ class ApiCreateTrackedProductTest(TestCase):
             password="password123",
         )
 
-        self.product = Product.objects.create(name="coffee")
+        self.habit = Habit.objects.create(name="coffee")
         self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
@@ -284,28 +284,28 @@ class ApiCreateTrackedProductTest(TestCase):
         self.client = APIClient()
         self.client.login(username="user@example.com", password="password123")
 
-        self.add_product_url = reverse("tracked-products")
+        self.add_habit_url = reverse("tracked-habits")
 
-    def test_user_can_add_product(self):
+    def test_user_can_add_habit(self):
         data = {
-            "product_id": self.product.id,
+            "habit_id": self.habit.id,
             "unit_id": self.unit.id,
             "motivation_id": self.motivation.id,
             "tracking_frequency_id": self.tracking_frequency.id,
         }
 
-        response = self.client.post(self.add_product_url, data)
+        response = self.client.post(self.add_habit_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("success", response.data)
-        self.assertEqual(TrackedProduct.objects.count(), 1)
-        self.assertEqual(TrackedProduct.objects.first().product, self.product)
+        self.assertEqual(TrackedHabit.objects.count(), 1)
+        self.assertEqual(TrackedHabit.objects.first().habit, self.habit)
 
-    def test_user_can_add_untracked_product_anymore(self):
-        # Create a previously tracked product with an end date in the past
-        self.tracked_product = TrackedProduct.objects.create(
+    def test_user_can_add_untracked_habit_anymore(self):
+        # Create a previously tracked habit with an end date in the past
+        self.tracked_habit = TrackedHabit.objects.create(
             user=self.user,
-            product=self.product,
+            habit=self.habit,
             unit=self.unit,
             motivation=self.motivation,
             tracking_frequency=self.tracking_frequency,
@@ -313,23 +313,23 @@ class ApiCreateTrackedProductTest(TestCase):
         )
 
         data = {
-            "product_id": self.product.id,
+            "habit_id": self.habit.id,
             "unit_id": self.unit.id,
             "motivation_id": self.motivation.id,
             "tracking_frequency_id": self.tracking_frequency.id,
         }
 
-        response = self.client.post(self.add_product_url, data)
+        response = self.client.post(self.add_habit_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn("success", response.data)
-        self.assertEqual(TrackedProduct.objects.count(), 1)
-        self.assertEqual(TrackedProduct.objects.first().product, self.product)
+        self.assertEqual(TrackedHabit.objects.count(), 1)
+        self.assertEqual(TrackedHabit.objects.first().habit, self.habit)
 
-    def test_user_cannot_add_product_already_assigned(self):
-        self.tracked_product = TrackedProduct.objects.create(
+    def test_user_cannot_add_habit_already_assigned(self):
+        self.tracked_habit = TrackedHabit.objects.create(
             user=self.user,
-            product=self.product,
+            habit=self.habit,
             unit=self.unit,
             motivation=self.motivation,
             tracking_frequency=self.tracking_frequency,
@@ -337,19 +337,19 @@ class ApiCreateTrackedProductTest(TestCase):
         )
 
         data = {
-            "product_id": self.product.id,
+            "habit_id": self.habit.id,
             "unit_id": self.unit.id,
             "motivation_id": self.motivation.id,
             "tracking_frequency_id": self.tracking_frequency.id,
         }
 
-        response = self.client.post(self.add_product_url, data)
+        response = self.client.post(self.add_habit_url, data)
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("already assigned", response.data["message"])
 
 
-class ApiPauseTrackedProductTest(TestCase):
+class ApiPauseTrackedHabitTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -357,7 +357,7 @@ class ApiPauseTrackedProductTest(TestCase):
             password="password123",
         )
 
-        self.product = Product.objects.create(name="coffee")
+        self.habit = Habit.objects.create(name="coffee")
         self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
@@ -365,9 +365,9 @@ class ApiPauseTrackedProductTest(TestCase):
         self.client = APIClient()
         self.client.login(username="user@example.com", password="password123")
 
-        self.trackedProduct = TrackedProduct.objects.create(
+        self.trackedHabit = TrackedHabit.objects.create(
             user=self.user,
-            product=self.product,
+            habit=self.habit,
             unit=self.unit,
             motivation=self.motivation,
             tracking_frequency=self.tracking_frequency,
@@ -375,18 +375,18 @@ class ApiPauseTrackedProductTest(TestCase):
             end_date=None,
         )
 
-        self.pause_tracked_product_url = reverse(
-            "pause-tracked-product", args=[self.trackedProduct.id]
+        self.pause_tracked_habit_url = reverse(
+            "pause-tracked-habit", args=[self.trackedHabit.id]
         )
 
-    def test_user_can_pause_tracked_product(self):
-        response = self.client.patch(self.pause_tracked_product_url)
-        self.trackedProduct.refresh_from_db()
+    def test_user_can_pause_tracked_habit(self):
+        response = self.client.patch(self.pause_tracked_habit_url)
+        self.trackedHabit.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNotNone(self.trackedProduct.end_date)
+        self.assertIsNotNone(self.trackedHabit.end_date)
 
 
-class ApiUnpauseTrackedProductTest(TestCase):
+class ApiUnpauseTrackedHabitTest(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@example.com",
@@ -394,7 +394,7 @@ class ApiUnpauseTrackedProductTest(TestCase):
             password="password123",
         )
 
-        self.product = Product.objects.create(name="coffee")
+        self.habit = Habit.objects.create(name="coffee")
         self.unit = Unit.objects.create(name="cups")
         self.motivation = Motivation.objects.create(name="health")
         self.tracking_frequency = TrackingFrequency.objects.create(name="weekly")
@@ -402,9 +402,9 @@ class ApiUnpauseTrackedProductTest(TestCase):
         self.client = APIClient()
         self.client.login(username="user@example.com", password="password123")
 
-        self.trackedProduct = TrackedProduct.objects.create(
+        self.trackedHabit = TrackedHabit.objects.create(
             user=self.user,
-            product=self.product,
+            habit=self.habit,
             unit=self.unit,
             motivation=self.motivation,
             tracking_frequency=self.tracking_frequency,
@@ -412,12 +412,12 @@ class ApiUnpauseTrackedProductTest(TestCase):
             end_date=date.today(),
         )
 
-        self.unpause_tracked_product_url = reverse(
-            "unpause-tracked-product", args=[self.trackedProduct.id]
+        self.unpause_tracked_habit_url = reverse(
+            "unpause-tracked-habit", args=[self.trackedHabit.id]
         )
 
-    def test_user_can_unpause_tracked_product(self):
-        response = self.client.patch(self.unpause_tracked_product_url)
-        self.trackedProduct.refresh_from_db()
+    def test_user_can_unpause_tracked_habit(self):
+        response = self.client.patch(self.unpause_tracked_habit_url)
+        self.trackedHabit.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIsNone(self.trackedProduct.end_date)
+        self.assertIsNone(self.trackedHabit.end_date)

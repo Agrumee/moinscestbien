@@ -6,15 +6,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
     dependencies = [
         ("accounts", "0001_initial"),
-        ("consumptions", "0002_tracked_products"),
+        ("consumptions", "0002_tracked_habits"),
     ]
 
     operations = [
         migrations.AddField(
             model_name="user",
-            name="tracked_product",
+            name="tracked_habit",
             field=models.ManyToManyField(
-                blank=True, related_name="users", to="consumptions.TrackedProduct"
+                blank=True, related_name="users", to="consumptions.TrackedHabit"
             ),
         ),
     ]

@@ -1,4 +1,4 @@
-export type Product = {
+export type Habit = {
     id: number;
     name: string;
     label: string;
@@ -27,9 +27,9 @@ export type TrackingFrequency = {
 export type Frequency = "daily" | "weekly" | "monthly";
 
 
-export type TrackedProduct = {
+export type TrackedHabit = {
     id: number;
-    product: Product;
+    habit: Habit;
     unit: Unit;
     motivation: Motivation;
     tracking_frequency: TrackingFrequency;

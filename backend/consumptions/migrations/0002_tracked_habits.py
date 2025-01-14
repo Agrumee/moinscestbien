@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name="TrackedProduct",
+            name="TrackedHabit",
             fields=[
                 (
                     "id",
@@ -31,23 +31,23 @@ class Migration(migrations.Migration):
                         blank=True,
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="tracked_products",
+                        related_name="tracked_habits",
                         to="consumptions.motivation",
                     ),
                 ),
                 (
-                    "product",
+                    "habit",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="tracked_products",
-                        to="consumptions.product",
+                        related_name="tracked_habits",
+                        to="consumptions.habit",
                     ),
                 ),
                 (
                     "unit",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="tracked_products",
+                        related_name="tracked_habits",
                         to="consumptions.unit",
                     ),
                 ),
@@ -55,13 +55,13 @@ class Migration(migrations.Migration):
                     "user",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        related_name="tracked_products",
+                        related_name="tracked_habits",
                         to="accounts.user",
                     ),
                 ),
             ],
             options={
-                "unique_together": {("user", "product", "unit")},
+                "unique_together": {("user", "habit", "unit")},
             },
         ),
     ]
