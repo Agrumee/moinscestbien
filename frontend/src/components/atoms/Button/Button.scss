@@ -1,8 +1,7 @@
 /* Mixin pour le style des boutons */
-@mixin button-style($font-size, $line-height: 150%, $background-color, $color) {
+@mixin button-style($line-height: 150%, $background-color, $color) {
   font-family: $font-family;
   line-height: $line-height;
-  font-size: $font-size;
   background-color: $background-color;
   color: $color;
   box-shadow: $black 0px 10px 5px -10px;
@@ -23,7 +22,7 @@
   }
 
   &.primary {
-    @include button-style(18px, 150%, $yellow, $black);
+    @include button-style(150%, $yellow, $black);
 
     &:not(:disabled):hover {
       background-color: darken($yellow, 10%);
@@ -32,7 +31,7 @@
   }
 
   &.secondary {
-    @include button-style(18px, 150%, $red, $black);
+    @include button-style(150%, $red, $black);
 
     &:not(:disabled):hover {
       background-color: darken($red, 10%);
@@ -41,7 +40,7 @@
   }
 
   &.tertiary {
-    @include button-style(18px, 150%, $light_green, $dark_green);
+    @include button-style(150%, $light_green, $dark_green);
     border: 2px solid $dark_green;
 
     &:not(:disabled):hover {
@@ -61,7 +60,7 @@
   }
 
   &.large {
-    width: 20rem;
+    width: 90%;
   }
 
   // Styles pour le bouton désactivé

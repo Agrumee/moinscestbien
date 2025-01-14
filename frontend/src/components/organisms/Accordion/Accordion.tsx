@@ -8,7 +8,7 @@ import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
-import Modal from "../../molecules/Modal/Modal"; 
+import Modal from "../../molecules/Modal/Modal";
 import { Frequency, TrackedHabit } from "../../../types/tracked-habit.model";
 import { Consumption } from "../../../types/consumption.model";
 
@@ -168,38 +168,31 @@ const Accordion = ({
           )}
 
           <div className="o-accordion__content__footer">
-            {!isPaused ? (
-              <div
-                className="o-accordion__content__footer__button -pause"
-                onClick={pauseTracking}
-              >
-                <Icon name="pause-no-border" size="tiny" />
-              </div>
-            ) : (
-              <div
-                className="o-accordion__content__footer__button -pause"
-                onClick={unpauseTracking}
-              >
-                <Icon name="play" size="tiny" />
-              </div>
-            )}
-            <div
+            <Button
+              className="o-accordion__content__footer__button -pause"
+              variant="tertiary"
+              size="small"
+              content="Mettre en pause"
+              onClick={pauseTracking}
+            />
+            <Button
               className="o-accordion__content__footer__button -delete"
+              variant="secondary"
+              size="small"
+              content="Ne plus suivre"
               onClick={handleDeleteClick}
-            >
-              <Icon name="trash" size="tiny" />
-            </div>
+            />
           </div>
         </div>
-      )}
-      {isModalOpen && (
+      )
+      }{isModalOpen && (
         <Modal
           message="Êtes-vous sûr(e) de vouloir arrêter ce suivi ? Vos données seront définitivement supprimées."
           onCancel={handleModalCancel}
           onConfirm={handleModalConfirm}
         />
       )}
-    </div>
+    </div >
   );
 };
 
