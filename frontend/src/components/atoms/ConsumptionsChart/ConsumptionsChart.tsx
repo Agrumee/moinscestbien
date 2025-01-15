@@ -102,11 +102,10 @@ const ConsumptionsChart = ({
     const grouped: { [key: string]: { name: string; [key: string]: number | string } } = {};
   
     const dates = consumptions.map(c => new Date(c.date));
-    const minDate = new Date(Math.min(...dates.map(d => d.getTime())));
     const maxDate = new Date(Math.max(...dates.map(d => d.getTime())));
   
     const allPeriods: string[] = [];
-    let currentDate = new Date(minDate.getFullYear(), minDate.getMonth(), 1);
+    let currentDate = new Date(consumptions[0].tracked_habit.start_date);
   
     while (currentDate <= maxDate) {
       const label = formatXAxisLabels(currentDate, frequency);
