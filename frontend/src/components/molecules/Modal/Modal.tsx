@@ -1,4 +1,3 @@
-import { useState } from "react";
 import Button from "../../atoms/Button/Button";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Input from "../../atoms/Input/Input";
@@ -17,10 +16,10 @@ export default function Modal({ message, input, handleChange, onCancel, onConfir
     <div className="modal">
       <div className="modal-content">
         <Paragraph content={message} className="modal-message"></Paragraph>
-        <Input className="large-input"
+        {input ? <Input className="large-input"
           placeholder="exemple@exemple.com"
           value={input}
-          onChange={handleChange} />
+          onChange={handleChange} /> : null}
         <div className="modal-buttons">
           <Button variant="tertiary" size="tiny" onClick={onCancel}>
             Annuler
