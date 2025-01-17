@@ -16,7 +16,7 @@ export default function Modal({ message, input, handleChange, onCancel, onConfir
     <div className="modal">
       <div className="modal-content">
         <Paragraph content={message} className="modal-message"></Paragraph>
-        {input ? <Input className="large-input"
+        {input !== undefined ? <Input className="large-input"
           placeholder="exemple@exemple.com"
           value={input}
           onChange={handleChange} /> : null}
