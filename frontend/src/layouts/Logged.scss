@@ -1,8 +1,14 @@
 .l-logged {
+  display: flex;
+  flex-direction: column;
   background-color: $light-green;
-  padding-top: 2rem;
-  position: absolute;
-  top: 0;
   width: 100%;
-  min-height: 100vh;
+  min-height: 100%;
+  gap: 1rem;
+
+
+  .a-logo {
+    align-self: center;
+    margin-top: 1rem;
+  }
 }

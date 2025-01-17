@@ -35,7 +35,7 @@ const Login = () => {
   const handleSendEmailResetPassword = async (email: string) => {
     try {
       await fetchAPI("/password_reset/", {
-        method: "POST", body: {email : email} 
+        method: "POST", body: { email: email }
       });
       closeModal();
     } catch (error) {
@@ -84,29 +84,35 @@ const Login = () => {
         <Modal message="Entrez votre adresse e-mail afin de recevoir un mail de réinitialisation de votre mot de passe :" onConfirm={() => handleSendEmailResetPassword(emailToResetPassword)} onCancel={closeModal} input={emailToResetPassword} handleChange={(e) => setEmailToResetPassword(e.target.value)} />)}
       <Toast is_called={showErrorToast} content={error} status={"fail"} />
       <Heading className="title" level={1} content="CONNEXION" color="white" />
-      <Label content="Adresse e-mail" color="white" />
-      <Input
-        className="large-input"
-        placeholder="exemple@exemple.com"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <Label content="Mot de passe" color="white" />
-      <Input
-        className="large-input"
-        placeholder="**********"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Button
-        className="loginButton"
-        variant="primary"
-        content={"Se connecter"}
-        onClick={handleLogin}
-      />
-      <div className="resetPassword" onClick={openModal}>
-        <Paragraph content="Mot de passe oublié ?" color="white" />
+      <div className="form">
+        <div className="form-item">
+          <Label content="Adresse e-mail" color="white" />
+          <Input
+            className="large-input"
+            placeholder="exemple@exemple.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+        </div>
+        <div className="form-item">
+          <Label content="Mot de passe" color="white" />
+          <Input
+            className="large-input"
+            placeholder="**********"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <Button
+          className="loginButton"
+          variant="primary"
+          content={"Se connecter"}
+          onClick={handleLogin}
+        />
+        <div className="resetPassword" onClick={openModal}>
+          <Paragraph content="Mot de passe oublié ?" color="white" />
+        </div>
       </div>
       <div className="notRegistered">
         <Paragraph content="Vous n'avez pas encore de compte ?" size="medium" color="white" />

@@ -107,7 +107,7 @@ const AddNew = () => {
     <div className="p-addnew">
       <Heading
         className="a-add-new-title"
-        level={1}
+        level={2}
         content="Suivre une nouvelle habitude"
       />
       <div>
@@ -122,7 +122,7 @@ const AddNew = () => {
           }
         />
       </div>
-      <div style={unitsList.length === 0 ? { display: "none" } : {}}>
+      <div>
         <Label content="Unité :" />
         <Dropdown
           label={currentUnit ? currentUnit.name : "De quelle façon compter ?"}
