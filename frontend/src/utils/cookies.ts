@@ -5,6 +5,6 @@ export function getCSRFCookie(): string | undefined {
   return undefined;
 }
 
-export function deleteCSRFCookie() {
-  document.cookie = "csrftoken=; Max-Age=-99999999;";
-}
+// export function deleteCSRFCookie() {
+//   document.cookie = "csrftoken=; Max-Age=-99999999;";
+// }

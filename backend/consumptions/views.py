@@ -148,90 +148,6 @@ class ApiMotivationsList(APIView):
 
 
 @method_decorator(csrf_protect, name="dispatch")
-class ApiCreateTrackedHabit(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def post(self, request, *args, **kwargs):
-        try:
-            user = request.user
-            habit_id = request.data.get("habit_id")
-            unit_id = request.data.get("unit_id")
-            motivation_id = request.data.get("motivation_id")
-            tracking_frequency_id = request.data.get("tracking_frequency_id")
-
-            habit = Habit.objects.get(id=habit_id)
-            unit = Unit.objects.get(id=unit_id)
-            motivation = Motivation.objects.get(id=motivation_id)
-            tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
-
-            tracked_habit, created = TrackedHabit.objects.get_or_create(
-                user=user,
-                habit=habit,
-                unit=unit,
-                motivation=motivation,
-                tracking_frequency=tracking_frequency,
-            )
-
-            if created:
-                return Response(
-                    {
-                        "success": True,
-                        "message": repr(
-                            habit.name
-                            + " assigned successfully to "
-                            + user.username
-                            + "."
-                        ),
-                    },
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                if tracked_habit.end_date == None:
-                    return Response(
-                        {
-                            "success": False,
-                            "message": repr(
-                                habit.name
-                                + " already assigned to "
-                                + user.username
-                                + "."
-                            ),
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-                else:
-                    tracked_habit.end_date = None
-                    tracked_habit.save()
-                    return Response(
-                        {
-                            "success": True,
-                            "message": f"{habit.name} tracking reactivated for {user.username}.",
-                        },
-                        status=status.HTTP_200_OK,
-                    )
-
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No habit found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No user found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Exception as e:
-            return Response(
-                {
-                    "success": False,
-                    "message": f"An error occurred: {str(e)}",
-                    "data": [],
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
-
-
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiTrackedHabitsList(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -272,7 +188,6 @@ class ApiTrackedHabitsList(APIView):
             )
 
     def post(self, request, *args, **kwargs):
-        print("test")
         try:
             user = request.user
             habit_id = request.data.get("habit_id")
@@ -789,7 +704,7 @@ class ApiDeleteTrackedHabit(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
+@method_decorator(csrf_protect, name="dispatch")
 class ApiPauseTrackedHabit(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -828,7 +743,7 @@ class ApiPauseTrackedHabit(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
+@method_decorator(csrf_protect, name="dispatch")
 class ApiUnpauseTrackedHabit(APIView):
     permission_classes = [
         IsAuthenticated,

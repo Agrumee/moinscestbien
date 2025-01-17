@@ -1,7 +1,7 @@
 import { useState, createContext, useContext, ReactNode } from 'react';
 import fetchAPI from '../utils/fetch';
 
-interface AuthContextType {
+type AuthContextType = {
   isAuthenticated: boolean;
   authenticate: () => void;
   login: (email: string, password: string) => Promise<void>;
@@ -22,7 +22,7 @@ export const useAuth = () => {
   return context;
 };
 
-interface AuthProviderProps {
+type AuthProviderProps = {
   children: ReactNode;
 }
 
@@ -43,10 +43,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const login = async (email: string, password: string) => {
     try {
-      await fetchAPI("/accounts/csrf-cookie", {
-        method: "GET",
-      });
-
       await fetchAPI("/accounts/login", {
         method: "POST",
         body: { email, password }
@@ -60,16 +56,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const register = async (email: string, password: string, confirmedPassword: string) => {
     try {
-      await fetchAPI("/accounts/csrf-cookie", {
-        method: "GET",
-      });
-
       await fetchAPI("/accounts/register", {
         method: "POST",
         body: { email, password, confirmedPassword }
       });
-
-      await login(email, password);
     } catch (error) {
       console.error("Error during registration:", error);
       throw error;
@@ -113,7 +103,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         method: "POST",
         body: { password, confirmedPassword, uid, token }
       });
-      console.log(response);
       return response;
     } catch (error) {
       console.error("Error during password reset:", error);
