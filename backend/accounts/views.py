@@ -36,7 +36,7 @@ class RegisterView(APIView):
             elif password == confirmed_password:
                 if User.objects.filter(email=email).exists():
                     return Response(
-                        {"message": "Email already exists"},
+                        {"message": "Registration failed"},
                         status=status.HTTP_401_UNAUTHORIZED,
                     )
                 else:
