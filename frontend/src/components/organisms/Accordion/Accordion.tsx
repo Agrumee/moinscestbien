@@ -123,7 +123,7 @@ const Accordion = ({
             <CountButton operation="plus" onClick={() => updateInputValue(1)} />
           </div>
 
-          {consumptions.length === 0 ? (
+          {consumptions.length <= 1 ? (
             <div className="o-accordion__content__noData">
               <Paragraph
                 color="white"

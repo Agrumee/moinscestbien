@@ -18,7 +18,6 @@ from django.conf import settings
 from django.urls import reverse
 
 
-@method_decorator(csrf_protect, name="dispatch")
 class RegisterView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -28,7 +27,7 @@ class RegisterView(APIView):
         password = data["password"]
         confirmed_password = data["confirmedPassword"]
         try:
-            regex_email = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
+            regex_email = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
             if not re.match(regex_email, email):
                 return Response(
                     {"message": "Invalid email format"},
@@ -68,13 +67,6 @@ class RegisterView(APIView):
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")
-class GetCSRFToken(APIView):
-    permission_classes = (permissions.AllowAny,)
-
-    def get(self, request, format=None):
-        return Response({"success": "CSRF cookie set"})
-
-
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
 
@@ -188,7 +180,6 @@ class ChangePasswordView(APIView):
             )
 
 
-@method_decorator(csrf_protect, name="dispatch")
 class PasswordResetView(APIView):
     permission_classes = (permissions.AllowAny,)
     """
