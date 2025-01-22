@@ -3,9 +3,20 @@
   background-color: $dark_green;
   justify-content: space-around;
   position: fixed;
-  bottom: 0;
   left: 0;
   width: 100%;
   padding: 0.5rem 0 0.5rem 0;
   box-shadow: $black 0px 0px 10px;
+  @media (max-width: 1199px) {
+    bottom: 0;
+    .a-logo {
+      display: none;
+    }
+  }
+  @media (min-width: 1200px) {
+    top: 0;
+    .a-logo {
+      margin-right: 5rem;
+    }
+  }
 }
