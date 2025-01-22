@@ -27,7 +27,6 @@ from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiHabitsList(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -65,7 +64,6 @@ class ApiHabitsList(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiUnitsList(APIView):
     permission_classes = [
         AllowAny,
@@ -106,7 +104,6 @@ class ApiUnitsList(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiMotivationsList(APIView):
     permission_classes = [
         IsAuthenticated,
@@ -266,7 +263,6 @@ class ApiTrackedHabitsList(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiPausedTrackedHabitsList(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -427,7 +423,6 @@ class ApiAddConsumption(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiConsumptionsListByTrackedHabit(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -478,7 +473,6 @@ class ApiConsumptionsListByTrackedHabit(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiConsumptionPeriodList(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -529,7 +523,6 @@ class ApiConsumptionPeriodList(APIView):
             )
 
 
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiConsumptionDetail(APIView):
     permission_classes = (IsAuthenticated,)
 
@@ -582,53 +575,6 @@ class ApiConsumptionDetail(APIView):
             )
 
 
-# @method_decorator(ensure_csrf_cookie, name="dispatch")
-# class ApiConsumptionsList(APIView):
-#     permission_classes = (IsAuthenticated,)
-
-#     def get(self, request, *args, **kwargs):
-#         try:
-#             user = get_object_or_404(User, id=kwargs["userId"])
-#             start_date_str = kwargs["start_date"]
-#             end_date_str = kwargs["end_date"]
-
-#             # Convertir les chaînes en objets date
-#             start_date = datetime.strptime(start_date_str, "%Y-%m-%d").date()
-#             end_date = datetime.strptime(end_date_str, "%Y-%m-%d").date()
-
-#             # Filtrer les consommations pour l'utilisateur et la plage de dates
-#             consumptions = Consumption.objects.filter(
-#                 tracked_habit__user=user, date__range=[start_date, end_date]
-#             )
-
-#             # Utiliser le sérialiseur modifié
-#             serializer = ConsumptionSerializer(consumptions, many=True)
-#             return Response(
-#                 {
-#                     "success": True,
-#                     "message": "Consumptions retrieved successfully.",
-#                     "data": serializer.data,
-#                 },
-#                 status=status.HTTP_200_OK,
-#             )
-
-#         except User.DoesNotExist:
-#             return Response(
-#                 {"success": False, "message": "User not found.", "data": []},
-#                 status=status.HTTP_404_NOT_FOUND,
-#             )
-#         except Exception as e:
-#             return Response(
-#                 {
-#                     "success": False,
-#                     "message": f"An error occurred: {str(e)}",
-#                     "data": [],
-#                 },
-#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             )
-
-
-@method_decorator(ensure_csrf_cookie, name="dispatch")
 class ApiTrackingFrequenciesList(APIView):
     permission_classes = [
         IsAuthenticated,
