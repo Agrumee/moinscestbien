@@ -207,7 +207,7 @@ class PasswordResetView(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
         reset_url = (
-            f"{config("FRONT_BASE_URL")}/reset-password-confirm?uid={uid}&token={token}"
+            f"{config('FRONT_BASE_URL')}/reset-password-confirm?uid={uid}&token={token}"
         )
 
         # Envoyer l'email
