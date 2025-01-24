@@ -34,6 +34,7 @@ services:
     depends_on:
       - db_prod
       # - postgres_test
+
   db_prod:
     image: postgres:16.3
     restart: unless-stopped
@@ -41,7 +42,7 @@ services:
       - db_prod:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_PASSWORD: mcb2024
       POSTGRES_DB: moinscestbien
     ports:
       - "5440:5432"
