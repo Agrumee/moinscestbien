@@ -2,9 +2,19 @@
   overflow: auto;
   margin-top: 2rem;
 
+  .desktop-container {
+    display: flex;
+    gap: 1rem;
+  }
+
   @media (min-width: 1200px) {
     .o-accordion {
       width: 50rem;
+    }
+  }
+  @media (max-width: 1199px) {
+    .desktop-container {
+      display: none;
     }
   }
 }

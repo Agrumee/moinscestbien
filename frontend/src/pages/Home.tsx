@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Button from "../components/atoms/Button/Button";
 import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
 import { TrackedHabit } from "../types/tracked-habit.model";
@@ -118,6 +119,11 @@ const Home = () => {
 
   return (
     <div className="p-home">
+      <div className="desktop-container">
+        {trackedHabits.map((trackedHabit: TrackedHabit) => (
+          <Button key={trackedHabit.id} className="desktop-button" variant="primary" size="small" content={trackedHabit.habit.label} onClick={() => console.log("coucou")} />
+        ))}
+      </div>
       {trackedHabits.map((trackedHabit: TrackedHabit) => (
         <Accordion
           key={trackedHabit.id}
