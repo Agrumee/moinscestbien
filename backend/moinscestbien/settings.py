@@ -125,8 +125,8 @@ DATABASES = {
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "mailhog"
-EMAIL_PORT = 1025
+# EMAIL_HOST = "mailhog"
+# EMAIL_PORT = 1025
 DEFAULT_FROM_EMAIL = "support@moinscestbien.fr"
 EMAIL_USE_TLS = False
 

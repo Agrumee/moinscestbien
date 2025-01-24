@@ -27,11 +27,12 @@ jobs:
     env:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DJANGO_SETTINGS_MODULE: moinscestbien.settings
+      FRONT_BASE_URL: http://localhost:5174
       DB_NAME: db_test
       DB_USER: postgres
       DB_PASSWORD: postgres
       DB_HOST: localhost
-      DB_DOCKER_PORT: "5432"
+      DB_PORT: "5432"
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/db_test
 
     steps:
