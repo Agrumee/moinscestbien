@@ -8,6 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib import auth
 from rest_framework import status
 import re
+from decouple import config
 
 
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -206,7 +207,7 @@ class PasswordResetView(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
         reset_url = (
-            f"http://127.0.0.1:5173/reset-password-confirm?uid={uid}&token={token}"
+            f"{config("FRONT_BASE_URL")}/reset-password-confirm?uid={uid}&token={token}"
         )
 
         # Envoyer l'email
