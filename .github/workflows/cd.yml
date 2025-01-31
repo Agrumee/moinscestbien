@@ -13,7 +13,7 @@ jobs:
     env:
       SERVER_USER: ${{ secrets.SERVER_USER }}
       SERVER_IP: ${{ secrets.SERVER_IP }}
-      SERVER_PASSWORD: ${{ secrets.SSH_PRIVATE_KEY }}
+      SERVER_PASSWORD: ${{ secrets.SSERVER_PASSWORD }}
 
     steps:
       - name: Checkout code
