@@ -1,6 +1,5 @@
 version: "3.8"
 services:
-
   # db_dev:
   #   image: postgres:16.3
   #   restart: unless-stopped
@@ -11,7 +10,7 @@ services:
   #     POSTGRES_PASSWORD: ${DB_PASSWORD}
   #     POSTGRES_DB: ${DB_DEV_NAME}
   #   ports:
-  #     - "${DB_DEV_PORT}:5433"  
+  #     - "${DB_DEV_PORT}:5433"
 
   # mailhog:
   #   image: mailhog/mailhog
