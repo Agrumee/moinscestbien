@@ -10,27 +10,25 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+      SERVER_IP: ${{ secrets.SERVER_IP }}
+      SERVER_PASSWORD: ${{ secrets.SSH_PRIVATE_KEY }}
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - run: sudo apt-get install -y sshpass
-      - run: mkdir $HOME/.ssh
+      - run: mkdir -p $HOME/.ssh
       - run: touch $HOME/.ssh/known_hosts
-      - name : Add Host to known_hosts
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }} 
+      
+      - name: Add Host to known_hosts
         run: ssh-keyscan $SERVER_IP >> $HOME/.ssh/known_hosts
 
       - name: Deploy to Production Server
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
         run: |
-          sshpass -p "$SSH_PRIVATE_KEY" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
             cd Moinscestbien/moinscestbien
             git pull
             docker compose up -d
