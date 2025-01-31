@@ -15,6 +15,14 @@ jobs:
         uses: actions/checkout@v4
 
       - run: sudo apt-get install -y sshpass
+      - run: mkdir $HOME/.ssh
+      - run: touch $HOME/.ssh/known_hosts
+      - name : Add Host to known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_IP: ${{ secrets.SERVER_IP }} 
+        run: ssh-keyscan $SERVER_IP >> $HOME/.ssh/known_hosts
 
       - name: Deploy to Production Server
         env:
