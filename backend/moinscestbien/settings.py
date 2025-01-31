@@ -88,6 +88,7 @@ CSRF_COOKIE_SECURE = True  # Utilisez True si vous utilisez HTTPS
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False  # Mettre sur True pour que le cookie ne puissent pas être modifié par javascript
 CSRF_COOKIE_SAMESITE = "Lax"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 ROOT_URLCONF = "moinscestbien.urls"
 
