@@ -85,7 +85,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = True  # Utilisez True si vous utilisez HTTPS
-SESSION_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False  # Mettre sur True pour que le cookie ne puissent pas être modifié par javascript
 CSRF_COOKIE_SAMESITE = "Lax"
 
