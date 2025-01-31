@@ -22,6 +22,9 @@ jobs:
           SERVER_USER: ${{ secrets.SERVER_USER }}
           SERVER_IP: ${{ secrets.SERVER_IP }}
         run:
+          cat $SERVER_IP
+          cat $SERVER_USER
+          cat $SSH_PRIVATE_KEY
           sshpass -p $SSH_PRIVATE_KEY ssh $SERVER_USER@$SERVER_IP
           cd Moinscestbien/moinscestbien
           git pull
