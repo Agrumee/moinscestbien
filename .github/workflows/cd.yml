@@ -1,0 +1,35 @@
+name: CD Workflow
+
+on:
+  workflow_run:
+    workflows: ["CI Workflow"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      SERVER_USER: ${{ secrets.SERVER_USER }}
+      SERVER_IP: ${{ secrets.SERVER_IP }}
+      SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - run: sudo apt-get install -y sshpass
+      - run: mkdir -p $HOME/.ssh
+      - run: touch $HOME/.ssh/known_hosts
+      
+      - name: Add Host to known_hosts
+        run: ssh-keyscan $SERVER_IP >> $HOME/.ssh/known_hosts
+
+      - name: Deploy to Production Server
+        run: |
+          sshpass -p "$SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP << 'EOF'
+            cd Moinscestbien/moinscestbien
+            git pull
+            docker compose up -d
+          EOF

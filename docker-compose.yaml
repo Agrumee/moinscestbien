@@ -1,0 +1,72 @@
+version: "3.8"
+services:
+  # db_dev:
+  #   image: postgres:16.3
+  #   restart: unless-stopped
+  #   volumes:
+  #     - db_dev:/var/lib/postgresql/data
+  #   environment:
+  #     POSTGRES_USER: ${DB_USER}
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_DB: ${DB_DEV_NAME}
+  #   ports:
+  #     - "${DB_DEV_PORT}:5433"
+
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   container_name: 'mailhog'
+  #   ports:
+  #     - "1025:1025"
+  #     - "8025:8025"
+
+  backend:
+    restart: unless-stopped
+    hostname: backend
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      FRONT_BASE_URL: ${FRONT_BASE_URL}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
+    volumes:
+      - ./backend:/backend
+    depends_on:
+      - db_prod
+
+  db_prod:
+    image: postgres:16.3
+    restart: unless-stopped
+    volumes:
+      - db_prod:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5440:${DB_PORT}"
+
+  frontend:
+    restart: unless-stopped
+    hostname: frontend
+    build:
+      context: .
+      dockerfile: ./frontend/Dockerfile
+    ports:
+      - 5174:5173
+    environment:
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    volumes:
+      - ./frontend:/frontend
+      - /frontend/node_modules
+
+volumes:
+  db_prod:

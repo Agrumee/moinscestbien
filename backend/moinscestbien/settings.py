@@ -24,8 +24,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = config("DJANGO_DEBUG")
+ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS").split(",")
 
 # Application definition
 
@@ -68,7 +68,7 @@ REST_FRAMEWORK = {
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:5173", "http://127.0.0.1:8000"]
+CORS_ALLOWED_ORIGINS = [config("FRONT_BASE_URL")]
 
 CORS_ALLOW_HEADERS = [
     "authorization",
@@ -78,18 +78,17 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:5173",
+    config("FRONT_BASE_URL"),
 ]
 
 # CORS_ORIGIN_ALLOW_ALL = True
 
 CSRF_COOKIE_NAME = "csrftoken"
-CSRF_COOKIE_SECURE = False  # Utilisez True si vous utilisez HTTPS
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = True  # Utilisez True si vous utilisez HTTPS
+SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = False  # Mettre sur True pour que le cookie ne puissent pas être modifié par javascript
 CSRF_COOKIE_SAMESITE = "Lax"
-CSRF_COOKIE_DOMAIN = "127.0.0.1"
-
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 ROOT_URLCONF = "moinscestbien.urls"
 
@@ -122,13 +121,13 @@ DATABASES = {
         "USER": config("DB_USER"),
         "PASSWORD": config("DB_PASSWORD"),
         "HOST": config("DB_HOST"),
-        "PORT": config("DB_DOCKER_PORT"),
+        "PORT": config("DB_PORT"),
     }
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "mailhog"
-EMAIL_PORT = 1025
+# EMAIL_HOST = "mailhog"
+# EMAIL_PORT = 1025
 DEFAULT_FROM_EMAIL = "support@moinscestbien.fr"
 EMAIL_USE_TLS = False
 
