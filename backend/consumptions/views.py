@@ -66,13 +66,18 @@ class ApiHabitsList(APIView):
 
 class ApiUnitsList(APIView):
     permission_classes = [
-        AllowAny,
+        IsAuthenticated,
     ]
 
-    def get(self, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         try:
             habit = Habit.objects.get(id=kwargs["habit_id"])
-            units = habit.units.all()
+            user = request.user
+            tracked_habit = user.tracked_habits.filter(habit=habit).first()
+            if tracked_habit:
+                units = Unit.objects.filter(id=tracked_habit.unit.id)
+            else:
+                units = habit.units.all()
             serializer = UnitSerializer(units, many=True)
             if units:
                 return Response(
@@ -197,44 +202,17 @@ class ApiTrackedHabitsList(APIView):
             motivation = Motivation.objects.get(id=motivation_id)
             tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
 
-            tracked_habit, created = TrackedHabit.objects.get_or_create(
-                user=user,
-                habit=habit,
-                unit=unit,
-                motivation=motivation,
-                tracking_frequency=tracking_frequency,
-            )
+            tracked_habit = TrackedHabit.objects.get(
+                user=user, habit=habit, unit=unit
+            ).first()
 
-            if created:
-                return Response(
-                    {
-                        "success": True,
-                        "message": repr(
-                            habit.name
-                            + " assigned successfully to "
-                            + user.username
-                            + "."
-                        ),
-                    },
-                    status=status.HTTP_200_OK,
-                )
-            else:
-                if tracked_habit.end_date == None:
-                    return Response(
-                        {
-                            "success": False,
-                            "message": repr(
-                                habit.name
-                                + " already assigned to "
-                                + user.username
-                                + "."
-                            ),
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-                else:
+            if tracked_habit:
+                if tracked_habit.end_date is not None:
                     tracked_habit.end_date = None
+                    tracked_habit.motivation = motivation
+                    tracked_habit.tracking_frequency = tracking_frequency
                     tracked_habit.save()
+
                     return Response(
                         {
                             "success": True,
@@ -242,6 +220,31 @@ class ApiTrackedHabitsList(APIView):
                         },
                         status=status.HTTP_200_OK,
                     )
+                else:
+                    return Response(
+                        {
+                            "success": False,
+                            "message": f"{habit.name} is already assigned to {user.username}.",
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+            tracked_habit = TrackedHabit.objects.create(
+                user=user,
+                habit=habit,
+                unit=unit,
+                motivation=motivation,
+                tracking_frequency=tracking_frequency,
+            )
+
+            return Response(
+                {
+                    "success": True,
+                    "message": f"{habit.name} assigned successfully to {user.username}.",
+                },
+                status=status.HTTP_201_CREATED,
+            )
+
         except Habit.DoesNotExist:
             return Response(
                 {"success": False, "message": "No habit found.", "data": []},
