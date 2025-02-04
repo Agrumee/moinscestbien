@@ -7,8 +7,10 @@
   width: 100%;
 
   .title {
-    margin: 2rem;
-    padding-bottom: 3rem;
+    margin: 4rem 2rem 1rem;
     text-align: center;
+  }
+  .a-button:last-of-type {
+    margin-bottom: 6rem;
   }
 }

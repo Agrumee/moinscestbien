@@ -4,7 +4,9 @@
   box-shadow: $dark_green 0px 2px 5px;
   border-radius: $border_radius;
   width: 100%;
-  max-width: 80vh;
+  @media (min-width: 1024px) {
+    max-width: 80vh;
+  }
 
   &__title {
     display: flex;
@@ -12,7 +14,6 @@
     text-align: center;
     justify-content: space-between;
     width: 100%;
-    // padding: 0 1rem;
     cursor: pointer;
     background-color: $dark_green;
     color: $white;
