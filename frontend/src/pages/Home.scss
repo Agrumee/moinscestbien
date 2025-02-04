@@ -1,20 +1,32 @@
 .p-home {
   overflow: auto;
   margin-top: 2rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 
-  .desktop-container {
-    display: flex;
-    gap: 1rem;
-  }
-
-  @media (min-width: 1200px) {
-    .o-accordion {
-      width: 50rem;
+  @media (min-width: 1024px) {
+    .mobile-container {
+      display: none;
+    }
+    .desktop-container {
+      display: flex;
+      gap: 1rem;
+      flex-direction: column;
+      width: 80%;
+      .desktop-buttons {
+        display: flex;
+        align-self: center;
+        gap: 1rem;
+      }
     }
   }
-  @media (max-width: 1199px) {
+  @media (max-width: 1023px) {
     .desktop-container {
       display: none;
+    }
+    .mobile-container {
+      width: 100%;
     }
   }
 }

@@ -4,7 +4,10 @@
   justify-content: center;
   margin-bottom: 1rem;
   padding: 1rem;
-  border-top : $yellow 2px solid;
+
+  @media (max-width: 1023px) {
+    border-top: $yellow 2px solid;
+  }
 
   .a-paragraph {
     font-size: 120%;

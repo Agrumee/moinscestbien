@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Button from "../components/atoms/Button/Button";
 import Accordion from "../components/organisms/Accordion/Accordion";
+import HabitPanel from "../components/organisms/HabitPanel/HabitPanel";
 import fetchAPI from "../utils/fetch";
 import { TrackedHabit } from "../types/tracked-habit.model";
 import { ConsumptionsListByTrackedHabitId } from "../types/consumption.model";
@@ -8,6 +9,7 @@ import "./Home.scss"
 
 const Home = () => {
   const [trackedHabits, setTrackedHabits] = useState<TrackedHabit[]>([]);
+  const [currentTrackedHabit, setCurrentTrackedHabit] = useState<TrackedHabit>()
   const [ConsumptionsListByTrackedHabitId, setConsumptionsListByTrackedHabitId] = useState<ConsumptionsListByTrackedHabitId>(
     {}
   );
@@ -24,6 +26,7 @@ const Home = () => {
           method: "GET",
         });
         setTrackedHabits(response.data);
+        setCurrentTrackedHabit(response.data[0])
       } catch (error) {
         console.error("Get habits failed", error);
         throw error;
@@ -120,25 +123,43 @@ const Home = () => {
   return (
     <div className="p-home">
       <div className="desktop-container">
+        <div className="desktop-buttons">
+          {trackedHabits.map((trackedHabit: TrackedHabit) => (
+            <Button key={trackedHabit.id} className="desktop-button" variant="primary" size="small" content={trackedHabit.habit.label} onClick={() => setCurrentTrackedHabit(trackedHabit)} />
+          ))}
+        </div>
+        {
+          currentTrackedHabit &&
+          <HabitPanel key={currentTrackedHabit.id}
+            trackedHabit={currentTrackedHabit}
+            consumptions={ConsumptionsListByTrackedHabitId[currentTrackedHabit.id] || []}
+            currentConsumption={currentConsumptionByTrackedHabitId[currentTrackedHabit.id] || 0}
+            onDateChange={(date) => handleDateChange(currentTrackedHabit.id, date)}
+            onUpdateConsumption={(quantity) =>
+              handleUpdateConsumption(currentTrackedHabit.id, date, quantity)
+            }
+            frequency={currentTrackedHabit.tracking_frequency.name}
+            deleteTracking={() => handleDeleteTracking(currentTrackedHabit.id)}
+            pauseTracking={() => handlePauseTracking(currentTrackedHabit.id)} />
+        }
+      </div>
+      <div className="mobile-container">
         {trackedHabits.map((trackedHabit: TrackedHabit) => (
-          <Button key={trackedHabit.id} className="desktop-button" variant="primary" size="small" content={trackedHabit.habit.label} onClick={() => console.log("coucou")} />
+          <Accordion
+            key={trackedHabit.id}
+            trackedHabit={trackedHabit}
+            consumptions={ConsumptionsListByTrackedHabitId[trackedHabit.id] || []}
+            currentConsumption={currentConsumptionByTrackedHabitId[trackedHabit.id] || 0}
+            onDateChange={(date) => handleDateChange(trackedHabit.id, date)}
+            onUpdateConsumption={(quantity) =>
+              handleUpdateConsumption(trackedHabit.id, date, quantity)
+            }
+            frequency={trackedHabit.tracking_frequency.name}
+            deleteTracking={() => handleDeleteTracking(trackedHabit.id)}
+            pauseTracking={() => handlePauseTracking(trackedHabit.id)}
+          />
         ))}
       </div>
-      {trackedHabits.map((trackedHabit: TrackedHabit) => (
-        <Accordion
-          key={trackedHabit.id}
-          trackedHabit={trackedHabit}
-          consumptions={ConsumptionsListByTrackedHabitId[trackedHabit.id] || []}
-          currentConsumption={currentConsumptionByTrackedHabitId[trackedHabit.id] || 0}
-          onDateChange={(date) => handleDateChange(trackedHabit.id, date)}
-          onUpdateConsumption={(quantity) =>
-            handleUpdateConsumption(trackedHabit.id, date, quantity)
-          }
-          frequency={trackedHabit.tracking_frequency.name}
-          deleteTracking={() => handleDeleteTracking(trackedHabit.id)}
-          pauseTracking={() => handlePauseTracking(trackedHabit.id)}
-        />
-      ))}
     </div>
   );
 };

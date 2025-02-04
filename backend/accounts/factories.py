@@ -12,15 +12,25 @@ fake = Faker()
 
 def random_start_date():
     today = date.today()
-    # Calculer une date 6 mois avant aujourd'hui
-    six_months_ago = today.month - 6
+    # Calculer une date 2 mois avant aujourd'hui
+    two_months_ago = today.month - 2
     year = today.year
-    if six_months_ago <= 0:  # Ajuster l'année et le mois si nécessaire
-        six_months_ago += 12
+
+    if two_months_ago <= 0:  # Ajuster l'année et le mois si nécessaire
+        two_months_ago += 12
         year -= 1
-    # Calculer le jour en évitant les dépassements de fin de mois
-    day = min(today.day, (date(year, six_months_ago + 1, 1) - timedelta(days=1)).day)
-    return date(year, six_months_ago, day)
+
+    # Trouver le dernier jour du mois correspondant
+    next_month = two_months_ago + 1
+    next_year = year
+    if next_month > 12:
+        next_month = 1
+        next_year += 1
+
+    last_day_of_month = (date(next_year, next_month, 1) - timedelta(days=1)).day
+    day = min(today.day, last_day_of_month)
+
+    return date(year, two_months_ago, day)
 
 
 class UserFactory(factory.django.DjangoModelFactory):

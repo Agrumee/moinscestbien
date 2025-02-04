@@ -5,13 +5,13 @@
   width: 100%;
   min-height: 100%;
   gap: 1rem;
-  @media (max-width: 1199px) {
+  @media (max-width: 1023px) {
     .a-logo {
       align-self: center;
       margin-top: 1rem;
     }
   }
-  @media (min-width: 1200px) {
+  @media (min-width: 1024px) {
     .content {
       display: flex;
       flex-direction: column;

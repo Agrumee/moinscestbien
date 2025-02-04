@@ -2,9 +2,15 @@
   display: flex;
   position: absolute;
   z-index: 2;
-  left: 10%;
-  right: 23%;
   justify-content: flex-end;
+
+  @media (max-width: 1023px) {
+    left: 10%;
+    right: 23%;
+  }
+  @media (min-width: 1024px) {
+    margin: -2em 0em 0em 2em;
+  }
 }
 
 .react-calendar {
