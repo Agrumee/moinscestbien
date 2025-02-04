@@ -110,49 +110,52 @@ const AddNew = () => {
         level={2}
         content="Suivre une nouvelle habitude"
       />
-      <div>
-        <Label content="Habitude :" />
-        <Dropdown
-          label={
-            currentHabit ? currentHabit.name : "Que voulez-vous suivre ?"
-          }
-          contentList={habitsList}
-          onSelect={(selectedHabit: Habit) =>
-            setCurrentHabit(selectedHabit)
-          }
-        />
-      </div>
-      <div>
-        <Label content="Unité :" />
-        <Dropdown
-          label={currentUnit ? currentUnit.name : "De quelle façon compter ?"}
-          contentList={unitsList}
-          onSelect={(selectedUnit: Unit) => setCurrentUnit(selectedUnit)}
-        />
-        <br></br>
-        <Label content="Motivation :" />
-        <Dropdown
-          label={
-            currentMotivation ? currentMotivation.name : "Pour quelle raison ?"
-          }
-          contentList={motivationsList}
-          onSelect={(selectedMotivation: Motivation) =>
-            setCurrentMotivation(selectedMotivation)
-          }
-        />
-        <br></br>
-        <Label content="Fréquence de suivi :" />
-        <Dropdown<Frequency>
-          label={
-            currentTrackingFrequency
-              ? currentTrackingFrequency.name
-              : "A quelle fréquence ?"
-          }
-          contentList={trackingFrequenciesList}
-          onSelect={(selectedTrackingFrequency: TrackingFrequency) =>
-            setCurrentTrackingFrequency(selectedTrackingFrequency)
-          }
-        />
+      <div className="a-add-new_form">
+        <div className="a-add-new_dropdown_with_label">
+          <Label content="Habitude :" />
+          <Dropdown
+            label={
+              currentHabit ? currentHabit.name : "Que voulez-vous suivre ?"
+            }
+            contentList={habitsList}
+            onSelect={(selectedHabit: Habit) =>
+              setCurrentHabit(selectedHabit)
+            }
+          />
+        </div>
+        <div className="a-add-new_dropdown_with_label">
+          <Label content="Unité :" />
+          <Dropdown
+            label={currentUnit ? currentUnit.name : "De quelle façon compter ?"}
+            contentList={unitsList}
+            onSelect={(selectedUnit: Unit) => setCurrentUnit(selectedUnit)}
+          />
+        </div>
+        <div className="a-add-new_dropdown_with_label">
+          <Label content="Motivation :" />
+          <Dropdown
+            label={
+              currentMotivation ? currentMotivation.name : "Pour quelle raison ?"
+            }
+            contentList={motivationsList}
+            onSelect={(selectedMotivation: Motivation) =>
+              setCurrentMotivation(selectedMotivation)
+            }
+          /></div>
+        <div className="a-add-new_dropdown_with_label">
+          <Label content="Fréquence de suivi :" />
+          <Dropdown<Frequency>
+            label={
+              currentTrackingFrequency
+                ? currentTrackingFrequency.name
+                : "A quelle fréquence ?"
+            }
+            contentList={trackingFrequenciesList}
+            onSelect={(selectedTrackingFrequency: TrackingFrequency) =>
+              setCurrentTrackingFrequency(selectedTrackingFrequency)
+            }
+          />
+        </div>
       </div>
       <Button
         className="a-add-new-button"

@@ -4,6 +4,12 @@
   width: 100%;
   display: flex;
   justify-content: center;
+  h2 {
+    padding: 1rem;
+  }
+  .toggled_accordion_icon {
+    padding: 1rem;
+  }
 
   @media (min-width: 1024px) {
     .mobile-container {
@@ -11,14 +17,9 @@
     }
     .desktop-container {
       display: flex;
-      gap: 1rem;
       flex-direction: column;
-      width: 80%;
-      .desktop-buttons {
-        display: flex;
-        align-self: center;
-        gap: 1rem;
-      }
+      width: 100%;
+      gap: 1rem;
     }
   }
   @media (max-width: 1023px) {
@@ -27,6 +28,7 @@
     }
     .mobile-container {
       width: 100%;
+      margin: 1rem;
     }
   }
 }

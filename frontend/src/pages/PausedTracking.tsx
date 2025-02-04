@@ -3,7 +3,7 @@ import Accordion from "../components/organisms/Accordion/Accordion";
 import fetchAPI from "../utils/fetch";
 import { TrackedHabit } from "../types/tracked-habit.model";
 import { ConsumptionsListByTrackedHabitId } from "../types/consumption.model";
-import "./Home.scss"
+import "./PausedTracking.scss"
 
 
 const PausedTracking = () => {
@@ -124,9 +124,10 @@ const PausedTracking = () => {
   }
 
   return (
-    <div className="p-home">
+    <div className="p-pausedtracking">
       {trackedHabits.map((trackedHabit: TrackedHabit) => (
         <Accordion
+          key={trackedHabit.id}
           trackedHabit={trackedHabit}
           consumptions={ConsumptionsListByTrackedHabitId[trackedHabit.id] || []}
           currentConsumption={

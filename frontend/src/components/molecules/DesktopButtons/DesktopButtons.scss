@@ -1,0 +1,13 @@
+.desktop-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+  align-self: center;
+
+  .button-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+  }
+}

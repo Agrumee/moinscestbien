@@ -25,34 +25,40 @@ const ChangePassword = () => {
   return (
     <div className="p-change_password">
       <Heading className="title" level={1} content="Modifier le mot de passe" color="black" />
-      <Label content="Nouveau mot de passe" color="black" />
-      <Input
-        className="large-input"
-        placeholder="**********"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <Label content="Confirmer le mot de passe" color="black" />
-      <Input
-        className="large-input"
-        placeholder="**********"
-        type="password"
-        value={confirmedPassword}
-        onChange={(e) => setConfirmedPassword(e.target.value)}
-      />
-      <Button
-        className="changePasswordButton"
-        variant="primary"
-        content="Confirmer"
-        onClick={handleChangePassword}
-      />
-      <Button
-        className="cancelButton"
-        variant="tertiary"
-        content="Annuler"
-        onClick={() => navigate('/profile')}
-      />
+      <div className="p-change_password_form">
+        <div className="input_with_label">
+          <Label content="Nouveau mot de passe" color="black" />
+          <Input
+            className="large-input"
+            placeholder="**********"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </div>
+        <div className="input_with_label">
+          <Label content="Confirmer le mot de passe" color="black" />
+          <Input
+            className="large-input"
+            placeholder="**********"
+            type="password"
+            value={confirmedPassword}
+            onChange={(e) => setConfirmedPassword(e.target.value)}
+          />
+        </div>
+        <Button
+          className="changePasswordButton"
+          variant="primary"
+          content="Confirmer"
+          onClick={handleChangePassword}
+        />
+        <Button
+          className="cancelButton"
+          variant="tertiary"
+          content="Annuler"
+          onClick={() => navigate('/profile')}
+        />
+      </div>
     </div>
   );
 };

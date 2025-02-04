@@ -1,0 +1,17 @@
+.p-pausedtracking {
+  overflow: auto;
+  margin: 3rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  @media (min-width: 1024px) {
+    width: 100%;
+  }
+  h2 {
+    padding: 1rem;
+  }
+  .a-paragraph {
+    padding: 1rem;
+  }
+}

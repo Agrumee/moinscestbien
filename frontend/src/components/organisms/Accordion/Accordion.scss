@@ -1,15 +1,18 @@
 .o-accordion {
-  margin: 1em;
+  margin: 1rem 0rem 0rem;
   $border_radius: 10px;
   box-shadow: $dark_green 0px 2px 5px;
   border-radius: $border_radius;
+  width: 100%;
+  max-width: 80vh;
 
   &__title {
     display: flex;
     align-items: center;
     text-align: center;
     justify-content: space-between;
-    padding: 0 1rem;
+    width: 100%;
+    // padding: 0 1rem;
     cursor: pointer;
     background-color: $dark_green;
     color: $white;
