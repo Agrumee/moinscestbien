@@ -3,16 +3,16 @@ import { useEffect } from "react";
 import { AuthProvider, useAuth } from "./hooks/useAuth";
 import Logged from "./layouts/Logged";
 import Unlogged from "./layouts/Unlogged";
-import Home from "./pages/Home";
+import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile/Profile";
-import AddNew from "./pages/AddNew";
+import AddNew from "./pages/AddNew/AddNew";
 import Login from "./pages/Auth/Login/Login";
 import ResetPasswordForm from "./pages/Auth/ResetPasswordForm/ResetPasswordForm";
 import WelcomingPage from "./pages/WelcomingPage/WelcomingPage";
 import Register from "./pages/Auth/Register/Register";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
 import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
-import PausedTracking from "./pages/PausedTracking";
+import PausedTracking from "./pages/PausedTracking/PausedTracking";
 import "./App.css";
 
 const LayoutManager: React.FC = () => {

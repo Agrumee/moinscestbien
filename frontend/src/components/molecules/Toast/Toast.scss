@@ -15,7 +15,6 @@
     opacity: 1;
     transform: translateY(0);
     top: 2rem; // Position finale
-
   }
 
   &.slide-out {
@@ -43,12 +42,12 @@
   }
 
   &.success {
-    background-color: $light-green;
-    color: $dark-green;
-    border: 2px solid $dark-green;
+    background-color: $light_green;
+    color: $dark_green;
+    border: 2px solid $dark_green;
     .a-icon,
     .a-paragraph {
-      color: $dark-green;
+      color: $dark_green;
     }
 
     .a-icon {
@@ -57,7 +56,7 @@
 
     svg {
       path {
-        fill: $dark-green;
+        fill: $dark_green;
       }
     }
   }

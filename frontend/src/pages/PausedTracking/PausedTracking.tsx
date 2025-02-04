@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
-import Accordion from "../components/organisms/Accordion/Accordion";
-import fetchAPI from "../utils/fetch";
-import { TrackedHabit } from "../types/tracked-habit.model";
-import { ConsumptionsListByTrackedHabitId } from "../types/consumption.model";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+
+import Accordion from "../../components/organisms/Accordion/Accordion";
+import fetchAPI from "../../utils/fetch";
+import { TrackedHabit } from "../../types/tracked-habit.model";
+import { ConsumptionsListByTrackedHabitId } from "../../types/consumption.model";
 import "./PausedTracking.scss"
 
 
@@ -15,6 +18,15 @@ const PausedTracking = () => {
     [key: number]: number;
   }>({});
   const [date, setDate] = useState<string>("");
+  const navigate = useNavigate();
+  const { pausedTrackedHabitCount, authenticate } = useAuth();
+
+  useEffect(() => {
+    authenticate()
+    if (pausedTrackedHabitCount === 0) {
+      navigate("/home");
+    }
+  }, [pausedTrackedHabitCount, trackedHabits, navigate]);
 
   useEffect(() => {
     const getHabits = async () => {

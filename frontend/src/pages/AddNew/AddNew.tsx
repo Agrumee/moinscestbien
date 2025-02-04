@@ -1,14 +1,18 @@
-import Dropdown from "../components/molecules/Dropdown/Dropdown";
-import Label from "../components/atoms/Label/Label";
-import Heading from "../components/atoms/Heading/Heading";
-import Button from "../components/atoms/Button/Button";
+import Dropdown from "../../components/molecules/Dropdown/Dropdown";
+import Label from "../../components/atoms/Label/Label";
+import Heading from "../../components/atoms/Heading/Heading";
+import Button from "../../components/atoms/Button/Button";
+import Paragraph from "../../components/atoms/Paragraph/Paragraph";
+import { Habit, Unit, Motivation, TrackingFrequency, Frequency } from "../../types/tracked-habit.model";
+
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
-import fetchAPI from "../utils/fetch";
+import fetchAPI from "../../utils/fetch";
 
 import "./AddNew.scss";
-import { Habit, Unit, Motivation, TrackingFrequency, Frequency } from "../types/tracked-habit.model";
+
 
 
 const AddNew = () => {
@@ -26,6 +30,7 @@ const AddNew = () => {
   const [motivationsList, setMotivationsList] = useState<Motivation[]>([]);
   const [trackingFrequenciesList, setTrackingFrequenciesList] =
     useState<TrackingFrequency[]>([]);
+  const { trackedHabitCount } = useAuth();
 
   const handleAddNewHabit = async () => {
     try {
@@ -110,6 +115,12 @@ const AddNew = () => {
         level={2}
         content="Suivre une nouvelle habitude"
       />
+      {
+        trackedHabitCount === 0 &&
+        <div className="p-addnew_instructions">
+          <Paragraph content="Pour commencer, veuillez choisir une habitude de consommation sur laquelle vous souhaitez évoluer." size="big" color="black" />
+        </div>
+      }
       <div className="a-add-new_form">
         <div className="a-add-new_dropdown_with_label">
           <Label content="Habitude :" />

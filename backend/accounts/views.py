@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.response import Response
 from accounts.models import User
+from consumptions.models import TrackedHabit
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib import auth
@@ -114,8 +115,22 @@ class CheckAuthView(APIView):
         try:
             isAuthenticated = request.user.is_authenticated
             if isAuthenticated:
+                unpaused_tracked_habit_count = TrackedHabit.objects.filter(
+                    user=request.user, end_date=None
+                ).count()
+                tracked_habit_count = TrackedHabit.objects.filter(
+                    user=request.user
+                ).count()
+                paused_tracked_habit_count = (
+                    tracked_habit_count - unpaused_tracked_habit_count
+                )
                 return Response(
-                    {"success": "User is authenticated", "isAuthenticated": True},
+                    {
+                        "success": "User is authenticated",
+                        "isAuthenticated": True,
+                        "unpaused_tracked_habit_count": unpaused_tracked_habit_count,
+                        "paused_tracked_habit_count": paused_tracked_habit_count,
+                    },
                     status=status.HTTP_200_OK,
                 )
             else:

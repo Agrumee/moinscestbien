@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import Accordion from "../components/organisms/Accordion/Accordion";
-import DesktopButtons from "../components/molecules/DesktopButtons/DesktopButtons";
-import HabitPanel from "../components/organisms/HabitPanel/HabitPanel";
-import fetchAPI from "../utils/fetch";
-import { TrackedHabit } from "../types/tracked-habit.model";
-import { ConsumptionsListByTrackedHabitId } from "../types/consumption.model";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import Accordion from "../../components/organisms/Accordion/Accordion";
+import DesktopButtons from "../../components/molecules/DesktopButtons/DesktopButtons";
+import HabitPanel from "../../components/organisms/HabitPanel/HabitPanel";
+import fetchAPI from "../../utils/fetch";
+import { TrackedHabit } from "../../types/tracked-habit.model";
+import { ConsumptionsListByTrackedHabitId } from "../../types/consumption.model";
 import "./Home.scss"
 
 const Home = () => {
@@ -17,16 +19,28 @@ const Home = () => {
     [key: number]: number;
   }>({});
   const [date, setDate] = useState<string>("");
+  const navigate = useNavigate();
+  const { trackedHabitCount, authenticate } = useAuth();
+
+  useEffect(() => {
+    authenticate()
+    if (trackedHabitCount === 0) {
+      navigate("/addnew");
+    }
+  }, [trackedHabitCount, trackedHabits, navigate]);
+
 
 
   useEffect(() => {
     const getHabits = async () => {
       try {
-        const response = await fetchAPI("/consumptions/tracked-habits", {
-          method: "GET",
-        });
-        setTrackedHabits(response.data);
-        setCurrentTrackedHabit(response.data[0])
+        if (trackedHabitCount > 0) {
+          const response = await fetchAPI("/consumptions/tracked-habits", {
+            method: "GET",
+          });
+          setTrackedHabits(response.data);
+          setCurrentTrackedHabit(response.data[0])
+        }
       } catch (error) {
         console.error("Get habits failed", error);
         throw error;

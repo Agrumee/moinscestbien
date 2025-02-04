@@ -3,6 +3,8 @@ import fetchAPI from '../utils/fetch';
 
 type AuthContextType = {
   isAuthenticated: boolean;
+  trackedHabitCount: number;
+  pausedTrackedHabitCount: number;
   authenticate: () => void;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, confirmedPassword: string) => Promise<void>;
@@ -28,6 +30,8 @@ type AuthProviderProps = {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isAuthenticated, setIsAutenticated] = useState(false);
+  const [trackedHabitCount, setTrackedHabitCount] = useState(0);
+  const [pausedTrackedHabitCount, setPausedTrackedHabitCount] = useState(0)
 
   const authenticate = async () => {
     try {
@@ -36,6 +40,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       });
 
       setIsAutenticated(data.isAuthenticated);
+      if (data.isAuthenticated == true) {
+        setTrackedHabitCount(data.unpaused_tracked_habit_count);
+        setPausedTrackedHabitCount(data.paused_tracked_habit_count)
+      }
     } catch (error) {
       console.error("Error during authentication:", error);
     }
@@ -110,7 +118,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, authenticate, login, logout, register, deleteAccount, changePassword, resetPassword }}>
+    <AuthContext.Provider value={{ isAuthenticated, trackedHabitCount, pausedTrackedHabitCount, authenticate, login, logout, register, deleteAccount, changePassword, resetPassword }}>
       {children}
     </AuthContext.Provider>
   );

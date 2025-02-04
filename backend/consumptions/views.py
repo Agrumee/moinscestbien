@@ -202,7 +202,7 @@ class ApiTrackedHabitsList(APIView):
             motivation = Motivation.objects.get(id=motivation_id)
             tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
 
-            tracked_habit = TrackedHabit.objects.get(
+            tracked_habit = TrackedHabit.objects.filter(
                 user=user, habit=habit, unit=unit
             ).first()
 
