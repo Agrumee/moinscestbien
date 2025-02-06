@@ -25,7 +25,7 @@ const Footer = () => {
                 <div className="contact_us" onClick={() => handleNavigate('/contactus')}>
                     <Heading level={3} content='Nous contacter' color='medium_green' />
                 </div>
-                <div className="about">
+                <div className="about" onClick={() => handleNavigate('/about')}>
                     <Heading level={3} content='À propos' color='medium_green' />
                 </div>
             </div>

@@ -17,6 +17,7 @@ import ResetPasswordForm from "./pages/Auth/ResetPasswordForm/ResetPasswordForm"
 import PrivacyPolicy from "./pages/RGPD/PrivacyPolicy/PrivacyPolicy";
 import LegalNotices from "./pages/RGPD/LegalNotices/LegalNotices";
 import ContactUs from "./pages/RGPD/ContactUs/ContactUs";
+import About from "./pages/RGPD/About/About";
 
 import Login from "./pages/Auth/Login/Login";
 import WelcomingPage from "./pages/WelcomingPage/WelcomingPage";
@@ -41,7 +42,7 @@ const LayoutManager: React.FC = () => {
         navigate('/');
       }
     } else {
-      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus'].includes(location.pathname)) {
+      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus', '/about'].includes(location.pathname)) {
         navigate('/home');
       }
     }
@@ -59,6 +60,7 @@ const LayoutManager: React.FC = () => {
         <Route path="/privacypolicy" element={<PrivacyPolicy />} />
         <Route path="/legalnotices" element={<LegalNotices />} />
         <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/about" element={<About />} />
       </Routes>
     </Logged>
   ) : (
