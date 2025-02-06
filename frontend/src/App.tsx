@@ -31,21 +31,21 @@ const LayoutManager: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      await authenticate();
-      if (!isAuthenticated) {
-        if (!['/', '/login', '/register', "/reset-password-confirm"].includes(location.pathname)) {
-          navigate('/');
-        }
-      } else {
-        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus'].includes(location.pathname)) {
-          navigate('/home');
-        }
-      }
-    };
+    authenticate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    checkAuth();
-  }, [location.pathname, navigate, isAuthenticated, authenticate]);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      if (!['/', '/login', '/register', "/reset-password-confirm"].includes(location.pathname)) {
+        navigate('/');
+      }
+    } else {
+      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus'].includes(location.pathname)) {
+        navigate('/home');
+      }
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
 
   return isAuthenticated ? (
     <Logged>

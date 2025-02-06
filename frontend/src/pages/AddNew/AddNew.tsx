@@ -28,7 +28,7 @@ const AddNew = () => {
   const [motivationsList, setMotivationsList] = useState<Motivation[]>([]);
   const [trackingFrequenciesList, setTrackingFrequenciesList] =
     useState<TrackingFrequency[]>([]);
-  const { trackedHabitCount } = useAuth();
+  const { trackedHabitCount, authenticate } = useAuth();
 
   const handleAddNewHabit = async () => {
     try {
@@ -44,7 +44,8 @@ const AddNew = () => {
           },
         }
       );
-      navigate("/");
+      await authenticate()
+      await navigate("/");
     } catch (error) {
       console.error("Error during add new habit", error);
     }
