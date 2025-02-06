@@ -44,31 +44,34 @@ export default function ResetPasswordForm() {
     }
 
     return (
-        <div className="p-change_password">
+        <div className="p-resetpasswordform">
+            <Heading className="title" level={1} content="Modifier le mot de passe" color="white" />
             <form>
-                <Heading className="title" level={1} content="Modifier le mot de passe" color="black" />
-                <Label content="Nouveau mot de passe" color="black" />
-                <Input
-                    className="large-input"
-                    placeholder="**********"
-                    type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
-                <Label content="Confirmer le mot de passe" color="black" />
-                <Input
-                    className="large-input"
-                    placeholder="**********"
-                    type="password"
-                    value={confirmedPassword}
-                    onChange={(e) => setConfirmedPassword(e.target.value)}
-                />
-                <Button
-                    className="changePasswordButton"
-                    variant="primary"
-                    content="Confirmer"
-                    onClick={handleResetPassword}
-                />
+                <div className="form-item">
+                    <Label content="Nouveau mot de passe" color="white" />
+                    <Input
+                        className="large-input"
+                        placeholder="**********"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+                <div className="form-item">
+                    <Label content="Confirmer le mot de passe" color="white" />
+                    <Input
+                        className="large-input"
+                        placeholder="**********"
+                        type="password"
+                        value={confirmedPassword}
+                        onChange={(e) => setConfirmedPassword(e.target.value)}
+                    />
+                    <Button
+                        variant="primary"
+                        content="Confirmer"
+                        onClick={handleResetPassword}
+                    />
+                </div>
             </form>
         </div>
     );

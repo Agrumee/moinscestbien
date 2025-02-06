@@ -7,6 +7,7 @@ from consumptions.models import TrackedHabit
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib import auth
+from django.contrib.auth import update_session_auth_hash
 from rest_framework import status
 import re
 from decouple import config
@@ -184,6 +185,8 @@ class ChangePasswordView(APIView):
                     user = User.objects.get(username=request.user.username)
                     user.set_password(password)
                     user.save()
+
+                    update_session_auth_hash(request, user)
                     return Response(
                         {"message": "Le mot de passe a été changé avec succès !"},
                         status=status.HTTP_200_OK,

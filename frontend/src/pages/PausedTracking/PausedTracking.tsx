@@ -22,11 +22,10 @@ const PausedTracking = () => {
   const { pausedTrackedHabitCount, authenticate } = useAuth();
 
   useEffect(() => {
-    authenticate()
     if (pausedTrackedHabitCount === 0) {
       navigate("/home");
     }
-  }, [pausedTrackedHabitCount, trackedHabits, navigate]);
+  }, [pausedTrackedHabitCount, navigate]);
 
   useEffect(() => {
     const getHabits = async () => {
@@ -44,7 +43,6 @@ const PausedTracking = () => {
     getHabits();
   }, []);
 
-  // Déclenchement de getConsumptions lorsque currentconsumption est mis à jour
   useEffect(() => {
     for (let habitId in currentConsumptionByTrackedHabitId) {
       getConsumptions(Number(habitId));
@@ -52,7 +50,6 @@ const PausedTracking = () => {
     }
   }, [currentConsumptionByTrackedHabitId]);
 
-  // Récupérer les consommations pour un produit lorsque l'accordéon est ouvert
   const getConsumptions = async (habitId: number) => {
     try {
       const response = await fetchAPI(`/consumptions/${habitId}`, {
@@ -68,7 +65,6 @@ const PausedTracking = () => {
     }
   };
 
-  //Récupération de la date à updater
   const handleDateChange = async (trackedHabitId: number, date: string) => {
     try {
       const data = await fetchAPI(`/consumptions/${trackedHabitId}/${date}/`, {
@@ -85,7 +81,6 @@ const PausedTracking = () => {
     }
   };
 
-  // maj des données de consommation en fonction d'une date
   const handleUpdateConsumption = async (
     trackedHabitId: number,
     date: string,
@@ -130,6 +125,8 @@ const PausedTracking = () => {
       setTrackedHabits((prev) =>
         prev.filter((trackedHabit) => trackedHabit.id !== trackedHabitId)
       );
+      authenticate();
+
     } catch (error) {
       console.error("Unpause tracked habit failed", error);
     }

@@ -4,7 +4,6 @@ import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
-import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";

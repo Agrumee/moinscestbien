@@ -23,7 +23,6 @@ const Home = () => {
   const { trackedHabitCount, authenticate } = useAuth();
 
   useEffect(() => {
-    authenticate()
     if (trackedHabitCount === 0) {
       navigate("/addnew");
     }
@@ -114,6 +113,8 @@ const Home = () => {
       setTrackedHabits((prev) =>
         prev.filter((habit) => habit.id !== trackedHabitId)
       );
+      authenticate();
+
     } catch (error) {
       console.error("Delete tracked habit failed", error);
     }
@@ -127,6 +128,8 @@ const Home = () => {
       setTrackedHabits((prev) =>
         prev.filter((habit) => habit.id !== trackedHabitId)
       );
+      authenticate();
+
     } catch (error) {
       console.error("Pause tracked habit failed", error);
     }

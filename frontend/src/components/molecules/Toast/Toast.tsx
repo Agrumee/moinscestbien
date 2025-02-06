@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Icon from "../../atoms/Icon/Icon";
 import "./Toast.scss";
@@ -15,25 +15,14 @@ export default function Toast({ content, status, is_called }: ToastProps) {
   useEffect(() => {
     if (is_called) {
       setAnimation("slide-in");
+
       const timeout = setTimeout(() => {
         setAnimation("slide-out");
-        setTimeout(() => setAnimation(""), 500);
-      }, 3000);
+      }, 2500);
 
-      return () => {
-        clearTimeout(timeout);
-      };
-    } else {
-      setAnimation("");
+      return () => clearTimeout(timeout);
     }
-  }, [content, is_called]);
-
-  useEffect(() => {
-    if (content) {
-      setAnimation("slide-in");
-    }
-  }, [content]);
-
+  }, [is_called]);
 
   return (
     <div className={`a-toast ${status} ${animation}`}>
@@ -44,4 +33,3 @@ export default function Toast({ content, status, is_called }: ToastProps) {
     </div>
   );
 }
-

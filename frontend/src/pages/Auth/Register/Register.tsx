@@ -18,7 +18,6 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const navigate = useNavigateWithScroll();
-
   const { showToast } = useToast();
 
   const handleRegister = async () => {
@@ -26,7 +25,7 @@ const Register = () => {
       await register(email, password, confirmedPassword);
       showToast("Inscription réussie !", "success");
       window.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => navigate("/login"), 2000);
+      navigate("/login")
     } catch (error) {
       if (error instanceof APIError) {
         if (error.data?.message) {
@@ -40,7 +39,6 @@ const Register = () => {
         showToast("Une erreur inattendue est survenue.", "fail");
       }
     }
-
   }
 
   return (

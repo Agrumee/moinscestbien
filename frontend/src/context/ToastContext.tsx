@@ -16,13 +16,16 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
         setMessage(msg);
         setStatus(type);
         setIsVisible(true);
-        setTimeout(() => setIsVisible(false), 4000);
+
+        setTimeout(() => {
+            setIsVisible(false);
+        }, 4000);
     };
 
     return (
         <ToastContext.Provider value={{ showToast }}>
             {children}
-            {isVisible && <Toast is_called={true} content={message} status={status} />}
+            <Toast is_called={isVisible} content={message} status={status} />
         </ToastContext.Provider>
     );
 };

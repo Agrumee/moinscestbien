@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   position: absolute;
-  top: -1rem;
+  top: -2rem;
   left: 5%;
   opacity: 0;
   transform: translateY(-100%);
@@ -21,6 +21,7 @@
   &.slide-out {
     opacity: 0;
     transform: translateY(-100%);
+    transition: all 0.8s ease-in-out; 
   }
 
   &.fail {
@@ -43,7 +44,7 @@
   }
 
   &.success {
-    background-color: $light_green;
+    background-color: $white;
     color: $dark_green;
     border: 2px solid $dark_green;
     .a-icon,
