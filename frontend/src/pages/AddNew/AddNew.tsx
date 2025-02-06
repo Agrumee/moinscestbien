@@ -13,8 +13,6 @@ import fetchAPI from "../../utils/fetch";
 
 import "./AddNew.scss";
 
-
-
 const AddNew = () => {
   const navigate = useNavigateWithScroll();
   const [currentHabit, setCurrentHabit] = useState<Habit | null>(

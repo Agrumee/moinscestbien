@@ -26,7 +26,7 @@ const Home = () => {
     if (trackedHabitCount === 0) {
       navigate("/addnew");
     }
-  }, [trackedHabitCount, authenticate, trackedHabits, navigate]);
+  }, [trackedHabitCount, navigate]);
 
   useEffect(() => {
     const getHabits = async () => {
