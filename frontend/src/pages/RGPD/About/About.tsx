@@ -14,15 +14,19 @@ const About = () => {
             <section className="presentation">
                 <Heading level={3} content="Qui sommes-nous ?" />
                 <div className="creators">
-                    <Paragraph content="Mehdi Grimault" size="big" />
-                    <Paragraph content="Clémentine Rivière" size="big" />
+                    <a href='https://www.linkedin.com/in/mehdi-grimault/'>
+                        <Paragraph content="Mehdi Grimault" size="medium" />
+                    </a>
+                    <a href="https://www.linkedin.com/in/clementineriviere/">
+                        <Paragraph content="Clémentine Rivière" size="medium" />
+                    </a>
                 </div>
-                <Paragraph content="Étudiants à Ada Tech School" size="small" />
+                <Paragraph content="Étudiants à Ada Tech School" size="tiny" />
             </section>
 
             <section className="history">
                 <Heading className="history_title" level={3} content="Histoire" />
-                <Paragraph content="Entre mars 2024 et février 2025, nous avons travaillé au développement de Moins c’est bien, notre projet de fin d'études afin de prétendre au titre RNCP Concepteur et Développeur d'Applications." />
+                <Paragraph content="Entre mars 2024 et février 2025, nous avons travaillé au développement de Moins c’est bien, un projet de fin d'études réalisé dans la cadre de notre présentation au titre RNCP Concepteur et Développeur d'Applications." />
                 <Paragraph content="Cette démarche a été motivée par notre réflexion autour des problématiques de la surconsommation et de ses multiples conséquences, qu’elles soient environnementales, éthiques, sanitaires ou financières." />
                 <Paragraph content="Avec Moins c’est bien, notre objectif est de proposer un outil simple, accessible sur mobile comme sur ordinateur, et non culpabilisant, qui permet de :" />
                 <ul>
