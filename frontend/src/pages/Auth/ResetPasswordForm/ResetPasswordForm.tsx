@@ -7,9 +7,8 @@ import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import "./ResetPasswordForm.scss";
 import { useSearchParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 import APIError from "../../../types/apierror.models";
-import { resolveTypeReferenceDirective } from "typescript";
 
 export default function ResetPasswordForm() {
     const [password, setPassword] = useState("");
@@ -18,7 +17,7 @@ export default function ResetPasswordForm() {
     const [searchParams] = useSearchParams();
     const [showErrorToast, setShowErrorToast] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
-    const navigate = useNavigate();
+    const navigate = useNavigateWithScroll();
 
 
     const handleShowToast = (message: string) => {
@@ -26,6 +25,8 @@ export default function ResetPasswordForm() {
         setTimeout(() => {
             setError(message);
             setShowErrorToast(true);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+
         }, 100);
     };
 

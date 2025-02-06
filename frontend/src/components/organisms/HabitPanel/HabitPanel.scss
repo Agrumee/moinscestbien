@@ -7,20 +7,16 @@
   h2 {
     text-align: center;
   }
-  .o-habitpanel__content {
+  &__content {
     display: flex;
 
-    .o-habitpanel__control {
-      width: 40%;
-      margin-right: 1em;
-    }
-
-    .o-habitpanel__content__counter {
+    &__counter {
       display: flex;
       align-items: center;
       justify-content: center;
     }
-    .o-habitpanel__content__footer {
+
+    &__footer {
       display: flex;
       flex-direction: column;
       margin: 3rem 0rem 5rem;
@@ -28,16 +24,22 @@
       gap: 1em;
     }
   }
-  .o-habitpanel__content__chart__block {
+    &__control {
+      width: 40%;
+      margin-right: 1em;
+    }
+  
+  &__content__chart__block {
     display: flex;
     flex-direction: column;
     width: 100%;
     margin: 1em;
-    .o-habitpanel__content__frequency {
+
+  }
+    &__content__frequency {
       display: flex;
       gap: 1em;
       align-self: center;
       margin: 1rem 0rem;
     }
   }
-}

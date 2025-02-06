@@ -4,7 +4,6 @@ import "./HabitPanel.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
-import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
@@ -21,7 +20,6 @@ interface HabitPanelProps {
     onUpdateConsumption: (quantity: number) => void;
     deleteTracking: () => void;
     pauseTracking?: () => void;
-    unpauseTracking?: () => void;
 }
 
 const HabitPanel = ({
@@ -33,13 +31,11 @@ const HabitPanel = ({
     onUpdateConsumption,
     deleteTracking,
     pauseTracking,
-    unpauseTracking,
 }: HabitPanelProps) => {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [currentFrequency, setCurrentFrequency] = useState<
         Frequency
     >(frequency);
-    const [isPaused, setIsPaused] = useState(trackedHabit.end_date !== null);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -63,6 +59,12 @@ const HabitPanel = ({
         onUpdateConsumption(currentConsumption + value);
     };
 
+    const handlePauseTracking = () => {
+        if (pauseTracking) {
+            pauseTracking()
+        }
+    }
+
     const handleDeleteClick = () => {
         setIsModalOpen(true); // Ouvre la modal
     };
@@ -78,7 +80,7 @@ const HabitPanel = ({
 
     return (
         <div className="o-habitpanel" key={trackedHabit.id}>
-            <div>
+            <div className="o-habitpanel_title">
                 <Heading
                     level={2}
                     color="white"
@@ -116,7 +118,7 @@ const HabitPanel = ({
                             variant="tertiary"
                             size="small"
                             content="Mettre en pause"
-                            onClick={pauseTracking}
+                            onClick={handlePauseTracking}
                         />
                         <Button
                             className="o-habitpanel__content__footer__button -delete"

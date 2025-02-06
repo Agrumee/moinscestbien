@@ -1,23 +1,33 @@
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { useAuth } from "./hooks/useAuth";
+import { useNavigateWithScroll } from "./hooks/useNavigateWithScroll";
+import { AuthProvider } from "./context/AuthContext"
+import { ToastProvider } from "./context/ToastContext";
+
 import Logged from "./layouts/Logged";
 import Unlogged from "./layouts/Unlogged";
+
 import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile/Profile";
 import AddNew from "./pages/AddNew/AddNew";
-import Login from "./pages/Auth/Login/Login";
+import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import PausedTracking from "./pages/PausedTracking/PausedTracking";
 import ResetPasswordForm from "./pages/Auth/ResetPasswordForm/ResetPasswordForm";
+import PrivacyPolicy from "./pages/RGPD/PrivacyPolicy/PrivacyPolicy";
+import LegalNotices from "./pages/RGPD/LegalNotices/LegalNotices";
+import ContactUs from "./pages/RGPD/ContactUs/ContactUs";
+
+import Login from "./pages/Auth/Login/Login";
 import WelcomingPage from "./pages/WelcomingPage/WelcomingPage";
 import Register from "./pages/Auth/Register/Register";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
-import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
-import PausedTracking from "./pages/PausedTracking/PausedTracking";
+
 import "./App.css";
 
 const LayoutManager: React.FC = () => {
   const { authenticate, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const location = useLocation();
 
   useEffect(() => {
@@ -28,7 +38,7 @@ const LayoutManager: React.FC = () => {
           navigate('/');
         }
       } else {
-        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking'].includes(location.pathname)) {
+        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus'].includes(location.pathname)) {
           navigate('/home');
         }
       }
@@ -46,6 +56,9 @@ const LayoutManager: React.FC = () => {
         <Route path="/addnew" element={<AddNew />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/deleteaccount" element={<DeleteAccount />} />
+        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/legalnotices" element={<LegalNotices />} />
+        <Route path="/contactus" element={<ContactUs />} />
       </Routes>
     </Logged>
   ) : (
@@ -63,11 +76,13 @@ const LayoutManager: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/*" element={<LayoutManager />} />
-        </Routes>
-      </BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/*" element={<LayoutManager />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 };

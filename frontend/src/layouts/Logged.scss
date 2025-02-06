@@ -4,7 +4,7 @@
   background-color: $light_green;
   width: 100%;
   min-height: 100%;
-  gap: 1rem;
+  gap: 3rem;
   .l-logged_header {
     display: flex;
     justify-content: space-between;
@@ -28,7 +28,6 @@
   }
   @media (min-width: 1024px) {
     .content {
-      display: flex;
       width: 100%;
     }
   }

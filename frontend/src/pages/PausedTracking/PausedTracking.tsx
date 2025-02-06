@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 import { useAuth } from "../../hooks/useAuth";
 
 import Accordion from "../../components/organisms/Accordion/Accordion";
@@ -18,7 +18,7 @@ const PausedTracking = () => {
     [key: number]: number;
   }>({});
   const [date, setDate] = useState<string>("");
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const { pausedTrackedHabitCount, authenticate } = useAuth();
 
   useEffect(() => {

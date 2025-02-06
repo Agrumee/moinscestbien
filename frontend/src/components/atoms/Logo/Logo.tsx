@@ -1,5 +1,5 @@
 import "./Logo.scss"
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 
 interface LogoProps {
     variant?: boolean;
@@ -8,7 +8,7 @@ interface LogoProps {
 
 export default function Logo({ variant, size = "large"
 }: LogoProps) {
-    const navigate = useNavigate();
+    const navigate = useNavigateWithScroll();
     if (!variant) {
         return (
             <img className={`a-logo ${size}`} src={`../../../../public/moinscestbien.png`} alt='logo' onClick={() => navigate("/")} />

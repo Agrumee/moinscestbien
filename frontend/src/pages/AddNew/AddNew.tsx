@@ -6,7 +6,7 @@ import Paragraph from "../../components/atoms/Paragraph/Paragraph";
 import { Habit, Unit, Motivation, TrackingFrequency, Frequency } from "../../types/tracked-habit.model";
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 import { useAuth } from "../../hooks/useAuth";
 
 import fetchAPI from "../../utils/fetch";
@@ -16,7 +16,7 @@ import "./AddNew.scss";
 
 
 const AddNew = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const [currentHabit, setCurrentHabit] = useState<Habit | null>(
     null
   );

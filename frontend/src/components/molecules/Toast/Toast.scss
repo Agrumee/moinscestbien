@@ -10,11 +10,12 @@
   opacity: 0;
   transform: translateY(-100%);
   transition: all 0.5s ease-in-out;
+  z-index: 2;
 
   &.slide-in {
     opacity: 1;
     transform: translateY(0);
-    top: 2rem; // Position finale
+    top: 2rem;
   }
 
   &.slide-out {

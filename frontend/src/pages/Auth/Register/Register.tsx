@@ -4,7 +4,7 @@ import Heading from "../../../components/atoms/Heading/Heading";
 import Button from "../../../components/atoms/Button/Button";
 import Paragraph from "../../../components/atoms/Paragraph/Paragraph";
 import { useAuth } from "../../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 import { useState } from "react";
 //gestion erreurs
 import Toast from "../../../components/molecules/Toast/Toast";
@@ -16,7 +16,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
 
   const [showErrorToast, setShowErrorToast] = useState<boolean>(false)
   const [error, setError] = useState<string>("")
@@ -26,6 +26,8 @@ const Register = () => {
     setTimeout(() => {
       setError(message);
       setShowErrorToast(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
     }, 100);
   };
 

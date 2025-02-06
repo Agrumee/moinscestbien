@@ -5,10 +5,10 @@ import Input from "../../components/atoms/Input/Input";
 import { useState } from "react";
 import { useAuth } from "../../hooks/useAuth";
 import "./ChangePassword.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 
 const ChangePassword = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
   const { changePassword } = useAuth();

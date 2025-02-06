@@ -1,0 +1,29 @@
+.o-footer {
+    margin-top: auto; 
+    bottom: 0;
+    left: 0;
+    background-color: $light_green;
+    width: 100%;
+    box-shadow: $dark_green 0px 0px 7px -3px;
+
+    @media (min-width:1024px) {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    @media(max-width:1023px) {
+        display: none;
+    }
+
+    &_container {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+    }
+
+    .copyright-content {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+}

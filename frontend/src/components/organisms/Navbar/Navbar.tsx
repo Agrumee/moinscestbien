@@ -1,11 +1,11 @@
 import "./Navbar.scss";
 import NavbarItem from "../../molecules/NavbarItem/NavbarItem";
 import Logo from "../../atoms/Logo/Logo";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 import { useAuth } from "../../../hooks/useAuth";
 
 export default function Navbar() {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const { trackedHabitCount, pausedTrackedHabitCount } = useAuth();
 
   return (

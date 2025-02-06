@@ -1,15 +1,18 @@
 import Navbar from '../components/organisms/Navbar/Navbar';
 import Logo from '../components/atoms/Logo/Logo'
 import Icon from '../components/atoms/Icon/Icon'
+import Paragraph from '../components/atoms/Paragraph/Paragraph';
+import Footer from '../components/organisms/Footer/Footer';
+
 import './Logged.scss';
 
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../hooks/useNavigateWithScroll";
 import { useAuth } from "../hooks/useAuth";
-import Paragraph from '../components/atoms/Paragraph/Paragraph';
+
 
 const Logged: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { trackedHabitCount, pausedTrackedHabitCount } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
 
   return (
     <div className="l-logged">
@@ -29,6 +32,7 @@ const Logged: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       {(trackedHabitCount > 0 || pausedTrackedHabitCount > 0) &&
         <Navbar />
       }
+      <Footer />
     </div>
   );
 };

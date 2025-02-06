@@ -1,11 +1,11 @@
 import Button from "../../components/atoms/Button/Button";
 import "./Profile.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 import { useAuth } from "../../hooks/useAuth";
 
 const Profile = () => {
   const { logout } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
 
   const handleLogout = async () => {
     try {

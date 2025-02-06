@@ -1,0 +1,27 @@
+.p-privacypolicy{
+    margin:2rem 8rem;
+    display: flex;
+    flex-direction: column;
+    h1 {
+        align-self: center;
+        width: fit-content;
+        border-bottom: $dark_green solid 2px;
+        padding: 0rem 4rem;
+    }
+    h2{
+        border-bottom: $medium_green solid 2px;
+        padding: 0rem 4rem 0rem 0rem;
+        width: 50%;
+    }
+    .contactus_link{
+        display: flex;
+        align-items: center;
+    }
+    a{
+        margin-left :5px;
+        color: $dark_green;
+        line-height: 150%;
+        font-family: $font-family;
+        font-size: 14px;
+    }
+}

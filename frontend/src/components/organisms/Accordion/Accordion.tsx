@@ -40,7 +40,7 @@ const Accordion = ({
   const [currentFrequency, setCurrentFrequency] = useState<
     Frequency
   >(frequency);
-  const [isPaused, setIsPaused] = useState(trackedHabit.end_date !== null);
+  const isPaused = trackedHabit.end_date !== null;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -63,6 +63,12 @@ const Accordion = ({
   const updateInputValue = (value: number) => {
     onUpdateConsumption(currentConsumption + value);
   };
+
+  const handlePauseTracking = () => {
+    if (pauseTracking) {
+      pauseTracking()
+    }
+  }
 
   const handleDeleteClick = () => {
     setIsModalOpen(true); // Ouvre la modal
@@ -173,7 +179,7 @@ const Accordion = ({
               variant="tertiary"
               size="small"
               content="Mettre en pause"
-              onClick={pauseTracking}
+              onClick={handlePauseTracking}
             />
             <Button
               className="o-accordion__content__footer__button -delete"

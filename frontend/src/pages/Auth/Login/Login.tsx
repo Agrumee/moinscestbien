@@ -6,7 +6,7 @@ import Paragraph from "../../../components/atoms/Paragraph/Paragraph";
 import Modal from "../../../components/molecules/Modal/Modal"
 import { useAuth } from "../../../hooks/useAuth";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 //gestion erreurs
 import Toast from "../../../components/molecules/Toast/Toast";
 import APIError from "../../../types/apierror.models";
@@ -17,7 +17,7 @@ const Login = () => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const [emailToResetPassword, setEmailToResetPassword] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -29,6 +29,8 @@ const Login = () => {
     setTimeout(() => {
       setError(message);
       setShowErrorToast(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+
     }, 100);
   };
 

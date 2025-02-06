@@ -2,10 +2,10 @@ import Button from "../../components/atoms/Button/Button";
 import Heading from "../../components/atoms/Heading/Heading";
 import { useAuth } from "../../hooks/useAuth";
 import "./DeleteAccount.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 
 const DeleteAccount = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const { deleteAccount } = useAuth();
 
   const handleDeleteAccount = async () => {
