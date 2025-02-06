@@ -1,9 +1,13 @@
 import Heading from '../../../components/atoms/Heading/Heading'
 import Paragraph from '../../../components/atoms/Paragraph/Paragraph'
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
+
 
 import './LegalNotices.scss'
 
 const LegalNotices = () => {
+    const navigate = useNavigateWithScroll();
+
     return (
         <div className='p-legalnotices'>
             <Heading content='Mentions Légales' level={1} />
@@ -14,20 +18,25 @@ const LegalNotices = () => {
             <Paragraph content='Responsable du projet : Grimault Mehdi, Rivière Clémentine' />
             <div className='contactus_link'>
                 <Paragraph content="Pour nous contacter : " />
-                <a href="./contactus"> cliquez ici</a>
+                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
             </div>
 
             <Heading content="2. Hébergement" level={2} />
 
-            <Paragraph content="L'application est hébergée par :Nom de l'hébergeur : [Nom de l'hébergeur]Adresse : [Adresse de l'hébergeur]" />
+            <Paragraph content="L'application est hébergée par :Nom de l'hébergeur : OVHCloud Roubaix, France." />
 
             <Heading content="3. Propriété intellectuelle" level={2} />
 
-            <Paragraph content="Tous les contenus présents sur l'application, y compris les textes, images, logos et graphismes, sont la propriété de leurs auteurs respectifs. Toute reproduction ou utilisation sans autorisation est interdite." />
+            <Paragraph content="Tous les contenus présents sur l'application, y compris les textes, images, logos et graphismes, sont la propriété de leurs auteurs respectifs." />
+            <Paragraph content="Toute reproduction ou utilisation sans autorisation est interdite." />
 
             <Heading content="4. Protection des données personnelles" level={2} />
 
-            <Paragraph content="L'application collecte des données personnelles uniquement pour son bon fonctionnement et ne les partage pas avec des tiers. Pour plus de détails, veuillez consulter notre Politique de Confidentialité." />
+            <Paragraph content="L'application collecte des données personnelles uniquement pour son bon fonctionnement et ne les partage pas avec des tiers. " />
+            <div className='contactus_link'>
+                <Paragraph content="Pour plus de détails, veuillez consulter notre " />
+                <div onClick={() => navigate("/privacypolicy")}> Politique de Confidentialité.</div>
+            </div>
 
             <Heading content="5. Responsabilité" level={2} />
 
@@ -37,7 +46,7 @@ const LegalNotices = () => {
 
             <div className='contactus_link'>
                 <Paragraph content="Pour toute question ou demande d'information, vous pouvez nous contacter à l'adresse suivante : " />
-                <a href="./contactus"> en ciquant ici </a>
+                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
             </div>
 
 

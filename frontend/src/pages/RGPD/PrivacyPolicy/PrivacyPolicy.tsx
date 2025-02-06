@@ -1,9 +1,12 @@
 import Heading from '../../../components/atoms/Heading/Heading'
 import Paragraph from '../../../components/atoms/Paragraph/Paragraph'
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 
 import './PrivacyPolicy.scss'
 
 const PrivacyPolicy = () => {
+    const navigate = useNavigateWithScroll();
+
     return (
         <div className='p-privacypolicy'>
             <Heading content="Politique de confidentialité" level={1} />
@@ -50,7 +53,7 @@ const PrivacyPolicy = () => {
             </ul>
             <div className='contactus_link'>
                 <Paragraph content="Pour exercer vos droits, vous pouvez nous contacter " />
-                <a href="./contactus"> en ciquant ici </a>
+                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
             </div>
             <Heading content="7. Sécurité des données" level={2} />
             <Paragraph content="Nous mettons en place des mesures de sécurité pour protéger vos données contre tout accès non autorisé, altération ou destruction." />
@@ -61,7 +64,7 @@ const PrivacyPolicy = () => {
             <Heading content="9. Contact" level={2} />
             <div className='contactus_link'>
                 <Paragraph content="Pour toute question relative à cette politique de confidentialité, vous pouvez nous contacter " />
-                <a href="./contactus"> en ciquant ici </a>
+                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
             </div>
         </div>
     )
