@@ -4,14 +4,15 @@ import Heading from "../../../components/atoms/Heading/Heading";
 import Button from "../../../components/atoms/Button/Button";
 import Paragraph from "../../../components/atoms/Paragraph/Paragraph";
 import Modal from "../../../components/molecules/Modal/Modal"
+
 import { useAuth } from "../../../hooks/useAuth";
 import { useState } from "react";
 import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
-//gestion erreurs
-import Toast from "../../../components/molecules/Toast/Toast";
+import { useToast } from "../../../hooks/useToast";
+
 import APIError from "../../../types/apierror.models";
-import "./Login.scss";
 import fetchAPI from "../../../utils/fetch";
+import "./Login.scss";
 
 const Login = () => {
   const { login } = useAuth();
@@ -21,36 +22,22 @@ const Login = () => {
   const [emailToResetPassword, setEmailToResetPassword] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [showErrorToast, setShowErrorToast] = useState<boolean>(false);
-  const [error, setError] = useState<string>("");
-
-  const handleShowToast = (message: string) => {
-    setShowErrorToast(false);
-    setTimeout(() => {
-      setError(message);
-      setShowErrorToast(true);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-
-    }, 100);
-  };
+  const { showToast } = useToast();
 
   const handleSendEmailResetPassword = async (email: string) => {
     try {
-      await fetchAPI("/password_reset/", {
+      const response = await fetchAPI("/accounts/password-reset", {
         method: "POST", body: { email: email }
       });
       closeModal();
+      showToast(response.message || "Si une adresse mail correspond à une adresse valide, un lien de réinitialisation de votre mot de passe vous a été envoyé !", "success");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setTimeout(() => navigate("/home"), 2000);
     } catch (error) {
       if (error instanceof APIError) {
-        if (error.data?.message) {
-          handleShowToast(error.data.message);
-        } else {
-          console.error("Unexpected error:", error);
-          handleShowToast("An unexpected error occurred.");
-        }
+        showToast(error.data?.message || "Une erreur s'est produite.", "fail");
       } else {
-        console.error("Non-API error:", error);
-        handleShowToast("An unexpected error occurred.");
+        showToast("Une erreur inattendue est survenue.", "fail");
       }
     }
   }
@@ -66,25 +53,26 @@ const Login = () => {
     try {
       await login(email, password);
       navigate("/home");
+      showToast("Connexion réussie !", "success")
     } catch (error) {
       if (error instanceof APIError) {
         if (error.data?.message) {
-          handleShowToast(error.data.message);
+          showToast(error.data.message, "fail");
         } else {
           console.error("Unexpected error:", error);
-          handleShowToast("An unexpected error occurred.");
+          showToast("Une erreur est survenue.", "fail");
         }
       } else {
         console.error("Non-API error:", error);
-        handleShowToast("An unexpected error occurred.");
+        showToast("Une erreur inattendue est survenue.", "fail");
       }
     }
   }
+
   return (
     <div className="p-login">
       {isModalOpen && (
         <Modal message="Entrez votre adresse e-mail afin de recevoir un mail de réinitialisation de votre mot de passe :" onConfirm={() => handleSendEmailResetPassword(emailToResetPassword)} onCancel={closeModal} input={emailToResetPassword} handleChange={(e) => setEmailToResetPassword(e.target.value)} />)}
-      <Toast is_called={showErrorToast} content={error} status={"fail"} />
       <Heading className="title" level={1} content="CONNEXION" color="white" />
       <div className="form">
         <div className="form-item">

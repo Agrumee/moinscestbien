@@ -44,16 +44,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const login = async (email: string, password: string) => {
         try {
-            await fetchAPI("/accounts/login", {
+            const response = await fetchAPI("/accounts/login", {
                 method: "POST",
-                body: { email, password }
+                body: { email, password },
+                headers: {
+                    "Content-Type": "application/json",
+                },
             });
-
+            return response;
         } catch (error) {
-            console.error('Login failed', error);
-            throw error;
+            console.error("Login failed :", error);
+            throw error
         }
     };
+
+
 
     const register = async (email: string, password: string, confirmedPassword: string) => {
         try {
@@ -107,6 +112,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             return response;
         } catch (error) {
             console.error("Error during password reset:", error);
+            throw error
         }
     };
 

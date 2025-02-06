@@ -66,7 +66,6 @@ function ContactUs() {
 
     return (
         <div className="p-contactus">
-            {/* <Toast is_called={showToast} content={toastMessage} status={toastStatus} /> */}
             <Heading level={1} content="Nous contacter" />
             <Paragraph content="Vous pouvez nous contacter afin de :" />
 

@@ -32,19 +32,21 @@ class RegisterView(APIView):
             regex_email = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
             if not re.match(regex_email, email):
                 return Response(
-                    {"message": "Invalid email format"},
+                    {"message": "Format d'adresse mail invalide."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
             elif password == confirmed_password:
                 if User.objects.filter(email=email).exists():
                     return Response(
-                        {"message": "Registration failed"},
+                        {"message": "Une erreur est survenue."},
                         status=status.HTTP_401_UNAUTHORIZED,
                     )
                 else:
                     if len(password) < 6:
                         return Response(
-                            {"message": "Password must be at least 6 characters"},
+                            {
+                                "message": "Le mot de passe doit contenir au moins 6 caractères."
+                            },
                             status=status.HTTP_401_UNAUTHORIZED,
                         )
                     else:
@@ -53,12 +55,12 @@ class RegisterView(APIView):
                         )
                         user.save()
                         return Response(
-                            {"message": "User created successfully"},
+                            {"message": "Inscription réussie !"},
                             status=status.HTTP_200_OK,
                         )
             else:
                 return Response(
-                    {"message": "Passwords do not match"},
+                    {"message": "Les mots de passe ne correspondent pas."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
@@ -81,12 +83,12 @@ class LoginView(APIView):
             if user is not None:
                 auth.login(request, user)
                 return Response(
-                    {"message": "User authenticated", "username": username},
+                    {"message": "Connexion réussie !"},
                     status=status.HTTP_200_OK,
                 )
             else:
                 return Response(
-                    {"message": "Invalid email or password"},
+                    {"message": "Email ou mot de passe invalide"},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
@@ -188,9 +190,7 @@ class ChangePasswordView(APIView):
                     )
             else:
                 return Response(
-                    {
-                        "message": "La confirmation du mot de passe ne correspond pas au mot de passe."
-                    },
+                    {"message": "Les mots de passe ne correspondent pas."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
@@ -237,7 +237,9 @@ class PasswordResetView(APIView):
         send_mail(subject, message, from_email, [user.email])
 
         return Response(
-            {"message": "Un lien de réinitialisation vous a été adressé par mail."},
+            {
+                "message": "Si une adresse mail correspond à une adresse valide, un lien de réinitialisation de votre mot de passe vous a été envoyé !"
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -262,12 +264,20 @@ class PasswordResetDoneView(APIView):
             if password == confirmed_password:
                 user.set_password(password)
                 user.save()
-                return Response(
-                    {
-                        "message": "Le mot de passe a été réinitialisé avec succès !",
-                    },
-                    status=status.HTTP_200_OK,
-                )
+                if len(password) >= 6:
+                    return Response(
+                        {
+                            "message": "Le mot de passe a été réinitialisé avec succès !",
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+                else:
+                    return Response(
+                        {
+                            "message": "Le mot de passe doit être composé d'au moins 6 caractères."
+                        },
+                        status=status.HTTP_401_UNAUTHORIZED,
+                    )
             else:
                 return Response(
                     {
