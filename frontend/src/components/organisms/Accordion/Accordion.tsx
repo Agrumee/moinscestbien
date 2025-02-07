@@ -100,7 +100,7 @@ const Accordion = ({
         <div className="toggled_accordion_icon">
           {isPaused ? (
             <div onClick={unpauseTracking}>
-              <Paragraph content="Reprendre le suivi" size="small" color="white"></Paragraph>
+              <Paragraph content="Reprendre le suivi" size="big" color="white"></Paragraph>
             </div>
           ) : isActive ? '-' : '+'}
         </div>
@@ -132,6 +132,7 @@ const Accordion = ({
             <div className="o-accordion__content__noData">
               <Paragraph
                 color="white"
+                size="medium"
                 content="Entrez vos premières données pour commencer à suivre votre consommation."
               />
             </div>

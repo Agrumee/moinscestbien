@@ -1,12 +1,14 @@
 .p-profile {
   display: flex;
-  gap: 1rem;
+  gap: 0.5remrem;
   justify-content: center;
   width: 100%;
+  margin-bottom: 3rem;
+
   .container {
     margin: 6vh 2rem 4rem;
     width: 100%;
-    max-width: 80vh;
+    max-width: 100vh;
     height: 50vh;
     padding: 2rem;
     display: flex;

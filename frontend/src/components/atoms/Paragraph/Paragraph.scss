@@ -3,19 +3,19 @@
   line-height: 150%;
   font-family: $font-family;
   &.tiny {
-    font-size: 11px;
+    font-size: $tiny_font;
   }
 
   &.small {
-    font-size: 14px;
+    font-size: $small_font;
   }
 
   &.medium {
-    font-size: 16px;
+    font-size: $medium_font;
   }
 
   &.big {
-    font-size: 18px;
+    font-size: $big_font;
   }
 
   &.white {

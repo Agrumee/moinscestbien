@@ -19,14 +19,20 @@ const CalendarButton: React.FC<CalendarProps> = ({
   const [selectedDate, setSelectedDate] = useState<Date>(
     initialDate ? new Date(initialDate) : new Date()
   );
+
   const calendarRef = useRef<HTMLDivElement | null>(null);
   const previousDateRef = useRef<Date | null>(null);
+  const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const toggleDisplay = () => {
+    // Si un timeout existe (c'est-à-dire qu'on vient de fermer le calendrier), on empêche la réouverture immédiate
+    if (closeTimeoutRef.current) {
+      return;
+    }
+
     setDisplay((prevDisplay) => !prevDisplay);
   };
 
-  //Gestion des changements de date pour maj les données de l'input
   useEffect(() => {
     if (selectedDate && selectedDate !== previousDateRef.current) {
       setDisplay(false);
@@ -44,11 +50,20 @@ const CalendarButton: React.FC<CalendarProps> = ({
         !calendarRef.current.contains(event.target as Node)
       ) {
         setDisplay(false);
+
+        // Empêche l’icône de rouvrir immédiatement après la fermeture
+        closeTimeoutRef.current = setTimeout(() => {
+          closeTimeoutRef.current = null;
+        }, 200);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
     };
   }, []);
 
@@ -65,7 +80,7 @@ const CalendarButton: React.FC<CalendarProps> = ({
     <div>
       <div className="m-calendar-button">
         {isToday(selectedDate) ? (
-          <Paragraph color="white" content="Aujourd'hui" />
+          <Paragraph color="white" content="Aujourd'hui" size="medium" />
         ) : (
           <Paragraph
             color="white"

@@ -3,6 +3,7 @@
   flex-direction: column;
   width: 100%;
   align-items: center;
+  margin-bottom: 3rem;
   .p-addnew_instructions {
     font-style: italic;
     margin: 0rem 2rem 0rem;
@@ -24,6 +25,8 @@
 
 .a-add-new-title {
   text-align: center;
+  line-height: 100%;
+  max-width: 90%;
 }
 
 .a-add-new-button {

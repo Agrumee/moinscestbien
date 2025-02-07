@@ -7,7 +7,7 @@ interface ParagraphProps {
   className?: string;
 }
 
-export default function Paragraph({ content, size = 'small', color = 'black', className }: ParagraphProps) {
+export default function Paragraph({ content, size = 'medium', color = 'black', className }: ParagraphProps) {
   return (
     <p className={`a-paragraph ${size} ${color} ${className}`}>
       {content}

@@ -4,16 +4,16 @@ import Paragraph from "../../atoms/Paragraph/Paragraph";
 
 
 interface NavbarItemProps {
-    iconName: string;
-    label: string;
-    onClick?: () => void;
+  iconName: string;
+  label: string;
+  onClick?: () => void;
 }
 
 export default function NavbarItem({ iconName, label, onClick }: NavbarItemProps) {
   return (
     <div className="m-navbar-item" onClick={onClick}>
-      <Icon name={iconName}/>
-      <Paragraph content={label} size="small" color="white"/>
+      <Icon name={iconName} />
+      <Paragraph content={label} size="medium" color="white" />
     </div>
   );
 }

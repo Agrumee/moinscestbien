@@ -133,6 +133,7 @@ const HabitPanel = ({
                     {consumptions.length <= 1 ? (
                         <div className="o-habitpanel__content__noData">
                             <Paragraph
+                                size="medium"
                                 color="white"
                                 content="Entrez vos premières données pour commencer à suivre votre consommation."
                             />

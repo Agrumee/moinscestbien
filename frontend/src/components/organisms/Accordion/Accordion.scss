@@ -5,7 +5,7 @@
   border-radius: $border_radius;
   width: 100%;
   @media (min-width: 1024px) {
-    max-width: 80vh;
+    max-width: 100vh;
   }
 
   &__title {
@@ -27,13 +27,13 @@
       position: relative;
       left: auto;
       right: auto;
-      line-height: 100%;
+      line-height: 0;
     }
 
     .toggled_accordion_icon {
       position: relative;
       left: auto;
-      font-size: 30px;
+      font-size: $h1_font;
       p {
         &:hover{
           color:$yellow
@@ -103,6 +103,6 @@
   margin-bottom: 10rem;
 }
 
-.o-accordion__content__footer__button {
-  font-size: 15px;
-}
+// .o-accordion__content__footer__button {
+//   font-size: 15px;
+// }

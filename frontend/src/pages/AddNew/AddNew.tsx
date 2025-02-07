@@ -117,7 +117,7 @@ const AddNew = () => {
       {
         trackedHabitCount === 0 &&
         <div className="p-addnew_instructions">
-          <Paragraph content="Pour commencer, veuillez choisir une habitude de consommation sur laquelle vous souhaitez évoluer." size="big" color="black" />
+          <Paragraph size="medium" content="Pour commencer, veuillez choisir une habitude de consommation sur laquelle vous souhaitez évoluer." color="black" />
         </div>
       }
       <div className="a-add-new_form">

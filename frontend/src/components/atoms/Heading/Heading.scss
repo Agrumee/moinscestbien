@@ -6,19 +6,19 @@
 }
 
 h1 {
-  @include heading-style(32px, 120%);
+  @include heading-style($h1_font, 120%);
 }
 
 h2 {
-  @include heading-style(24px);
+  @include heading-style($h2_font);
 }
 
 h3 {
-  @include heading-style(20px);
+  @include heading-style($h3_font);
 }
 
 h4 {
-  @include heading-style(16px);
+  @include heading-style($h4_font);
 }
 
 .white {

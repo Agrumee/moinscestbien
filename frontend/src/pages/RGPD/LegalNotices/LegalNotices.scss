@@ -12,17 +12,17 @@
         width: max-content;
         border-bottom: $dark_green solid 2px;
         padding: 0rem 10%;
-        @media(max-width:1023px){
-            font-size: 150%;
-        }
+        // @media(max-width:1023px){
+        //     font-size: 150%;
+        // }
     }
     h2{
         border-bottom: $medium_green solid 2px;
         padding: 0rem 4rem 0rem 0rem;
         width: fit-content;
-        @media(max-width:1023px){
-            font-size: 120%;
-        }
+        // @media(max-width:1023px){
+        //     font-size: 120%;
+        // }
     }
     .contactus_link{
 
@@ -40,7 +40,7 @@
             color: $dark_green;
             line-height: 150%;
             font-family: $font-family;
-            font-size: 14px;
+            font-size: $small_font;
             text-decoration: underline;
         }
         .href-link {
