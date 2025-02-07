@@ -39,6 +39,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             }
         } catch (error) {
             console.error("Error during authentication:", error);
+            throw error
         }
     };
 
@@ -79,6 +80,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             });
         } catch (error) {
             console.error("Error during logout:", error);
+            throw error
         }
     };
 
@@ -89,17 +91,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             });
         } catch (error) {
             console.error("Error during account deletion:", error);
+            throw error
         }
     };
 
     const changePassword = async (password: string, confirmedPassword: string) => {
         try {
-            await fetchAPI("/accounts/change-password", {
+            const response = await fetchAPI("/accounts/change-password", {
                 method: "PATCH",
                 body: { password, confirmedPassword }
             });
+            return response;
         } catch (error) {
             console.error("Error during password change:", error);
+            throw error
         }
     };
 

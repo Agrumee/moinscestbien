@@ -21,7 +21,7 @@ const About = () => {
                         <Paragraph className="href-link" content="Clémentine Rivière" size="medium" />
                     </a>
                 </div>
-                <Paragraph content="Étudiants à Ada Tech School" size="tiny" />
+                <Paragraph content="Étudiants à Ada Tech School" size="small" />
             </section>
 
             <section className="history">
