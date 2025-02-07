@@ -1,20 +1,26 @@
 .m-navbar-item {
   display: flex;
-
   align-items: center;
   justify-content: end;
   gap: 0.5rem;
   margin-top: 0;
+  color: $white;
 
   @media (max-width: 1023px) {
     flex-direction: column;
   }
+  &:hover{
+    color: $yellow;
+    cursor: pointer;
+  }
 
   .a-paragraph {
     margin: 0;
+    color:inherit;
   }
 
   .a-icon {
+    color:inherit;
     &.pause {
       width: 33px;
       height: 33px;

@@ -1,6 +1,5 @@
 .p-home {
   overflow: auto;
-  margin-top: 2rem;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -22,6 +21,7 @@
       flex-direction: column;
       width: 100%;
       gap: 1rem;
+      margin-top: 1rem;
     }
   }
   @media (max-width: 1023px) {

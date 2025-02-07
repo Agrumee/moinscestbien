@@ -17,16 +17,16 @@ const Footer = () => {
         <footer className="o-footer">
             <div className="o-footer_container">
                 <div className="legal_notices" onClick={() => handleNavigate('/legalnotices')}>
-                    <Heading level={3} content='Mentions légales' color='medium_green' />
+                    <Heading className='href-link' level={3} content='Mentions légales' color='medium_green' />
                 </div>
                 <div className="privacy_policy" onClick={() => handleNavigate('/privacypolicy')}>
-                    <Heading level={3} content='Politique de confidentialité' color='medium_green' />
+                    <Heading className='href-link' level={3} content='Politique de confidentialité' color='medium_green' />
                 </div>
                 <div className="contact_us" onClick={() => handleNavigate('/contactus')}>
-                    <Heading level={3} content='Nous contacter' color='medium_green' />
+                    <Heading className='href-link' level={3} content='Nous contacter' color='medium_green' />
                 </div>
                 <div className="about" onClick={() => handleNavigate('/about')}>
-                    <Heading level={3} content='À propos' color='medium_green' />
+                    <Heading className='href-link' level={3} content='À propos' color='medium_green' />
                 </div>
             </div>
             <div className="copyright-content">

@@ -15,10 +15,10 @@ const About = () => {
                 <Heading level={3} content="Qui sommes-nous ?" />
                 <div className="creators">
                     <a href='https://www.linkedin.com/in/mehdi-grimault/'>
-                        <Paragraph content="Mehdi Grimault" size="medium" />
+                        <Paragraph className="href-link" content="Mehdi Grimault" size="medium" />
                     </a>
                     <a href="https://www.linkedin.com/in/clementineriviere/">
-                        <Paragraph content="Clémentine Rivière" size="medium" />
+                        <Paragraph className="href-link" content="Clémentine Rivière" size="medium" />
                     </a>
                 </div>
                 <Paragraph content="Étudiants à Ada Tech School" size="tiny" />

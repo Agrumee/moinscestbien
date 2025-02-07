@@ -18,7 +18,7 @@ const LegalNotices = () => {
             <Paragraph content='Responsable du projet : Grimault Mehdi, Rivière Clémentine' />
             <div className='contactus_link'>
                 <Paragraph content="Pour nous contacter : " />
-                <div onClick={() => navigate("/contactus")}>  Cliquez-ici </div>
+                <div className="href-link" onClick={() => navigate("/contactus")}>  Cliquez-ici </div>
             </div>
 
             <Heading content="2. Hébergement" level={2} />
@@ -35,7 +35,7 @@ const LegalNotices = () => {
             <Paragraph content="L'application collecte des données personnelles uniquement pour son bon fonctionnement et ne les partage pas avec des tiers. " />
             <div className='contactus_link'>
                 <Paragraph content="Pour plus de détails, veuillez consulter notre " />
-                <div onClick={() => navigate("/privacypolicy")}> Politique de Confidentialité.</div>
+                <div className="href-link" onClick={() => navigate("/privacypolicy")}> Politique de confidentialité</div>
             </div>
 
             <Heading content="5. Responsabilité" level={2} />
@@ -46,7 +46,7 @@ const LegalNotices = () => {
 
             <div className='contactus_link'>
                 <Paragraph content="Pour toute question ou demande d'information, vous pouvez nous contacter : " />
-                <div onClick={() => navigate("/contactus")}>  via ce formulaire </div>
+                <div className="href-link" onClick={() => navigate("/contactus")}>  via ce formulaire </div>
             </div>
 
 

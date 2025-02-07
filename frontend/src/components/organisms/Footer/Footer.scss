@@ -26,4 +26,13 @@
         display: flex;
         justify-content: center;
     }
+
+    .href-link {
+        text-decoration: underline;
+      }
+    
+      .href-link:hover {
+          color: $dark_green;
+          cursor: pointer;
+      }
 }
