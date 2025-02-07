@@ -7,6 +7,7 @@
   align-items: center;
   .title {
     text-align: center;
+    line-height: 50%;
   }
   .a-paragraph {
     margin: 0rem;
@@ -36,30 +37,29 @@
     text-align: center;
     cursor: pointer;
 
-    .a-paragraph {
-      text-decoration: none;
-    }
-
     .a-paragraph:hover {
       color: $yellow;
     }
   }
   .notRegistered {
-    display: flex;
-    align-self: center;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    margin: 1rem 0rem 4rem;
-
-    a {
-      text-decoration: none;
+    
+    @media(min-width:840px){
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 1rem 0rem 4rem;
+  }
+  @media(max-width:839px){
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
+  }  
+  .href-link {
+    text-decoration: underline;
+  }
 
-    a:hover {
-      .a-paragraph {
-        color: $yellow;
-      }
-    }
+  .href-link:hover {
+      color: $yellow;
   }
 }

@@ -15,7 +15,7 @@ import fetchAPI from "../../../utils/fetch";
 import "./Login.scss";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login, authenticate } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigateWithScroll();
@@ -52,6 +52,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       await login(email, password);
+      authenticate()
       navigate("/home");
       showToast("Connexion réussie !", "success")
     } catch (error) {
@@ -101,13 +102,13 @@ const Login = () => {
           onClick={handleLogin}
         />
         <div className="resetPassword" onClick={openModal}>
-          <Paragraph content="Mot de passe oublié ?" color="white" />
+          <Paragraph className="href-link" content="Mot de passe oublié ?" color="white" />
         </div>
       </div>
       <div className="notRegistered">
         <Paragraph content="Vous n'avez pas encore de compte ?" size="medium" color="white" />
         <a href="/register">
-          <Paragraph content="Créer un compte" color="white" />
+          <Paragraph className="href-link" content="Créer un compte" color="white" />
         </a>
       </div>
     </div>

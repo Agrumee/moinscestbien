@@ -18,7 +18,7 @@ const LegalNotices = () => {
             <Paragraph content='Responsable du projet : Grimault Mehdi, Rivière Clémentine' />
             <div className='contactus_link'>
                 <Paragraph content="Pour nous contacter : " />
-                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
+                <div onClick={() => navigate("/contactus")}>  Cliquez-ici </div>
             </div>
 
             <Heading content="2. Hébergement" level={2} />
@@ -45,8 +45,8 @@ const LegalNotices = () => {
             <Heading content="6. Contact" level={2} />
 
             <div className='contactus_link'>
-                <Paragraph content="Pour toute question ou demande d'information, vous pouvez nous contacter à l'adresse suivante : " />
-                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
+                <Paragraph content="Pour toute question ou demande d'information, vous pouvez nous contacter : " />
+                <div onClick={() => navigate("/contactus")}>  via ce formulaire </div>
             </div>
 
 

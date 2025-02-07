@@ -4,12 +4,13 @@ import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 import { useAuth } from "../../hooks/useAuth";
 
 const Profile = () => {
-  const { logout } = useAuth();
+  const { logout, authenticate } = useAuth();
   const navigate = useNavigateWithScroll();
 
   const handleLogout = async () => {
     try {
       await logout();
+      authenticate()
       navigate("/login");
     } catch (error) {
       throw error;
@@ -28,11 +29,11 @@ const Profile = () => {
     <div className="p-profile">
       <div className="container">
         <Button
-          className="logoutButton"
-          variant="primary"
+          className="changePasswordButton"
+          variant="tertiary"
           size="large"
-          content="Se déconnecter"
-          onClick={handleLogout}
+          content="Infos légales & Contact"
+          onClick={() => navigate("/legalandabout")}
         />
         <Button
           className="changePasswordButton"
@@ -40,6 +41,13 @@ const Profile = () => {
           size="large"
           content="Modifier mon mot de passe"
           onClick={handleChangePassword}
+        />
+        <Button
+          className="logoutButton"
+          variant="primary"
+          size="large"
+          content="Se déconnecter"
+          onClick={handleLogout}
         />
         <Button
           className="deleteAccountButton"

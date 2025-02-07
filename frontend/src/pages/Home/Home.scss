@@ -4,8 +4,10 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  h2 {
-    padding: 1rem;
+  .o-accordion__title {
+    h2{
+      padding: 1rem;
+    }
   }
   .toggled_accordion_icon {
     padding: 1rem;

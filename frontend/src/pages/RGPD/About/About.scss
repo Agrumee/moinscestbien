@@ -8,7 +8,7 @@
         }
     }
     @media(max-width:1023px){
-        margin:2rem 2rem;
+        margin:2rem 2rem 6rem;
         input{
             width: 80%;
             max-width: 20rem;
@@ -16,9 +16,9 @@
     }
     h1 {
         align-self: center;
-        width: fit-content;
+        width: max-content;
         border-bottom: $dark_green solid 2px;
-        padding: 0rem 4rem;
+        padding: 0rem 10%;
         text-align: center;
         @media(max-width:1023px){
             font-size: 150%;
@@ -26,8 +26,9 @@
     }
     h2 {
         align-self: center;
-        max-width: 30rem;
         text-align: center;
+        width: fit-content;
+
         @media(max-width:1023px){
             font-size: 120%;
         }
@@ -72,7 +73,5 @@
     .history_title{
         margin-left: 2rem;
     }
-    .history{
-        margin-bottom: 6rem;
-    }
+
 }

@@ -6,11 +6,12 @@ import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 
 const DeleteAccount = () => {
   const navigate = useNavigateWithScroll();
-  const { deleteAccount } = useAuth();
+  const { deleteAccount, authenticate } = useAuth();
 
   const handleDeleteAccount = async () => {
     try {
       await deleteAccount();
+      authenticate();
       navigate('/login');
     } catch (error) {
       throw error;

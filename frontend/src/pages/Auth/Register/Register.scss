@@ -7,6 +7,7 @@
 
   .title {
     text-align: center;
+    line-height: 50%;
   }
 
   .form {
@@ -33,15 +34,19 @@
     align-self: center;
     align-items: center;
     gap: 1rem;
+    margin-bottom: 2rem;
 
-    a {
-      text-decoration: none;
+    p{
+      line-height: 10%;
     }
 
-    a:hover {
-      .a-paragraph {
+    .href-link {
+      text-decoration: underline;
+    }
+  
+    .href-link:hover {
         color: $yellow;
-      }
+    }
     }
   }
-}
+

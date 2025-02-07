@@ -53,7 +53,7 @@ const PrivacyPolicy = () => {
             </ul>
             <div className='contactus_link'>
                 <Paragraph content="Pour exercer vos droits, vous pouvez nous contacter " />
-                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
+                <div onClick={() => navigate("/contactus")}>  via ce formulaire </div>
             </div>
             <Heading content="7. Sécurité des données" level={2} />
             <Paragraph content="Nous mettons en place des mesures de sécurité pour protéger vos données contre tout accès non autorisé, altération ou destruction." />
@@ -64,7 +64,7 @@ const PrivacyPolicy = () => {
             <Heading content="9. Contact" level={2} />
             <div className='contactus_link'>
                 <Paragraph content="Pour toute question relative à cette politique de confidentialité, vous pouvez nous contacter " />
-                <div onClick={() => navigate("/contactus")}>  en ciquant ici </div>
+                <div onClick={() => navigate("/contactus")}>  via ce formulaire </div>
             </div>
         </div>
     )

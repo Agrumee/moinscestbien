@@ -85,7 +85,7 @@ const Register = () => {
       <div className="alreadyRegistered">
         <Paragraph content="Déjà inscrit ?" size="medium" color="white" />
         <a href="/login">
-          <Paragraph content="Se connecter" color="white" />
+          <Paragraph className='href-link' content="Se connecter" color="white" />
         </a>
       </div>
     </div>
