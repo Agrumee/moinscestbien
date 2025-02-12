@@ -296,7 +296,7 @@ class ApiCreateTrackedHabitTest(TestCase):
 
         response = self.client.post(self.add_habit_url, data)
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("success", response.data)
         self.assertEqual(TrackedHabit.objects.count(), 1)
         self.assertEqual(TrackedHabit.objects.first().habit, self.habit)
