@@ -228,22 +228,22 @@ class ApiTrackedHabitsList(APIView):
                         },
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-
-            tracked_habit = TrackedHabit.objects.create(
-                user=user,
-                habit=habit,
-                unit=unit,
-                motivation=motivation,
-                tracking_frequency=tracking_frequency,
-            )
-
-            return Response(
-                {
-                    "success": True,
-                    "message": f"{habit.name} assigned successfully to {user.username}.",
-                },
-                status=status.HTTP_201_CREATED,
-            )
+            else:
+                tracked_habit = TrackedHabit.objects.create(
+                    user=user,
+                    habit=habit,
+                    unit=unit,
+                    motivation=motivation,
+                    tracking_frequency=tracking_frequency,
+                )
+                print(habit.name)
+                return Response(
+                    {
+                        "success": True,
+                        "message": f"{habit.name} assigned successfully to {user.username}.",
+                    },
+                    status=status.HTTP_201_CREATED,
+                )
 
         except Habit.DoesNotExist:
             return Response(
