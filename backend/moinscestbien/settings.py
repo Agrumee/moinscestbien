@@ -133,7 +133,9 @@ CONTACT_EMAIL = config("DJANGO_CONTACT_EMAIL")
 EMAIL_HOST_PASSWORD = config("DJANGO_EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = config("DJANGO_EMAIL_USE_TLS", cast=bool)
 EMAIL_USE_SSL = config("DJANGO_EMAIL_USE_SSL", cast=bool)
-EMAIL_HOST_USER = config("DJANGO_EMAIL_HOST_USER")
+
+if not config("DJANGO_DEBUG", default=True, cast=bool):
+    EMAIL_HOST_USER = config("DJANGO_EMAIL_HOST_USER")
 
 
 # Password validation
