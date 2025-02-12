@@ -25,6 +25,7 @@ export default defineConfig(() => {
     },
     server: {
       host: "0.0.0.0",
+      hmr: process.env.DJANGO_DEBUG !== "True", // Désactive HMR en prod
     },
   };
 });
