@@ -1,4 +1,3 @@
-version: "3.8"
 services:
 
   # mailhog:
@@ -34,6 +33,7 @@ services:
       DJANGO_EMAIL_HOST_PASSWORD: ${DJANGO_EMAIL_HOST_PASSWORD}
       DJANGO_EMAIL_USE_TLS: ${DJANGO_EMAIL_USE_TLS}
       DJANGO_EMAIL_USE_SSL: ${DJANGO_EMAIL_USE_SSL}
+      DJANGO_EMAIL_HOST_USER: ${DJANGO_EMAIL_HOST_USER}
     volumes:
       - ./backend:/backend
     depends_on:
