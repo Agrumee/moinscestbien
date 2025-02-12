@@ -4,7 +4,7 @@ interface HeadingProps {
   className?: string;
   level: 1 | 2 | 3 | 4;
   content: string;
-  color?: 'black' | 'white';
+  color?: 'black' | 'white' | 'dark_green' | 'medium_green';
 }
 
 export default function Heading(props: HeadingProps) {

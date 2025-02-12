@@ -1,0 +1,36 @@
+.p-addnew {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 3rem;
+  .p-addnew_instructions {
+    font-style: italic;
+    margin: 0rem 2rem 0rem;
+    @media (max-width: 1023px) {
+      width: 80%;
+    }
+  }
+}
+
+.a-add-new_form {
+  margin: 0rem 2rem 0rem;
+  @media (max-width: 1023px) {
+    width: 100%;
+  }
+  .a-add-new_dropdown_with_label {
+    margin: 1rem 1rem 0rem;
+  }
+}
+
+.a-add-new-title {
+  text-align: center;
+  line-height: 100%;
+  max-width: 90%;
+}
+
+.a-add-new-button {
+  align-self: center;
+  max-width: 30rem;
+  margin: 2rem 2rem 4rem;
+}

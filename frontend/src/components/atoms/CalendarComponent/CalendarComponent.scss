@@ -2,9 +2,12 @@
   display: flex;
   position: absolute;
   z-index: 2;
-  left: 10%;
-  right: 23%;
   justify-content: flex-end;
+  margin: 0em 2em;
+
+  @media (min-width: 1024px) {
+    max-width: 25%;
+  }
 }
 
 .react-calendar {
@@ -15,7 +18,6 @@
   border-radius: 10px;
   box-shadow: 0 4px 8px $black;
   padding: 5px;
-  width: 40vh;
 
   &__navigation {
     display: flex;

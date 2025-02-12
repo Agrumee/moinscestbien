@@ -1,18 +1,17 @@
-@mixin input-style($width, $max_width) {
+@mixin input-style() {
   background-color: $white;
   border: 1px solid $medium_green;
   border-radius: 10px;
-  padding:10px;
-  width:$width;
-  max-width: $max_width;
-  font-size: 18px;
+  padding: 10px;
+  font-size: $medium_font;
   line-height: 150%;
 }
 
 .large-input {
-  @include input-style(auto, 100%);
+  @include input-style();
 }
 
 .small-input {
-  @include input-style(auto, 20%);
+  @include input-style();
+  width: 25%;
 }

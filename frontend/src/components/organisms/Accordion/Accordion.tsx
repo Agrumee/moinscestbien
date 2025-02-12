@@ -4,7 +4,6 @@ import "./Accordion.scss";
 import CountButton from "../../molecules/CountButton/CountButton";
 import Input from "../../atoms/Input/Input";
 import CalendarButton from "../../molecules/CalendarButton/CalendarButton";
-import Icon from "../../atoms/Icon/Icon";
 import Paragraph from "../../atoms/Paragraph/Paragraph";
 import Button from "../../atoms/Button/Button";
 import Heading from "../../atoms/Heading/Heading";
@@ -40,7 +39,7 @@ const Accordion = ({
   const [currentFrequency, setCurrentFrequency] = useState<
     Frequency
   >(frequency);
-  const [isPaused, setIsPaused] = useState(trackedHabit.end_date !== null);
+  const isPaused = trackedHabit.end_date !== null;
   const [isModalOpen, setIsModalOpen] = useState(false);
 
 
@@ -63,6 +62,12 @@ const Accordion = ({
   const updateInputValue = (value: number) => {
     onUpdateConsumption(currentConsumption + value);
   };
+
+  const handlePauseTracking = () => {
+    if (pauseTracking) {
+      pauseTracking()
+    }
+  }
 
   const handleDeleteClick = () => {
     setIsModalOpen(true); // Ouvre la modal
@@ -95,7 +100,7 @@ const Accordion = ({
         <div className="toggled_accordion_icon">
           {isPaused ? (
             <div onClick={unpauseTracking}>
-              <Paragraph content="Reprendre le suivi" size="small" color="white"></Paragraph>
+              <Paragraph content="Reprendre le suivi" size="big" color="white"></Paragraph>
             </div>
           ) : isActive ? '-' : '+'}
         </div>
@@ -127,6 +132,7 @@ const Accordion = ({
             <div className="o-accordion__content__noData">
               <Paragraph
                 color="white"
+                size="medium"
                 content="Entrez vos premières données pour commencer à suivre votre consommation."
               />
             </div>
@@ -173,7 +179,7 @@ const Accordion = ({
               variant="tertiary"
               size="small"
               content="Mettre en pause"
-              onClick={pauseTracking}
+              onClick={handlePauseTracking}
             />
             <Button
               className="o-accordion__content__footer__button -delete"

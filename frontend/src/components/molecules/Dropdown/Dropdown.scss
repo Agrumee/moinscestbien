@@ -3,7 +3,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0;
+  margin: 0rem 1rem;
   cursor: pointer;
   width: 100%;
 
@@ -15,15 +15,18 @@
 .dropdown {
   background-color: $dark_green;
   border-radius: 10px;
-  padding: 5px;
-  font-size: 22px;
   line-height: 150%;
   position: relative;
   display: flex;
   justify-content: center;
-  padding: 0.5rem;
+  padding: 0.5rem 0rem;
   box-shadow: $dark_green 0px 2px 5px;
-
+  @media (min-width: 1024px) {
+    width: 30rem;
+  }
+  @media (max-width: 1023px) {
+    width: 100%;
+  }
   .a-icon {
     height: 10px;
   }
@@ -48,15 +51,15 @@
   cursor: pointer;
   transition: background-color 0.2s;
   font-family: $font-family;
-  font-size: 18px;
+  font-size: $medium_font;
 
   &:last-child {
     border-bottom: none;
   }
 
   &:hover,
-  &.active {
-    background-color: lighten($medium_green, 65%);
+  &:active {
+    background-color: $light_green;
   }
 }
 

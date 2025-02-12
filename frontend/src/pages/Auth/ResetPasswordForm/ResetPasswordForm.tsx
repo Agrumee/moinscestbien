@@ -2,32 +2,26 @@ import Label from "../../../components/atoms/Label/Label";
 import Button from "../../../components/atoms/Button/Button";
 import Heading from "../../../components/atoms/Heading/Heading";
 import Input from "../../../components/atoms/Input/Input";
-import Toast from '../../../components/molecules/Toast/Toast'
+
 import { useState } from "react";
 import { useAuth } from "../../../hooks/useAuth";
-import "./ResetPasswordForm.scss";
 import { useSearchParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
+import { useToast } from "../../../hooks/useToast";
+
 import APIError from "../../../types/apierror.models";
-import { resolveTypeReferenceDirective } from "typescript";
+
+import "./ResetPasswordForm.scss";
 
 export default function ResetPasswordForm() {
     const [password, setPassword] = useState("");
     const [confirmedPassword, setConfirmedPassword] = useState("");
     const { resetPassword } = useAuth();
     const [searchParams] = useSearchParams();
-    const [showErrorToast, setShowErrorToast] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-    const navigate = useNavigate();
 
+    const navigate = useNavigateWithScroll();
+    const { showToast } = useToast();
 
-    const handleShowToast = (message: string) => {
-        setShowErrorToast(false);
-        setTimeout(() => {
-            setError(message);
-            setShowErrorToast(true);
-        }, 100);
-    };
 
     const handleResetPassword = async () => {
         try {
@@ -36,50 +30,49 @@ export default function ResetPasswordForm() {
 
             if (uid && token) {
                 await resetPassword(password, confirmedPassword, uid, token);
+                showToast("Votre mot de passe a été réinitialisé avec succès !", "success");
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                setTimeout(() => navigate("/home"), 2000);
             }
         } catch (error) {
             if (error instanceof APIError) {
-                if (error.data?.message) {
-                    handleShowToast(error.data.message);
-                } else {
-                    console.error("Unexpected error:", error);
-                    handleShowToast("An unexpected error occurred.");
-                }
+                showToast(error.data?.message || "Une erreur s'est produite.", "fail");
             } else {
-                console.error("Non-API error:", error);
-                handleShowToast("An unexpected error occurred.");
+                showToast("Une erreur inattendue est survenue.", "fail");
             }
-            return
         }
-        navigate("/")
-    };
-    return (
-        <div className="p-change_password">
-            <Toast is_called={showErrorToast} content={error} status={"fail"} />
+    }
 
-            <Heading className="title" level={1} content="Modifier le mot de passe" color="black" />
-            <Label content="Nouveau mot de passe" color="black" />
-            <Input
-                className="large-input"
-                placeholder="**********"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-            />
-            <Label content="Confirmer le mot de passe" color="black" />
-            <Input
-                className="large-input"
-                placeholder="**********"
-                type="password"
-                value={confirmedPassword}
-                onChange={(e) => setConfirmedPassword(e.target.value)}
-            />
-            <Button
-                className="changePasswordButton"
-                variant="primary"
-                content="Confirmer"
-                onClick={handleResetPassword}
-            />
+    return (
+        <div className="p-resetpasswordform">
+            <Heading className="title" level={1} content="Modifier le mot de passe" color="white" />
+            <form>
+                <div className="form-item">
+                    <Label content="Nouveau mot de passe" color="white" />
+                    <Input
+                        className="large-input"
+                        placeholder="**********"
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+                <div className="form-item">
+                    <Label content="Confirmer le mot de passe" color="white" />
+                    <Input
+                        className="large-input"
+                        placeholder="**********"
+                        type="password"
+                        value={confirmedPassword}
+                        onChange={(e) => setConfirmedPassword(e.target.value)}
+                    />
+                    <Button
+                        variant="primary"
+                        content="Confirmer"
+                        onClick={handleResetPassword}
+                    />
+                </div>
+            </form>
         </div>
     );
 }

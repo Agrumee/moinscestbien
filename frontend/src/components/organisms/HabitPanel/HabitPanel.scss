@@ -1,0 +1,45 @@
+.o-habitpanel {
+  margin: 1rem 2rem 4rem;
+  $border_radius: 10px;
+  box-shadow: $dark_green 0px 2px 5px;
+  border-radius: $border_radius;
+  background-color: $dark_green;
+  h2 {
+    text-align: center;
+  }
+  &__content {
+    display: flex;
+
+    &__counter {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 1rem 0rem;
+    }
+
+    &__footer {
+      display: flex;
+      flex-direction: column;
+      margin: 4rem 0rem 4rem;
+      align-items: center;
+      gap: 1em;
+    }
+  }
+    &__control {
+      width: 40%;
+      margin-right: 1em;
+    }
+
+  &__content__chart__block {
+    display: flex;
+    flex-direction: column;
+    margin: 1em 5rem 1rem 0rem;
+    width: 70%;
+  }
+    &__content__frequency {
+      display: flex;
+      gap: 1em;
+      align-self: center;
+      margin: 0.5rem 0rem;
+    }
+  }

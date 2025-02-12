@@ -2,12 +2,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 1rem;
-  padding: 1rem;
-  border-top : $yellow 2px solid;
+  padding-top: 1rem;
+
+  @media (max-width: 1023px) {
+    border-top: $yellow 2px solid;
+  }
 
   .a-paragraph {
-    font-size: 120%;
+    // font-size: 120%;
     margin-right: 1rem;
+  }
+  .a-icon{
+    &:hover{
+      color:$yellow;
+      cursor: pointer;
+    }
   }
 }

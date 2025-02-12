@@ -12,12 +12,12 @@ services:
   #   ports:
   #     - "${DB_DEV_PORT}:5433"
 
-  # mailhog:
-  #   image: mailhog/mailhog
-  #   container_name: 'mailhog'
-  #   ports:
-  #     - "1025:1025"
-  #     - "8025:8025"
+  mailhog:
+    image: mailhog/mailhog
+    container_name: 'mailhog'
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
   backend:
     restart: unless-stopped
@@ -37,6 +37,14 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS}
       DJANGO_DEBUG: ${DJANGO_DEBUG}
+      DJANGO_CONTACT_EMAIL: ${DJANGO_CONTACT_EMAIL}
+      DJANGO_EMAIL_BACKEND: ${DJANGO_EMAIL_BACKEND}
+      DJANGO_EMAIL_HOST: ${DJANGO_EMAIL_HOST}
+      DJANGO_EMAIL_PORT: ${DJANGO_EMAIL_PORT}
+      DJANGO_DEFAULT_FROM_EMAIL: ${DJANGO_DEFAULT_FROM_EMAIL}
+      DJANGO_EMAIL_HOST_PASSWORD: ${DJANGO_EMAIL_HOST_PASSWORD}
+      DJANGO_EMAIL_USE_TLS: ${DJANGO_EMAIL_USE_TLS}
+      DJANGO_EMAIL_USE_SSL: ${DJANGO_EMAIL_USE_SSL}
     volumes:
       - ./backend:/backend
     depends_on:
