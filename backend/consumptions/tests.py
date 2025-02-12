@@ -302,7 +302,6 @@ class ApiCreateTrackedHabitTest(TestCase):
         self.assertEqual(TrackedHabit.objects.first().habit, self.habit)
 
     def test_user_can_add_untracked_habit_anymore(self):
-        # Create a previously tracked habit with an end date in the past
         self.tracked_habit = TrackedHabit.objects.create(
             user=self.user,
             habit=self.habit,
