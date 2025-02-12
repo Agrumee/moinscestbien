@@ -110,11 +110,22 @@ const Home = () => {
       await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}`, {
         method: "DELETE",
       });
-      setTrackedHabits((prev) =>
-        prev.filter((habit) => habit.id !== trackedHabitId)
-      );
-      authenticate();
 
+      setTrackedHabits((prev) => prev.filter((habit) => habit.id !== trackedHabitId));
+
+      setConsumptionsListByTrackedHabitId((prev) => {
+        const updated = { ...prev };
+        delete updated[trackedHabitId];
+        return updated;
+      });
+
+      setCurrentConsumptionByTrackedHabitId((prev) => {
+        const updated = { ...prev };
+        delete updated[trackedHabitId];
+        return updated;
+      });
+
+      authenticate();
     } catch (error) {
       console.error("Delete tracked habit failed", error);
     }
@@ -125,15 +136,27 @@ const Home = () => {
       await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}/pause`, {
         method: "PATCH",
       });
-      setTrackedHabits((prev) =>
-        prev.filter((habit) => habit.id !== trackedHabitId)
-      );
-      authenticate();
 
+      setTrackedHabits((prev) => prev.filter((habit) => habit.id !== trackedHabitId));
+
+      setConsumptionsListByTrackedHabitId((prev) => {
+        const updated = { ...prev };
+        delete updated[trackedHabitId];
+        return updated;
+      });
+
+      setCurrentConsumptionByTrackedHabitId((prev) => {
+        const updated = { ...prev };
+        delete updated[trackedHabitId];
+        return updated;
+      });
+
+      authenticate();
     } catch (error) {
       console.error("Pause tracked habit failed", error);
     }
   };
+
 
   return (
     <div className="p-home">

@@ -86,7 +86,7 @@ CSRF_TRUSTED_ORIGINS = [
 CSRF_COOKIE_NAME = "csrftoken"
 CSRF_COOKIE_SECURE = True  # Utilisez True si vous utilisez HTTPS
 SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = False  # Mettre sur True pour que le cookie ne puissent pas être modifié par javascript
+CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Lax"
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
@@ -125,12 +125,14 @@ DATABASES = {
     }
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "mailhog"
-EMAIL_PORT = 1025
-DEFAULT_FROM_EMAIL = "support@moinscestbien.fr"
+EMAIL_BACKEND = config("DJANGO_EMAIL_BACKEND")
+EMAIL_HOST = config("DJANGO_EMAIL_HOST")
+EMAIL_PORT = config("DJANGO_EMAIL_PORT")
+DEFAULT_FROM_EMAIL = config("DJANGO_DEFAULT_FROM_EMAIL")
 CONTACT_EMAIL = config("DJANGO_CONTACT_EMAIL")
-EMAIL_USE_TLS = False
+EMAIL_HOST_PASSWORD = config("DJANGO_EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = config("DJANGO_EMAIL_USE_TLS", cast=bool)
+EMAIL_USE_SSL = config("DJANGO_EMAIL_USE_SSL", cast=bool)
 
 
 # Password validation
