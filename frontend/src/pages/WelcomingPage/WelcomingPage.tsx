@@ -1,10 +1,10 @@
 import Heading from "../../components/atoms/Heading/Heading";
 import Button from "../../components/atoms/Button/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../hooks/useNavigateWithScroll";
 import "./WelcomingPage.scss";
 
 const WelcomingPage = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
 
   const handleLogin = () => {
     navigate("/login");

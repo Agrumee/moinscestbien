@@ -1,0 +1,38 @@
+.p-home {
+  overflow: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 3rem;
+
+  .o-accordion__title {
+    h2{
+      padding: 1rem;
+    }
+  }
+  .toggled_accordion_icon {
+    padding: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .mobile-container {
+      display: none;
+    }
+    .desktop-container {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+  }
+  @media (max-width: 1023px) {
+    .desktop-container {
+      display: none;
+    }
+    .mobile-container {
+      width: 100%;
+      margin: 1rem;
+    }
+  }
+}

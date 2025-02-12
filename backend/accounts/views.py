@@ -3,9 +3,11 @@ from rest_framework.views import APIView
 from rest_framework import permissions
 from rest_framework.response import Response
 from accounts.models import User
+from consumptions.models import TrackedHabit
 from django.views.decorators.csrf import ensure_csrf_cookie, csrf_protect
 from django.utils.decorators import method_decorator
 from django.contrib import auth
+from django.contrib.auth import update_session_auth_hash
 from rest_framework import status
 import re
 from decouple import config
@@ -31,19 +33,21 @@ class RegisterView(APIView):
             regex_email = r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
             if not re.match(regex_email, email):
                 return Response(
-                    {"message": "Invalid email format"},
+                    {"message": "Format d'adresse mail invalide."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
             elif password == confirmed_password:
                 if User.objects.filter(email=email).exists():
                     return Response(
-                        {"message": "Registration failed"},
+                        {"message": "Une erreur est survenue."},
                         status=status.HTTP_401_UNAUTHORIZED,
                     )
                 else:
                     if len(password) < 6:
                         return Response(
-                            {"message": "Password must be at least 6 characters"},
+                            {
+                                "message": "Le mot de passe doit contenir au moins 6 caractères."
+                            },
                             status=status.HTTP_401_UNAUTHORIZED,
                         )
                     else:
@@ -52,12 +56,12 @@ class RegisterView(APIView):
                         )
                         user.save()
                         return Response(
-                            {"message": "User created successfully"},
+                            {"message": "Inscription réussie !"},
                             status=status.HTTP_200_OK,
                         )
             else:
                 return Response(
-                    {"message": "Passwords do not match"},
+                    {"message": "Les mots de passe ne correspondent pas."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
@@ -80,12 +84,12 @@ class LoginView(APIView):
             if user is not None:
                 auth.login(request, user)
                 return Response(
-                    {"message": "User authenticated", "username": username},
+                    {"message": "Connexion réussie !"},
                     status=status.HTTP_200_OK,
                 )
             else:
                 return Response(
-                    {"message": "Invalid email or password"},
+                    {"message": "Email ou mot de passe invalide"},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
@@ -114,8 +118,22 @@ class CheckAuthView(APIView):
         try:
             isAuthenticated = request.user.is_authenticated
             if isAuthenticated:
+                unpaused_tracked_habit_count = TrackedHabit.objects.filter(
+                    user=request.user, end_date=None
+                ).count()
+                tracked_habit_count = TrackedHabit.objects.filter(
+                    user=request.user
+                ).count()
+                paused_tracked_habit_count = (
+                    tracked_habit_count - unpaused_tracked_habit_count
+                )
                 return Response(
-                    {"success": "User is authenticated", "isAuthenticated": True},
+                    {
+                        "success": "User is authenticated",
+                        "isAuthenticated": True,
+                        "unpaused_tracked_habit_count": unpaused_tracked_habit_count,
+                        "paused_tracked_habit_count": paused_tracked_habit_count,
+                    },
                     status=status.HTTP_200_OK,
                 )
             else:
@@ -137,7 +155,7 @@ class DeleteAccountView(APIView):
             auth.logout(request)
             user.delete()
             return Response(
-                {"success": "User account deleted"},
+                {"message": "Le compte utilisateur a été supprimé avec succès"},
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
@@ -158,20 +176,24 @@ class ChangePasswordView(APIView):
             if password == confirmed_password:
                 if len(password) < 6:
                     return Response(
-                        {"message": "Password must be at least 6 characters"},
+                        {
+                            "message": "Votre mot de passe doit être composé d'au moins 6 caractères"
+                        },
                         status=status.HTTP_401_UNAUTHORIZED,
                     )
                 else:
                     user = User.objects.get(username=request.user.username)
                     user.set_password(password)
                     user.save()
+
+                    update_session_auth_hash(request, user)
                     return Response(
-                        {"message": "Password changed successfully"},
+                        {"message": "Le mot de passe a été changé avec succès !"},
                         status=status.HTTP_200_OK,
                     )
             else:
                 return Response(
-                    {"message": "Passwords do not match"},
+                    {"message": "Les mots de passe ne correspondent pas."},
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         except Exception as e:
@@ -191,7 +213,8 @@ class PasswordResetView(APIView):
         email = request.data.get("email")
         if not email:
             return Response(
-                {"error": "Email is required."}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "L'adresse mail est requise."},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         # Vérifier si l'utilisateur existe avec cet email
@@ -199,7 +222,7 @@ class PasswordResetView(APIView):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             return Response(
-                {"message": "Email not found."},
+                {"message": "Une erreur est survenue."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
@@ -212,12 +235,15 @@ class PasswordResetView(APIView):
 
         # Envoyer l'email
         subject = "Password Reset Request"
-        message = f"Hello {user.username},\n\nTo reset your password, click the link below:\n{reset_url}\n\nIf you didn't request this, please ignore this email."
+        message = f"Bonjour, {user.username},\n\nPour réinitialiser votre mot de passe, cliquez sur le lien suivant :\n{reset_url}\n\nSi vous n'avez pas demandé à réinitialisé votre mot de passe, merci d'ignorer ce mail."
         from_email = settings.DEFAULT_FROM_EMAIL
         send_mail(subject, message, from_email, [user.email])
 
         return Response(
-            {"message": "Password reset email sent."}, status=status.HTTP_200_OK
+            {
+                "message": "Si une adresse mail correspond à une adresse valide, un lien de réinitialisation de votre mot de passe vous a été envoyé !"
+            },
+            status=status.HTTP_200_OK,
         )
 
 
@@ -241,19 +267,71 @@ class PasswordResetDoneView(APIView):
             if password == confirmed_password:
                 user.set_password(password)
                 user.save()
-                return Response(
-                    {
-                        "message": "Password was reset successfully",
-                    },
-                    status=status.HTTP_200_OK,
-                )
+                if len(password) >= 6:
+                    return Response(
+                        {
+                            "message": "Le mot de passe a été réinitialisé avec succès !",
+                        },
+                        status=status.HTTP_200_OK,
+                    )
+                else:
+                    return Response(
+                        {
+                            "message": "Le mot de passe doit être composé d'au moins 6 caractères."
+                        },
+                        status=status.HTTP_401_UNAUTHORIZED,
+                    )
             else:
                 return Response(
-                    {"message": "Passwords do not match"},
+                    {
+                        "message": "La confirmation du mot de passe ne correspond pas au mot de passe."
+                    },
                     status=status.HTTP_401_UNAUTHORIZED,
                 )
         else:
             return Response(
                 {"error": "Token is invalid or expired"},
                 status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+class ContactUs(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def post(self, request, *args, **kwargs):
+        email = request.data.get("email")
+        name = request.data.get("name")
+        message_content = request.data.get("message")
+
+        if not email or not name or not message_content:
+            return Response(
+                {"message": "Tous les champs (nom, email, message) sont requis."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = request.user
+        username = user.username
+
+        subject = "Contact - Moins c'est bien"
+        message = (
+            f"Vous avez reçu un message depuis l'application Moins c'est bien :\n\n"
+            f"Utilisateur : {username}\n"
+            f"Nom : {name}\n"
+            f"Email : {email}\n\n"
+            f"Message :\n{message_content}"
+        )
+
+        from_email = settings.DEFAULT_FROM_EMAIL
+        recipient_list = [settings.CONTACT_EMAIL]
+
+        try:
+            send_mail(subject, message, from_email, recipient_list)
+            return Response(
+                {"message": "Votre message a bien été envoyé !"},
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Une erreur est survenue lors de l'envoi de l'email."},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

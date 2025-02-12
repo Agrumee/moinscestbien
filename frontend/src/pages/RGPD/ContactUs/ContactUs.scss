@@ -1,0 +1,49 @@
+.p-contactus{
+    display: flex;
+    flex-direction: column;
+    @media(min-width:1024px){
+        margin:2rem 4rem;
+        input{
+            width: 40%;
+        }
+    }
+    @media(max-width:1023px){
+        margin:2rem 2rem;
+        input{
+            width: 80%;
+            max-width: 20rem;
+        }
+    }
+    h1 {
+        align-self: center;
+        width: max-content;
+        border-bottom: $dark_green solid 2px;
+        padding: 0rem 10%;
+    }
+    ul{
+        margin:0rem 2rem 1rem
+    }
+    li{
+        margin-left :5px;
+        line-height: 150%;
+        font-family: $font-family;
+        font-size: $medium_font;
+    }
+    form{
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 4rem;
+    }    
+    textarea{
+        background-color: $white;
+        border: 1px solid $medium_green;
+        border-radius: 10px;
+        padding: 10px;
+        font-size: $big_font;
+        line-height: 150%;
+    }   
+    button{
+        align-self: center;
+    } 
+}

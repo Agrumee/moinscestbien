@@ -1,29 +1,37 @@
 .a-paragraph {
+  color: $black;
+  line-height: 150%;
+  font-family: $font-family;
+  &.tiny {
+    font-size: $tiny_font;
+  }
+
+  &.small {
+    font-size: $small_font;
+  }
+
+  &.medium {
+    font-size: $medium_font;
+  }
+
+  &.big {
+    font-size: $big_font;
+  }
+
+  &.white {
+    color: $white;
+  }
+  
+  &.dark_green {
+    color: $dark_green;
+  }
+  
+  &.medium_green {
+    color : $medium_green
+  }
+  
+
+  &.black {
     color: $black;
-    line-height: 150%;
-    font-family: $font-family;
-    &.tiny {
-        font-size: 11px;
-    }
-    
-    &.small {
-        font-size: 14px;
-    }
-    
-    &.medium {
-        font-size: 16px;
-    }
-    
-    &.big {
-        font-size: 18px;
-    }
-
-    &.white {
-        color: $white;
-    }
-
-    &.black {
-        color: $black;
-    }
+  }
 }
-

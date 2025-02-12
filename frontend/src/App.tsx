@@ -1,41 +1,53 @@
-import { BrowserRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
+import { useAuth } from "./hooks/useAuth";
+import { useNavigateWithScroll } from "./hooks/useNavigateWithScroll";
+import { AuthProvider } from "./context/AuthContext"
+import { ToastProvider } from "./context/ToastContext";
+
 import Logged from "./layouts/Logged";
 import Unlogged from "./layouts/Unlogged";
-import Home from "./pages/Home";
+
+import Home from "./pages/Home/Home";
 import Profile from "./pages/Profile/Profile";
-import AddNew from "./pages/AddNew";
-import Login from "./pages/Auth/Login/Login";
+import AddNew from "./pages/AddNew/AddNew";
+import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
+import PausedTracking from "./pages/PausedTracking/PausedTracking";
 import ResetPasswordForm from "./pages/Auth/ResetPasswordForm/ResetPasswordForm";
+import PrivacyPolicy from "./pages/RGPD/PrivacyPolicy/PrivacyPolicy";
+import LegalNotices from "./pages/RGPD/LegalNotices/LegalNotices";
+import ContactUs from "./pages/RGPD/ContactUs/ContactUs";
+import About from "./pages/RGPD/About/About";
+import LegalAndAbout from "./pages/RGPD/LegalAndAbout/LegalAndAbout";
+
+import Login from "./pages/Auth/Login/Login";
 import WelcomingPage from "./pages/WelcomingPage/WelcomingPage";
 import Register from "./pages/Auth/Register/Register";
 import ChangePassword from "./pages/ChangePassword/ChangePassword";
-import DeleteAccount from "./pages/DeleteAccount/DeleteAccount";
-import PausedTracking from "./pages/PausedTracking";
+
 import "./App.css";
 
 const LayoutManager: React.FC = () => {
   const { authenticate, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigateWithScroll();
   const location = useLocation();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      await authenticate();
-      if (!isAuthenticated) {
-        if (!['/', '/login', '/register', "/reset-password-confirm"].includes(location.pathname)) {
-          navigate('/');
-        }
-      } else {
-        if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking'].includes(location.pathname)) {
-          navigate('/home');
-        }
-      }
-    };
+    authenticate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-    checkAuth();
-  }, [location.pathname, navigate, isAuthenticated, authenticate]);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      if (!['/', '/login', '/register', "/reset-password-confirm"].includes(location.pathname)) {
+        navigate('/');
+      }
+    } else {
+      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus', '/about', '/legalandabout'].includes(location.pathname)) {
+        navigate('/home');
+      }
+    }
+  }, [isAuthenticated, location.pathname, navigate]);
 
   return isAuthenticated ? (
     <Logged>
@@ -46,6 +58,11 @@ const LayoutManager: React.FC = () => {
         <Route path="/addnew" element={<AddNew />} />
         <Route path="/changepassword" element={<ChangePassword />} />
         <Route path="/deleteaccount" element={<DeleteAccount />} />
+        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/legalnotices" element={<LegalNotices />} />
+        <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/legalandabout" element={<LegalAndAbout />} />
       </Routes>
     </Logged>
   ) : (
@@ -63,11 +80,13 @@ const LayoutManager: React.FC = () => {
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/*" element={<LayoutManager />} />
-        </Routes>
-      </BrowserRouter>
+      <ToastProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/*" element={<LayoutManager />} />
+          </Routes>
+        </BrowserRouter>
+      </ToastProvider>
     </AuthProvider>
   );
 };

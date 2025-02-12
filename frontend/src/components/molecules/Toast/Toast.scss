@@ -5,22 +5,23 @@
   display: flex;
   align-items: center;
   position: absolute;
-  top: -1rem;
+  top: -2rem;
   left: 5%;
   opacity: 0;
   transform: translateY(-100%);
   transition: all 0.5s ease-in-out;
+  z-index: 2;
 
   &.slide-in {
     opacity: 1;
     transform: translateY(0);
-    top: 2rem; // Position finale
-
+    top: 2rem;
   }
 
   &.slide-out {
     opacity: 0;
     transform: translateY(-100%);
+    transition: all 0.8s ease-in-out; 
   }
 
   &.fail {
@@ -34,7 +35,7 @@
     }
 
     .a-icon {
-      margin-left: 50px;
+      margin : 0px 50px;
     }
 
     svg path {
@@ -43,21 +44,21 @@
   }
 
   &.success {
-    background-color: $light-green;
-    color: $dark-green;
-    border: 2px solid $dark-green;
+    background-color: $white;
+    color: $dark_green;
+    border: 2px solid $dark_green;
     .a-icon,
     .a-paragraph {
-      color: $dark-green;
+      color: $dark_green;
     }
 
     .a-icon {
-      margin-left: 50px;
+      margin : 0px 50px;
     }
 
     svg {
       path {
-        fill: $dark-green;
+        fill: $dark_green;
       }
     }
   }
@@ -72,7 +73,7 @@
     }
 
     .a-icon {
-      margin-left: 50px;
+      margin : 0px 50px;
       width: 30px;
       height: 30px;
       background-repeat: no-repeat;

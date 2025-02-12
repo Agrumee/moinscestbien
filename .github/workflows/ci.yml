@@ -36,6 +36,15 @@ jobs:
       DATABASE_URL: postgres://postgres:postgres@localhost:5432/db_test
       DJANGO_ALLOWED_HOSTS: 127.0.0.1
       DJANGO_DEBUG: True
+      DJANGO_EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
+      DJANGO_EMAIL_HOST: mailhog
+      DJANGO_EMAIL_PORT: 1025
+      DJANGO_DEFAULT_FROM_EMAIL: noreply.moinscestbien@gmail.com
+      DJANGO_CONTACT_EMAIL: support.moinscestbien@gmail.com
+      DJANGO_EMAIL_HOST_PASSWORD:
+      DJANGO_EMAIL_USE_TLS: False
+      DJANGO_EMAIL_USE_SSL: False
+      DJANGO_EMAIL_HOST_USER: noreply.moinscestbien@gmail.com
 
     steps:
       - uses: actions/checkout@v4

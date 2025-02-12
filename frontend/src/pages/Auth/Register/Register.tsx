@@ -3,11 +3,12 @@ import Label from "../../../components/atoms/Label/Label";
 import Heading from "../../../components/atoms/Heading/Heading";
 import Button from "../../../components/atoms/Button/Button";
 import Paragraph from "../../../components/atoms/Paragraph/Paragraph";
+
 import { useAuth } from "../../../hooks/useAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigateWithScroll } from "../../../hooks/useNavigateWithScroll";
 import { useState } from "react";
-//gestion erreurs
-import Toast from "../../../components/molecules/Toast/Toast";
+import { useToast } from "../../../hooks/useToast";
+
 import APIError from "../../../types/apierror.models";
 import "./Register.scss";
 
@@ -16,42 +17,32 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
-  const navigate = useNavigate();
-
-  const [showErrorToast, setShowErrorToast] = useState<boolean>(false)
-  const [error, setError] = useState<string>("")
-
-  const handleShowToast = (message: string) => {
-    setShowErrorToast(false);
-    setTimeout(() => {
-      setError(message);
-      setShowErrorToast(true);
-    }, 100);
-  };
+  const navigate = useNavigateWithScroll();
+  const { showToast } = useToast();
 
   const handleRegister = async () => {
     try {
       await register(email, password, confirmedPassword);
-      navigate('/home')
+      showToast("Inscription réussie !", "success");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      navigate("/login")
     } catch (error) {
       if (error instanceof APIError) {
         if (error.data?.message) {
-          handleShowToast(error.data.message);
+          showToast(error.data.message, "fail");
         } else {
           console.error("Unexpected error:", error);
-          handleShowToast("An unexpected error occurred.");
+          showToast("Une erreur est survenue.", "fail");
         }
       } else {
         console.error("Non-API error:", error);
-        handleShowToast("An unexpected error occurred.");
+        showToast("Une erreur inattendue est survenue.", "fail");
       }
     }
-
   }
 
   return (
     <div className="p-register">
-      <Toast is_called={showErrorToast} content={error} status={"fail"} />
       <Heading className="title" level={1} content="INSCRIPTION" color="white" />
       <div className="form">
         <div className="form-item">
@@ -94,7 +85,7 @@ const Register = () => {
       <div className="alreadyRegistered">
         <Paragraph content="Déjà inscrit ?" size="medium" color="white" />
         <a href="/login">
-          <Paragraph content="Se connecter" color="white" />
+          <Paragraph className='href-link' content="Se connecter" color="white" />
         </a>
       </div>
     </div>

@@ -1,19 +1,24 @@
 .p-profile {
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  gap: 0.5remrem;
   justify-content: center;
-  padding: 1rem;
+  width: 100%;
+  margin-bottom: 3rem;
 
   .container {
+    margin: 6vh 2rem 4rem;
+    width: 100%;
+    max-width: 100vh;
+    height: 50vh;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 2rem;
     justify-content: center;
     align-items: center;
+    align-self: center;
     background-color: $dark_green;
     border-radius: 10px;
-    height: 30rem;
     box-shadow: $black 2px 2px 5px;
   }
 }

@@ -40,17 +40,17 @@
   }
 
   &.tertiary {
-    @include button-style(150%, $light_green, $dark_green);
+    @include button-style(150%, $white, $dark_green);
     border: 2px solid $dark_green;
 
     &:not(:disabled):hover {
-      background-color: darken($light_green, 10%);
+      background-color: $light_green;
     }
   }
 
   &.tiny {
     line-height: 100%;
-    font-size: 12px;
+    font-size: $small_font;
     width: 6rem;
     padding: 5px;
   }
@@ -65,8 +65,8 @@
 
   // Styles pour le bouton désactivé
   &:disabled {
-    background-color: #d6d6d6;
-    color: #525252;
+    background-color: rgb(188.5, 188.5, 188.5);
+    color: #1f1f1f;
     cursor: not-allowed;
     opacity: 0.65;
   }
