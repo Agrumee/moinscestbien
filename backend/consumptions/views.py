@@ -236,7 +236,7 @@ class ApiTrackedHabitsList(APIView):
                     motivation=motivation,
                     tracking_frequency=tracking_frequency,
                 )
-                print(habit.name)
+
                 return Response(
                     {
                         "success": True,
