@@ -39,7 +39,7 @@ const LayoutManager: React.FC = () => {
 
   useEffect(() => {
     if (!isAuthenticated) {
-      if (!['/', '/login', '/register', "/reset-password-confirm"].includes(location.pathname)) {
+      if (!['/', '/login', '/register', '/reset-password-confirm', '/legalandabout'].includes(location.pathname)) {
         navigate('/');
       }
     } else {
@@ -72,6 +72,7 @@ const LayoutManager: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password-confirm" element={<ResetPasswordForm />} />
+        <Route path="/legalandabout" element={<LegalAndAbout />} />
       </Routes>
     </Unlogged>
   );

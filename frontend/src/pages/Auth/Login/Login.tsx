@@ -95,6 +95,9 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
+        <a href="/legalandabout">
+          <Paragraph className="href-link legalandabout" content="Consulter la politique de confidentialité" color="white" />
+        </a>
         <Button
           className="loginButton"
           variant="primary"

@@ -23,10 +23,6 @@
       display: flex;
       flex-direction: column;
     }
-
-    .registerButton {
-      margin-top: 1rem;
-    }
   }
 
   .alreadyRegistered {
@@ -39,15 +35,14 @@
     p{
       line-height: 10%;
     }
+  }
+  .href-link {
+    text-decoration: underline;
+  }
 
-    .href-link {
-      text-decoration: underline;
-    }
-  
-    .href-link:hover {
-      color: $dark_green;
-      cursor: pointer;
-    }
+  .href-link:hover {
+    color: $yellow;
+    cursor: pointer;
   }
 }
 

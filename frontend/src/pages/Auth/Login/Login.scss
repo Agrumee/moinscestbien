@@ -27,10 +27,6 @@
       flex-direction: column;
       margin: 0rem 2rem;
     }
-
-    .loginButton {
-      margin-top: 1rem;
-    }
   }
 
   .resetPassword {
@@ -60,7 +56,8 @@
   }
 
   .href-link:hover {
-    color: $dark_green;
+    color: $yellow;
     cursor: pointer;
   }
+
 }

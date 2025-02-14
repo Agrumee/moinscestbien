@@ -17,30 +17,18 @@
     h1 {
         align-self: center;
         width: max-content;
+        max-width: 85%;
+        font-size: 160%;
         border-bottom: $dark_green solid 2px;
-        padding: 0rem 10%;
+        padding: 0rem 6%;
         text-align: center;
-        // @media(max-width:1023px){
-        //     font-size: 150%;
-        // }
-    }
-    h2 {
-        align-self: center;
-        text-align: center;
-        width: fit-content;
 
-        // @media(max-width:1023px){
-        //     font-size: 120%;
-        // }
     }
     h3{
         align-self: center;
         border-bottom: $medium_green solid 2px;
         width: fit-content;
         padding: 0rem 0.5rem;
-        // @media(max-width:1023px){
-        //     font-size: 100%;
-        // }
     }
     ul{
         margin:0rem 2rem 1rem

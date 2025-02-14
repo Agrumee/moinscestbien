@@ -1,6 +1,6 @@
 .p-pausedtracking {
   overflow: auto;
-  margin: 2rem 1rem 3rem;
+  margin: 1rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,9 +9,10 @@
     width: 100%;
   }
   h2 {
-    padding: 1rem;
+    font-size: 120%;
   }
   .a-paragraph {
-    padding: 1rem;
+    padding: 0rem 1rem;
+    font-size: 40%;
   }
 }

@@ -27,7 +27,10 @@
       position: relative;
       left: auto;
       right: auto;
-      line-height: 0;
+      line-height: normal;
+      padding: 0rem 1rem;
+      text-align: left;
+
     }
 
     .toggled_accordion_icon {

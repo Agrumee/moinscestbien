@@ -20,8 +20,8 @@ const Logged: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Logo variant={true} size='tiny' />
         {trackedHabitCount === 0 && pausedTrackedHabitCount === 0 &&
           <div className='profile_access' onClick={() => navigate("/profile")}>
-            <Icon name="profile" size='medium' color='white' />
-            <Paragraph content='Accéder au profil' size='big' color='white' />
+            <Icon className='profile_access_icon' name="profile" size='medium' color='white' />
+            <Paragraph className='profile_access_text' content='Accéder au profil' size='big' color='white' />
           </div>
         }
       </div>

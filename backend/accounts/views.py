@@ -296,7 +296,7 @@ class PasswordResetDoneView(APIView):
 
 
 class ContactUs(APIView):
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):
         email = request.data.get("email")

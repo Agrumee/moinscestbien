@@ -19,7 +19,19 @@
     width: fit-content;
     border-radius: 15px;
     margin: 1rem;
+    color: $white;
+    &:hover{
+      color: $yellow;
+      cursor: pointer;
+    }
+    .profile_access_text {
+      color: inherit
+    }
+    .profile_access_icon {
+      color: inherit
+    }
   }
+  
   @media (max-width: 1023px) {
     .a-logo {
       align-self: center;

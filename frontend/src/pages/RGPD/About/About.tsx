@@ -6,8 +6,7 @@ import "./About.scss";
 const About = () => {
     return (
         <div className="p-about">
-            <Heading level={1} content="Moins c'est bien" color="black" />
-            <Heading level={2} content="L’application qui vous challenge dans vos habitudes de consommation !" />
+            <Heading level={1} content="L’application qui vous challenge dans vos habitudes de consommation !" />
 
             <img src="/illustration/flowers.png" alt="Illustration florale de l'application" />
 
@@ -21,7 +20,9 @@ const About = () => {
                         <Paragraph className="href-link" content="Clémentine Rivière" size="medium" />
                     </a>
                 </div>
-                <Paragraph content="Étudiants à Ada Tech School" size="small" />
+                <a href="https://adatechschool.fr/">
+                    <Paragraph content="Ada Tech School" size="small" />
+                </a>
             </section>
 
             <section className="history">

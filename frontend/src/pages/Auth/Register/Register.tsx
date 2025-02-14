@@ -75,6 +75,9 @@ const Register = () => {
             onChange={(e) => setConfirmedPassword(e.target.value)}
           />
         </div>
+        <a href="/legalandabout">
+          <Paragraph className="href-link legalandabout" content="Consulter la politique de confidentialité" color="white" />
+        </a>
         <Button
           className="registerButton"
           variant="primary"

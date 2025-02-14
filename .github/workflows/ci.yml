@@ -27,24 +27,24 @@ jobs:
     env:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
       DJANGO_SETTINGS_MODULE: moinscestbien.settings
-      FRONT_BASE_URL: http://localhost:5174
-      DB_NAME: db_test
-      DB_USER: postgres
-      DB_PASSWORD: postgres
-      DB_HOST: localhost
-      DB_PORT: "5432"
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/db_test
+      FRONT_BASE_URL: ${{ secrets.FRONT_BASE_URL }}
+      DB_NAME: ${{ secrets.DB_NAME }}
+      DB_USER: ${{ secrets.DB_USER }}
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+      DB_HOST: ${{ secrets.DB_HOST }}
+      DB_PORT: ${{ secrets.DB_PORT }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       DJANGO_ALLOWED_HOSTS: 127.0.0.1
       DJANGO_DEBUG: True
       DJANGO_EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
       DJANGO_EMAIL_HOST: mailhog
       DJANGO_EMAIL_PORT: 1025
-      DJANGO_DEFAULT_FROM_EMAIL: noreply.moinscestbien@gmail.com
-      DJANGO_CONTACT_EMAIL: support.moinscestbien@gmail.com
+      DJANGO_DEFAULT_FROM_EMAIL: ${{ secrets.DJANGO_DEFAULT_FROM_EMAIL }}
+      DJANGO_CONTACT_EMAIL: ${{ secrets.DJANGO_CONTACT_EMAIL }}
       DJANGO_EMAIL_HOST_PASSWORD:
       DJANGO_EMAIL_USE_TLS: False
       DJANGO_EMAIL_USE_SSL: False
-      DJANGO_EMAIL_HOST_USER: ${DJANGO_EMAIL_HOST_USER}
+      DJANGO_EMAIL_HOST_USER:
     steps:
       - uses: actions/checkout@v4
 
