@@ -9,10 +9,12 @@
     width: 100%;
   }
   h2 {
-    font-size: 120%;
+    @media(max-width: 390px){
+      font-size: 120%;
+    }
   }
   .a-paragraph {
     padding: 0rem 1rem;
-    font-size: 40%;
+    font-size: 50%;
   }
 }
