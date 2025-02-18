@@ -128,7 +128,7 @@ const Accordion = ({
             <CountButton operation="plus" onClick={() => updateInputValue(1)} />
           </div>
 
-          {consumptions.length < 1 ? (
+          {consumptions.length < 1 || (consumptions.length === 1 && consumptions[0].quantity === 0) ? (
             <div className="o-accordion__content__noData">
               <Paragraph
                 color="white"

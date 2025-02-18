@@ -130,7 +130,7 @@ const HabitPanel = ({
                     </div>
                 </div>
                 <div className="o-habitpanel__content__chart__block">
-                    {consumptions.length < 1 ? (
+                    {consumptions.length < 1 || (consumptions.length === 1 && consumptions[0].quantity === 0) ? (
                         <div className="o-habitpanel__content__noData">
                             <Paragraph
                                 size="medium"
