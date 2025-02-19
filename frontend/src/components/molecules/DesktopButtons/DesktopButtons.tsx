@@ -4,9 +4,12 @@ import "./DesktopButtons.scss"
 
 interface DesktopButtonsProps {
     trackedHabits: TrackedHabit[];
-    setCurrentTrackedHabit: (habit: TrackedHabit) => void;
+    setCurrentTrackedHabit: (trackedHabit: TrackedHabit) => void;
+    setEnabledTrackedHabits: (id: number) => void;
+    enabledTrackedHabits: number[];
 }
-const DesktopButtons = ({ trackedHabits, setCurrentTrackedHabit }: DesktopButtonsProps) => {
+const DesktopButtons = ({ trackedHabits, setCurrentTrackedHabit, setEnabledTrackedHabits, enabledTrackedHabits
+}: DesktopButtonsProps) => {
     const chunkArray = (array: TrackedHabit[], size: number) => {
         const chunks = [];
         for (let i = 0; i < array.length; i += size) {
@@ -28,7 +31,10 @@ const DesktopButtons = ({ trackedHabits, setCurrentTrackedHabit }: DesktopButton
                             variant="primary"
                             size="small"
                             content={trackedHabit.habit.label}
-                            onClick={() => setCurrentTrackedHabit(trackedHabit)}
+                            onClick={() => {
+                                setCurrentTrackedHabit(trackedHabit)
+                                if (!enabledTrackedHabits.includes(trackedHabit.id)) setEnabledTrackedHabits(trackedHabit.id)
+                            }}
                         />
                     ))}
                 </div>

@@ -21,6 +21,7 @@ interface AccordionProps {
   deleteTracking: () => void;
   pauseTracking?: () => void;
   unpauseTracking?: () => void;
+  setEnabledTrackedHabits: (id: number) => void;
 }
 
 const Accordion = ({
@@ -33,6 +34,7 @@ const Accordion = ({
   deleteTracking,
   pauseTracking,
   unpauseTracking,
+  setEnabledTrackedHabits,
 }: AccordionProps) => {
   const [isActive, setIsActive] = useState(false);
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -70,16 +72,16 @@ const Accordion = ({
   }
 
   const handleDeleteClick = () => {
-    setIsModalOpen(true); // Ouvre la modal
+    setIsModalOpen(true);
   };
 
   const handleModalConfirm = () => {
-    setIsModalOpen(false); // Ferme la modal
-    deleteTracking(); // Exécute la suppression
+    setIsModalOpen(false);
+    deleteTracking();
   };
 
   const handleModalCancel = () => {
-    setIsModalOpen(false); // Ferme la modal sans action
+    setIsModalOpen(false);
   };
 
   return (
@@ -89,6 +91,7 @@ const Accordion = ({
         onClick={() => {
           if (isPaused) return;
           setIsActive(!isActive);
+          if (!isActive) setEnabledTrackedHabits(trackedHabit.id);
         }}
       >
         <Heading
@@ -124,7 +127,6 @@ const Accordion = ({
               value={currentConsumption.toString()}
               onChange={(e) => onUpdateConsumption(Number(e.target.value))}
             />
-
             <CountButton operation="plus" onClick={() => updateInputValue(1)} />
           </div>
 

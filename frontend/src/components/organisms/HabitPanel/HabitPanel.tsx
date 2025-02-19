@@ -22,6 +22,7 @@ interface HabitPanelProps {
     pauseTracking?: () => void;
 }
 
+
 const HabitPanel = ({
     trackedHabit,
     consumptions,
@@ -66,16 +67,16 @@ const HabitPanel = ({
     }
 
     const handleDeleteClick = () => {
-        setIsModalOpen(true); // Ouvre la modal
+        setIsModalOpen(true);
     };
 
     const handleModalConfirm = () => {
-        setIsModalOpen(false); // Ferme la modal
-        deleteTracking(); // Exécute la suppression
+        setIsModalOpen(false);
+        deleteTracking();
     };
 
     const handleModalCancel = () => {
-        setIsModalOpen(false); // Ferme la modal sans action
+        setIsModalOpen(false);
     };
 
     return (

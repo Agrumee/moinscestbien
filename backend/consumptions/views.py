@@ -355,7 +355,6 @@ class ApiAddConsumption(APIView):
             try:
                 tracked_habit = TrackedHabit.objects.get(id=tracked_habit_id)
 
-                # Vérifiez si le produit appartient à l'utilisateur
                 if tracked_habit.user != user:
                     return Response(
                         {
@@ -366,7 +365,6 @@ class ApiAddConsumption(APIView):
                         status=status.HTTP_401_UNAUTHORIZED,
                     )
 
-                # Vérifiez si la date est valide
                 if date > date.today():
                     return Response(
                         {"error": "The date cannot be in the future."},
@@ -410,11 +408,6 @@ class ApiAddConsumption(APIView):
                 status=status.HTTP_201_CREATED,
             )
 
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
                 {
@@ -449,21 +442,6 @@ class ApiConsumptionsListByTrackedHabit(APIView):
                     "data": serializer.data,
                 },
                 status=status.HTTP_200_OK,
-            )
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "User not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except TrackedHabit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Tracked habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
             )
         except Exception as e:
             return Response(

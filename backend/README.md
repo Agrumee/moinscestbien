@@ -24,6 +24,6 @@
 ### Docker 
 - Build ```docker-compose up --build```
 - Run ```docker-compose up```
-- Run Tests ```docker-compose exec backend pytest```
+- Run Tests ```docker-compose exec backend pytest --cov=.```
 - Populate local DB ```docker-compose exec backend python manage.py populate_users 10```
 - Reset local DB ```docker-compose exec backend python manage.py reset_db```

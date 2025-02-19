@@ -148,7 +148,7 @@ class ApiConsumptionsListByHabitTest(TestCase):
         self.assertEqual(dates, sorted(dates))
 
 
-class ApiAddConsumption(TestCase):
+class ApiAddConsumptionTest(TestCase):
     def setUp(self):
         self.habit = Habit.objects.get(name="coffee")
         self.user = User.objects.create_user(

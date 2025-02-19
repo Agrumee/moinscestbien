@@ -11,7 +11,8 @@ import "./Home.scss"
 
 const Home = () => {
   const [trackedHabits, setTrackedHabits] = useState<TrackedHabit[]>([]);
-  const [currentTrackedHabit, setCurrentTrackedHabit] = useState<TrackedHabit>()
+  const [desktopTrackedHabit, setDesktopTrackedHabit] = useState<TrackedHabit>()
+  const [enabledTrackedHabits, setEnabledTrackedHabits] = useState<number[]>([]);
   const [ConsumptionsListByTrackedHabitId, setConsumptionsListByTrackedHabitId] = useState<ConsumptionsListByTrackedHabitId>(
     {}
   );
@@ -36,7 +37,8 @@ const Home = () => {
             method: "GET",
           });
           setTrackedHabits(response.data);
-          setCurrentTrackedHabit(response.data[0])
+          setDesktopTrackedHabit(response.data[0])
+          addEnabledTrackedHabit(response.data[0].id)
         }
       } catch (error) {
         console.error("Get habits failed", error);
@@ -48,19 +50,22 @@ const Home = () => {
   }, [trackedHabitCount]);
 
   useEffect(() => {
-    for (let habitId in currentConsumptionByTrackedHabitId) {
-      getConsumptions(Number(habitId));
-    }
-  }, [currentConsumptionByTrackedHabitId]);
+    enabledTrackedHabits.forEach((trackedHabitId) => {
+      if (!ConsumptionsListByTrackedHabitId[trackedHabitId]) {
+        getConsumptions(trackedHabitId);
+      }
+    });
+  }, [ConsumptionsListByTrackedHabitId, enabledTrackedHabits]);
 
-  const getConsumptions = async (habitId: number) => {
+
+  const getConsumptions = async (trackedHabitId: number) => {
     try {
-      const response = await fetchAPI(`/consumptions/tracked-habits/${habitId}/consumptions`, {
+      const response = await fetchAPI(`/consumptions/tracked-habits/${trackedHabitId}/consumptions`, {
         method: "GET",
       });
       setConsumptionsListByTrackedHabitId((previousConsumptions) => ({
         ...previousConsumptions,
-        [habitId]: response.data,
+        [trackedHabitId]: response.data,
       }));
     } catch (error) {
       console.error("Get consumptions failed", error);
@@ -100,6 +105,7 @@ const Home = () => {
         ...prev,
         [trackedHabitId]: response.data.quantity,
       }));
+      getConsumptions(trackedHabitId)
     } catch (error) {
       console.error("Update consumption failed", error);
     }
@@ -157,24 +163,31 @@ const Home = () => {
     }
   };
 
+  const addEnabledTrackedHabit = (id: number) => {
+    setEnabledTrackedHabits((prev) =>
+      prev.includes(id) ? prev : [...prev, id]
+    );
+  };
+
+
 
   return (
     <div className="p-home">
       <div className="desktop-container">
-        <DesktopButtons setCurrentTrackedHabit={setCurrentTrackedHabit} trackedHabits={trackedHabits} />
+        <DesktopButtons setCurrentTrackedHabit={setDesktopTrackedHabit} setEnabledTrackedHabits={addEnabledTrackedHabit} enabledTrackedHabits={enabledTrackedHabits} trackedHabits={trackedHabits} />
         {
-          currentTrackedHabit &&
-          <HabitPanel key={currentTrackedHabit.id}
-            trackedHabit={currentTrackedHabit}
-            consumptions={ConsumptionsListByTrackedHabitId[currentTrackedHabit.id] || []}
-            currentConsumption={currentConsumptionByTrackedHabitId[currentTrackedHabit.id] || 0}
-            onDateChange={(date) => handleDateChange(currentTrackedHabit.id, date)}
+          desktopTrackedHabit &&
+          <HabitPanel key={desktopTrackedHabit.id}
+            trackedHabit={desktopTrackedHabit}
+            consumptions={ConsumptionsListByTrackedHabitId[desktopTrackedHabit.id] || []}
+            currentConsumption={currentConsumptionByTrackedHabitId[desktopTrackedHabit.id] || 0}
+            onDateChange={(date) => handleDateChange(desktopTrackedHabit.id, date)}
             onUpdateConsumption={(quantity) =>
-              handleUpdateConsumption(currentTrackedHabit.id, date, quantity)
+              handleUpdateConsumption(desktopTrackedHabit.id, date, quantity)
             }
-            frequency={currentTrackedHabit.tracking_frequency.name}
-            deleteTracking={() => handleDeleteTracking(currentTrackedHabit.id)}
-            pauseTracking={() => handlePauseTracking(currentTrackedHabit.id)} />
+            frequency={desktopTrackedHabit.tracking_frequency.name}
+            deleteTracking={() => handleDeleteTracking(desktopTrackedHabit.id)}
+            pauseTracking={() => handlePauseTracking(desktopTrackedHabit.id)} />
         }
       </div>
       <div className="mobile-container">
@@ -188,6 +201,7 @@ const Home = () => {
             onUpdateConsumption={(quantity) =>
               handleUpdateConsumption(trackedHabit.id, date, quantity)
             }
+            setEnabledTrackedHabits={addEnabledTrackedHabit}
             frequency={trackedHabit.tracking_frequency.name}
             deleteTracking={() => handleDeleteTracking(trackedHabit.id)}
             pauseTracking={() => handlePauseTracking(trackedHabit.id)}

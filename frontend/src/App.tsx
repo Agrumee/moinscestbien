@@ -34,8 +34,7 @@ const LayoutManager: React.FC = () => {
 
   useEffect(() => {
     authenticate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [authenticate, location.pathname]);
 
   useEffect(() => {
     if (!isAuthenticated) {
