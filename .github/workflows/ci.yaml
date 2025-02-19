@@ -61,17 +61,21 @@ jobs:
 
       - name: Run migrations
         working-directory: ./backend
-        run: |
-          python manage.py migrate
+        run: python manage.py migrate
 
       - name: Run Backend Tests
         working-directory: ./backend
-        run: |
-          pytest
+        run: pytest --cov=.
 
       - name : Lint Backend Code
         working-directory: ./backend
         run: black --check .
+      
+      - name: Start Backend
+        working-directory: ./backend
+        run: |
+          python manage.py runserver
+          sleep 5
         
       - name: Install Frontend Dependencies
         working-directory: ./frontend
