@@ -74,7 +74,7 @@ jobs:
       - name: Start Backend
         working-directory: ./backend
         run: |
-          python manage.py runserver
+          python manage.py runserver --noreload --nothreading &
           sleep 5
         
       - name: Install Frontend Dependencies
