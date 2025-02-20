@@ -217,7 +217,6 @@ class PasswordResetView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Vérifier si l'utilisateur existe avec cet email
         try:
             user = User.objects.get(email=email)
         except User.DoesNotExist:
@@ -226,14 +225,12 @@ class PasswordResetView(APIView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Générer un token sécurisé
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = default_token_generator.make_token(user)
         reset_url = (
             f"{config('FRONT_BASE_URL')}/reset-password-confirm?uid={uid}&token={token}"
         )
 
-        # Envoyer l'email
         subject = "Password Reset Request"
         message = f"Bonjour, {user.username},\n\nPour réinitialiser votre mot de passe, cliquez sur le lien suivant :\n{reset_url}\n\nSi vous n'avez pas demandé à réinitialisé votre mot de passe, merci d'ignorer ce mail."
         from_email = settings.DEFAULT_FROM_EMAIL
@@ -295,7 +292,7 @@ class PasswordResetDoneView(APIView):
             )
 
 
-class ContactUs(APIView):
+class ContactUsView(APIView):
     permission_classes = (permissions.AllowAny,)
 
     def post(self, request, *args, **kwargs):

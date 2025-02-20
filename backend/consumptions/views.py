@@ -48,11 +48,7 @@ class ApiHabitsList(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No habits found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+
         except Exception as e:
             return Response(
                 {
@@ -71,7 +67,7 @@ class ApiUnitsList(APIView):
 
     def get(self, request, *args, **kwargs):
         try:
-            habit = Habit.objects.get(id=kwargs["habit_id"])
+            habit = get_object_or_404(Habit, id=kwargs["habit_id"])
             user = request.user
             tracked_habit = user.tracked_habits.filter(habit=habit).first()
             if tracked_habit:
@@ -93,11 +89,6 @@ class ApiUnitsList(APIView):
                     {"success": False, "message": "No units found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No habit found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
                 {
@@ -116,7 +107,7 @@ class ApiMotivationsList(APIView):
 
     def get(self, *args, **kwargs):
         try:
-            habit = Habit.objects.get(id=kwargs["habit_id"])
+            habit = get_object_or_404(Habit, id=kwargs["habit_id"])
             motivations = habit.motivations.all()
             serializer = MotivationSerializer(motivations, many=True)
             if motivations:
@@ -133,11 +124,6 @@ class ApiMotivationsList(APIView):
                     {"success": False, "message": "No Motivations found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No habit found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
                 {
@@ -174,11 +160,6 @@ class ApiTrackedHabitsList(APIView):
                     {"success": False, "message": "No habits found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No user found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
                 {
@@ -197,10 +178,12 @@ class ApiTrackedHabitsList(APIView):
             motivation_id = request.data.get("motivation_id")
             tracking_frequency_id = request.data.get("tracking_frequency_id")
 
-            habit = Habit.objects.get(id=habit_id)
-            unit = Unit.objects.get(id=unit_id)
-            motivation = Motivation.objects.get(id=motivation_id)
-            tracking_frequency = TrackingFrequency.objects.get(id=tracking_frequency_id)
+            habit = get_object_or_404(Habit, id=habit_id)
+            unit = get_object_or_404(Unit, id=unit_id)
+            motivation = get_object_or_404(Motivation, id=motivation_id)
+            tracking_frequency = get_object_or_404(
+                TrackingFrequency, id=tracking_frequency_id
+            )
 
             tracked_habit = TrackedHabit.objects.filter(
                 user=user, habit=habit, unit=unit
@@ -245,16 +228,6 @@ class ApiTrackedHabitsList(APIView):
                     status=status.HTTP_201_CREATED,
                 )
 
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No habit found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No user found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
                 {
@@ -290,11 +263,6 @@ class ApiPausedTrackedHabitsList(APIView):
                     {"success": False, "message": "No habits found.", "data": []},
                     status=status.HTTP_404_NOT_FOUND,
                 )
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "No user found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
                 {
@@ -352,37 +320,29 @@ class ApiAddConsumption(APIView):
                 )
 
             user = request.user
-            try:
-                tracked_habit = TrackedHabit.objects.get(id=tracked_habit_id)
+            tracked_habit = get_object_or_404(TrackedHabit, id=tracked_habit_id)
 
-                if tracked_habit.user != user:
-                    return Response(
-                        {
-                            "success": False,
-                            "message": "The habit is not tracked by this user.",
-                            "data": [],
-                        },
-                        status=status.HTTP_401_UNAUTHORIZED,
-                    )
-
-                if date > date.today():
-                    return Response(
-                        {"error": "The date cannot be in the future."},
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-
-                if date < tracked_habit.start_date:
-                    return Response(
-                        {
-                            "error": "The date is earlier than the habit's tracking start date."
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
-
-            except TrackedHabit.DoesNotExist:
+            if tracked_habit.user != user:
                 return Response(
-                    {"error": "Tracked habit not found."},
-                    status=status.HTTP_404_NOT_FOUND,
+                    {
+                        "success": False,
+                        "message": "The habit is not tracked by this user.",
+                        "data": [],
+                    },
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            if date > date.today():
+                return Response(
+                    {"error": "The date cannot be in the future."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            if date < tracked_habit.start_date:
+                return Response(
+                    {
+                        "error": "The date is earlier than the habit's tracking start date."
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
 
             consumption, created = Consumption.objects.get_or_create(
@@ -454,71 +414,79 @@ class ApiConsumptionsListByTrackedHabit(APIView):
             )
 
 
-class ApiConsumptionPeriodList(APIView):
+# class ApiConsumptionPeriodList(APIView):
+#     permission_classes = (IsAuthenticated,)
+
+#     def get(self, request, *args, **kwargs):
+#         try:
+#             user = get_object_or_404(User, id=kwargs["user_id"])
+#             habit = get_object_or_404(Habit, id=kwargs["habit_id"])
+#             start_date = kwargs["start_date"]
+#             end_date = kwargs["end_date"]
+#             tracked_habit = get_object_or_404(
+#                 TrackedHabit, user=user, habit=habit, end_date=None
+#             )
+#             consumptions = Consumption.objects.filter(
+#                 tracked_habit=tracked_habit, date__range=[start_date, end_date]
+#             )
+#             serializer = ConsumptionSerializer(consumptions, many=True)
+#             return Response(
+#                 {
+#                     "success": True,
+#                     "message": "Consumptions retrieved successfully.",
+#                     "data": serializer.data,
+#                 },
+#                 status=status.HTTP_200_OK,
+#             )
+#         except User.DoesNotExist:
+#             return Response(
+#                 {"success": False, "message": "User not found.", "data": []},
+#                 status=status.HTTP_404_NOT_FOUND,
+#             )
+#         except Habit.DoesNotExist:
+#             return Response(
+#                 {"success": False, "message": "Habit not found.", "data": []},
+#                 status=status.HTTP_404_NOT_FOUND,
+#             )
+#         except TrackedHabit.DoesNotExist:
+#             return Response(
+#                 {"success": False, "message": "Tracked habit not found.", "data": []},
+#                 status=status.HTTP_404_NOT_FOUND,
+#             )
+#         except Exception as e:
+#             return Response(
+#                 {
+#                     "success": False,
+#                     "message": f"An error occurred: {str(e)}",
+#                     "data": [],
+#                 },
+#                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             )
+
+
+class ApiConsumptionByDate(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, *args, **kwargs):
-        try:
-            user = get_object_or_404(User, id=kwargs["user_id"])
-            habit = get_object_or_404(Habit, id=kwargs["habit_id"])
-            start_date = kwargs["start_date"]
-            end_date = kwargs["end_date"]
-            tracked_habit = get_object_or_404(
-                TrackedHabit, user=user, habit=habit, end_date=None
-            )
-            consumptions = Consumption.objects.filter(
-                tracked_habit=tracked_habit, date__range=[start_date, end_date]
-            )
-            serializer = ConsumptionSerializer(consumptions, many=True)
-            return Response(
-                {
-                    "success": True,
-                    "message": "Consumptions retrieved successfully.",
-                    "data": serializer.data,
-                },
-                status=status.HTTP_200_OK,
-            )
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "User not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except TrackedHabit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Tracked habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Exception as e:
+        date = kwargs.get("date")
+        tracked_habit_id = kwargs.get("tracked_habit_id")
+
+        if not date or not tracked_habit_id:
             return Response(
                 {
                     "success": False,
-                    "message": f"An error occurred: {str(e)}",
-                    "data": [],
+                    "message": "Date and tracked_habit_id are required.",
                 },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-
-class ApiConsumptionDetail(APIView):
-    permission_classes = (IsAuthenticated,)
-
-    def get(self, request, *args, **kwargs):
         try:
-            date = kwargs["date"]
-            tracked_habit = TrackedHabit.objects.get(id=kwargs["tracked_habit_id"])
-            try:
-                consumption = Consumption.objects.get(
-                    tracked_habit=tracked_habit, date=date
-                )
-            except Consumption.DoesNotExist:
-                consumption = Consumption.objects.create(
-                    tracked_habit=tracked_habit, date=date, quantity=0
-                )
+            tracked_habit = get_object_or_404(
+                TrackedHabit, id=tracked_habit_id, user=request.user
+            )
+            consumption = get_object_or_404(
+                Consumption, tracked_habit=tracked_habit, date=date
+            )
 
             serializer = ConsumptionSerializer(consumption)
             return Response(
@@ -530,28 +498,9 @@ class ApiConsumptionDetail(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        except User.DoesNotExist:
-            return Response(
-                {"success": False, "message": "User not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except Habit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-        except TrackedHabit.DoesNotExist:
-            return Response(
-                {"success": False, "message": "Tracked habit not found.", "data": []},
-                status=status.HTTP_404_NOT_FOUND,
-            )
         except Exception as e:
             return Response(
-                {
-                    "success": False,
-                    "message": f"An error occurred: {str(e)}",
-                    "data": [],
-                },
+                {"success": False, "message": "An unexpected error occurred."},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 

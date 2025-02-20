@@ -9,7 +9,7 @@ from .views import (
     CheckAuthView,
     PasswordResetView,
     PasswordResetDoneView,
-    ContactUs,
+    ContactUsView,
 )
 
 urlpatterns = [
@@ -25,5 +25,5 @@ urlpatterns = [
         PasswordResetDoneView.as_view(),
         name="password-reset-done",
     ),
-    path("contactus", ContactUs.as_view(), name="contact-us"),
+    path("contactus", ContactUsView.as_view(), name="contact-us"),
 ]

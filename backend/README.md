@@ -9,7 +9,7 @@
 
 ### Initialisation
 - Clone the project from Github
-- Go to apis/moincestbien : ```cd apis/moinscestbien```
+- Go to backend/moincestbien : ```cd backend/moinscestbien```
 - Create a virtual environment on your machine : ```python -3.12 -m venv venv```
 - Activate the virtual env : ```source venv/bin/activate```
 - Install the librairies : ```pip install -r requirements.txt```

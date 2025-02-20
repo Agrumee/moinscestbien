@@ -5,7 +5,7 @@ from .views import (
     ApiMotivationsList,
     ApiTrackedHabitsList,
     ApiAddConsumption,
-    ApiConsumptionDetail,
+    ApiConsumptionByDate,
     ApiConsumptionsListByTrackedHabit,
     ApiTrackingFrequenciesList,
     ApiDeleteTrackedHabit,
@@ -49,7 +49,7 @@ urlpatterns = [
     ),
     path(
         "tracked-habits/<int:tracked_habit_id>/consumptions/<str:date>",
-        ApiConsumptionDetail.as_view(),
+        ApiConsumptionByDate.as_view(),
         name="consumptions-by-date",
     ),
     path(
