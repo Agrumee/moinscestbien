@@ -296,12 +296,12 @@ class ApiAddConsumption(APIView):
                 )
 
             try:
-                quantity = int(quantity)
+                quantity = float(quantity)
             except ValueError:
                 return Response(
                     {
                         "success": False,
-                        "message": "Quantity must be an integer.",
+                        "message": "Quantity must be a number (integer or decimal).",
                         "data": [],
                     },
                     status=status.HTTP_400_BAD_REQUEST,
@@ -334,13 +334,19 @@ class ApiAddConsumption(APIView):
 
             if date > date.today():
                 return Response(
-                    {"error": "The date cannot be in the future."},
+                    {
+                        "success": False,
+                        "message": "The date cannot be in the future.",
+                        "data": [],
+                    },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
             if date < tracked_habit.start_date:
                 return Response(
                     {
-                        "error": "The date is earlier than the habit's tracking start date."
+                        "success": False,
+                        "message": "The date is earlier than the habit's tracking start date.",
+                        "data": [],
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
@@ -481,12 +487,22 @@ class ApiConsumptionByDate(APIView):
             )
 
         try:
-            tracked_habit = get_object_or_404(
-                TrackedHabit, id=tracked_habit_id, user=request.user
-            )
-            consumption = get_object_or_404(
-                Consumption, tracked_habit=tracked_habit, date=date
-            )
+            tracked_habit = TrackedHabit.objects.get(id=tracked_habit_id)
+
+            if tracked_habit.user != request.user:
+                return Response(
+                    {"success": False, "message": "An unexpected error occurred."},
+                    status=status.HTTP_401_UNAUTHORIZED,
+                )
+
+            try:
+                consumption = Consumption.objects.get(
+                    tracked_habit=tracked_habit, date=date
+                )
+            except Consumption.DoesNotExist:
+                consumption = Consumption.objects.create(
+                    tracked_habit=tracked_habit, date=date, quantity=0
+                )
 
             serializer = ConsumptionSerializer(consumption)
             return Response(

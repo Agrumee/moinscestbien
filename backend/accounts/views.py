@@ -106,9 +106,9 @@ class LogoutView(APIView):
     def post(self, request, format=None):
         try:
             auth.logout(request)
-            return Response({"success": "User logged out"})
+            return Response({"message": "User logged out"})
         except:
-            return Response({"error": "Error logging out user"})
+            return Response({"message": "Error logging out user"})
 
 
 class CheckAuthView(APIView):
@@ -138,11 +138,11 @@ class CheckAuthView(APIView):
                 )
             else:
                 return Response(
-                    {"error": "User is not authenticated", "isAuthenticated": False},
+                    {"message": "User is not authenticated", "isAuthenticated": False},
                     status=status.HTTP_200_OK,
                 )
         except:
-            return Response({"error": "Error checking user authentication"})
+            return Response({"message": "Error checking user authentication"})
 
 
 @method_decorator(csrf_protect, name="dispatch")
@@ -257,7 +257,7 @@ class PasswordResetDoneView(APIView):
             user = User.objects.get(pk=uid)
         except (User.DoesNotExist, ValueError, TypeError):
             return Response(
-                {"error": "Invalid token or user"}, status=status.HTTP_400_BAD_REQUEST
+                {"message": "Invalid token or user"}, status=status.HTTP_400_BAD_REQUEST
             )
 
         if default_token_generator.check_token(user, token):
