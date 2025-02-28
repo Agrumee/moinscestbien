@@ -22,9 +22,9 @@ type AuthProviderProps = {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-    const [isAuthenticated, setIsAutenticated] = useState(false);
-    const [trackedHabitCount, setTrackedHabitCount] = useState(0);
-    const [pausedTrackedHabitCount, setPausedTrackedHabitCount] = useState(0)
+    const [isAuthenticated, setIsAutenticated] = useState<boolean>(false);
+    const [trackedHabitCount, setTrackedHabitCount] = useState<number>(0);
+    const [pausedTrackedHabitCount, setPausedTrackedHabitCount] = useState<number>(0)
 
     const authenticate = async () => {
         try {

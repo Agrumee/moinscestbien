@@ -34,19 +34,18 @@ const LayoutManager: React.FC = () => {
 
   useEffect(() => {
     authenticate();
-  }, [authenticate, location.pathname]);
 
-  useEffect(() => {
-    if (!isAuthenticated) {
-      if (!['/', '/login', '/register', '/reset-password-confirm', '/legalandabout'].includes(location.pathname)) {
-        navigate('/');
-      }
-    } else {
-      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus', '/about', '/legalandabout'].includes(location.pathname)) {
+    if (isAuthenticated) {
+      if (['/', '/login', '/register', '/reset-password-confirm', '/legalandabout'].includes(location.pathname)) {
         navigate('/home');
       }
+    } else {
+      if (['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus', '/about', '/legalandabout'].includes(location.pathname)) {
+        navigate('/');
+      }
     }
-  }, [isAuthenticated, location.pathname, navigate]);
+  }, [authenticate, isAuthenticated, location.pathname, navigate]);
+
 
   return isAuthenticated ? (
     <Logged>
