@@ -34,21 +34,22 @@ class RegisterView(APIView):
             if not re.match(regex_email, email):
                 return Response(
                     {"message": "Format d'adresse mail invalide."},
-                    status=status.HTTP_401_UNAUTHORIZED,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
             elif password == confirmed_password:
                 if User.objects.filter(email=email).exists():
                     return Response(
                         {"message": "Une erreur est survenue."},
-                        status=status.HTTP_401_UNAUTHORIZED,
+                        status=status.HTTP_409_CONFLICT,
                     )
+
                 else:
                     if len(password) < 6:
                         return Response(
                             {
                                 "message": "Le mot de passe doit contenir au moins 6 caractères."
                             },
-                            status=status.HTTP_401_UNAUTHORIZED,
+                            status=status.HTTP_400_BAD_REQUEST,
                         )
                     else:
                         user = User.objects.create_user(
@@ -57,12 +58,12 @@ class RegisterView(APIView):
                         user.save()
                         return Response(
                             {"message": "Inscription réussie !"},
-                            status=status.HTTP_200_OK,
+                            status=status.HTTP_201_CREATED,
                         )
             else:
                 return Response(
                     {"message": "Les mots de passe ne correspondent pas."},
-                    status=status.HTTP_401_UNAUTHORIZED,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
         except Exception as e:
             return Response(
@@ -179,7 +180,7 @@ class ChangePasswordView(APIView):
                         {
                             "message": "Votre mot de passe doit être composé d'au moins 6 caractères"
                         },
-                        status=status.HTTP_401_UNAUTHORIZED,
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
                 else:
                     user = User.objects.get(username=request.user.username)
@@ -194,7 +195,7 @@ class ChangePasswordView(APIView):
             else:
                 return Response(
                     {"message": "Les mots de passe ne correspondent pas."},
-                    status=status.HTTP_401_UNAUTHORIZED,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
         except Exception as e:
             return Response(
@@ -276,14 +277,14 @@ class PasswordResetDoneView(APIView):
                         {
                             "message": "Le mot de passe doit être composé d'au moins 6 caractères."
                         },
-                        status=status.HTTP_401_UNAUTHORIZED,
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
             else:
                 return Response(
                     {
                         "message": "La confirmation du mot de passe ne correspond pas au mot de passe."
                     },
-                    status=status.HTTP_401_UNAUTHORIZED,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
         else:
             return Response(

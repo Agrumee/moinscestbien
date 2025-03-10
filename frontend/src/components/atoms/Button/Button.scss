@@ -24,7 +24,7 @@
   &.primary {
     @include button-style(150%, $yellow, $black);
 
-    &:not(:disabled):hover {
+    &:not(:disabled):hover, &:not(:disabled):focus {
       background-color: darken($yellow, 10%);
       color: $white;
     }
@@ -33,7 +33,7 @@
   &.secondary {
     @include button-style(150%, $red, $black);
 
-    &:not(:disabled):hover {
+    &:not(:disabled):hover, &:not(:disabled):focus {
       background-color: darken($red, 10%);
       color: $white;
     }
@@ -43,7 +43,7 @@
     @include button-style(150%, $white, $dark_green);
     border: 2px solid $dark_green;
 
-    &:not(:disabled):hover {
+    &:not(:disabled):hover, &:not(:disabled):focus {
       background-color: $light_green;
     }
   }
@@ -63,7 +63,6 @@
     width: 90%;
   }
 
-  // Styles pour le bouton désactivé
   &:disabled {
     background-color: rgb(188.5, 188.5, 188.5);
     color: #1f1f1f;
@@ -71,7 +70,6 @@
     opacity: 0.65;
   }
 
-  // Désactive le hover si le bouton est désactivé
   &:disabled:hover {
     background-color: #d6d6d6;
     color: #525252;

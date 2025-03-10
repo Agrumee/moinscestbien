@@ -23,7 +23,7 @@ class RegisterTest(TestCase):
         }
         response = self.client.post(self.register_url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_user_cannot_register_with_incorrect_email(self):
         data = {
@@ -33,7 +33,7 @@ class RegisterTest(TestCase):
         }
         response = self.client.post(self.register_url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_cannot_register_with_password_length_under_six_characters(self):
         data = {
@@ -43,7 +43,7 @@ class RegisterTest(TestCase):
         }
         response = self.client.post(self.register_url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_cannot_register_with_already_used_email(self):
         data = {
@@ -55,7 +55,7 @@ class RegisterTest(TestCase):
 
         response = self.client.post(self.register_url, data, format="json")
 
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
 
 
 class LoginTest(TestCase):
@@ -166,7 +166,7 @@ class ChangePasswordTest(TestCase):
             "confirmedPassword": "0000",
         }
         response = self.client.patch(reverse("change-password"), data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_cannot_change_password_with_invalid_password_confirmation(self):
         self.client.force_authenticate(user=self.user)
@@ -175,4 +175,4 @@ class ChangePasswordTest(TestCase):
             "confirmedPassword": "password",
         }
         response = self.client.patch(reverse("change-password"), data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
