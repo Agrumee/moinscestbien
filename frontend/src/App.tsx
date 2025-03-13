@@ -36,11 +36,11 @@ const LayoutManager: React.FC = () => {
     authenticate();
 
     if (isAuthenticated) {
-      if (['/', '/login', '/register', '/reset-password-confirm', '/legalandabout'].includes(location.pathname)) {
+      if (['/', '/login', '/register', '/reset-password-confirm'].includes(location.pathname)) {
         navigate('/home');
       }
     } else {
-      if (['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', '/privacypolicy', '/legalnotices', '/contactus', '/about', '/legalandabout'].includes(location.pathname)) {
+      if (['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking'].includes(location.pathname)) {
         navigate('/');
       }
     }
@@ -70,6 +70,10 @@ const LayoutManager: React.FC = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password-confirm" element={<ResetPasswordForm />} />
+        <Route path="/privacypolicy" element={<PrivacyPolicy />} />
+        <Route path="/legalnotices" element={<LegalNotices />} />
+        <Route path="/contactus" element={<ContactUs />} />
+        <Route path="/about" element={<About />} />
         <Route path="/legalandabout" element={<LegalAndAbout />} />
       </Routes>
     </Unlogged>
