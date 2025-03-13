@@ -36,11 +36,11 @@ const LayoutManager: React.FC = () => {
     authenticate();
 
     if (isAuthenticated) {
-      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking'].includes(location.pathname)) {
+      if (!['/addnew', '/profile', '/changepassword', '/deleteaccount', '/home', '/pausedtracking', "/privacypolicy", "/legalnotices", "/contactus", "/about", "/legalandabout"].includes(location.pathname)) {
         navigate('/home');
       }
     } else {
-      if (!['/', '/login', '/register', '/reset-password-confirm'].includes(location.pathname)) {
+      if (!['/', '/login', '/register', '/reset-password-confirm', "/privacypolicy", "/legalnotices", "/contactus", "/about", "/legalandabout"].includes(location.pathname)) {
         navigate('/');
       }
     }
