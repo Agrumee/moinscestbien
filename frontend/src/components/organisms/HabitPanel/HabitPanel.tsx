@@ -105,6 +105,7 @@ const HabitPanel = ({
                             onClick={() => updateInputValue(-1)}
                         />
                         <Input
+                            type="number"
                             className="small-input"
                             value={currentConsumption.toString()}
                             onChange={(e) => onUpdateConsumption(Number(e.target.value))}
