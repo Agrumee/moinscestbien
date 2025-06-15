@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { svgSpritemap } from "vite-plugin-svg-spritemap";
 import ViteEslint from 'vite-plugin-eslint';
+import path from "path";
 
 
 export default defineConfig(() => {
@@ -19,7 +20,8 @@ export default defineConfig(() => {
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "./src/styles/_variables.scss" as *;`,
+          additionalData: `@use "variables" as *;`,
+          includePaths: [path.resolve(__dirname, "src/styles")],
         },
       },
     },
