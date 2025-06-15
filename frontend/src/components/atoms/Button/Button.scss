@@ -1,3 +1,5 @@
+@use "../../../styles/variables" as *;
+
 /* Mixin pour le style des boutons */
 @mixin button-style($line-height: 150%, $background-color, $color) {
   font-family: $font-family;

@@ -1,3 +1,6 @@
+@use "../../../styles/variables" as *;
+
+
 @mixin heading-style($font-size, $line-height: 150%) {
   font-family: $font-family;
   color: $black;

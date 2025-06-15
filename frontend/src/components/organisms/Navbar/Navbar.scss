@@ -1,3 +1,6 @@
+@use "../../../styles/variables" as *;
+
+
 .o-navbar {
   display: flex;
   background-color: $dark_green;
