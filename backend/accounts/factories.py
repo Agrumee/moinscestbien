@@ -12,15 +12,13 @@ fake = Faker()
 
 def random_start_date():
     today = date.today()
-    # Calculer une date 2 mois avant aujourd'hui
     two_months_ago = today.month - 2
     year = today.year
 
-    if two_months_ago <= 0:  # Ajuster l'année et le mois si nécessaire
+    if two_months_ago <= 0:
         two_months_ago += 12
         year -= 1
 
-    # Trouver le dernier jour du mois correspondant
     next_month = two_months_ago + 1
     next_year = year
     if next_month > 12:

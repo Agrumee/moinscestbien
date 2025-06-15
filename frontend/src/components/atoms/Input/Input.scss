@@ -1,3 +1,5 @@
+@use "../../../styles/variables" as *;
+
 @mixin input-style() {
   background-color: $white;
   border: 1px solid $medium_green;

@@ -16,13 +16,6 @@ export default defineConfig(() => {
       }),
       ViteEslint()
     ],
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@import "./src/styles/_variables.scss";`,
-        },
-      },
-    },
     server: {
       host: "0.0.0.0",
       hmr: process.env.DJANGO_DEBUG !== "True", // Désactive HMR en prod
