@@ -1,4 +1,6 @@
 @use "../../../styles/variables" as *;
+@use "sass:color";
+
 
 /* Mixin pour le style des boutons */
 @mixin button-style($line-height: 150%, $background-color, $color) {
@@ -27,7 +29,7 @@
     @include button-style(150%, $yellow, $black);
 
     &:not(:disabled):hover, &:not(:disabled):focus {
-      background-color: darken($yellow, 10%);
+      background-color: color.adjust($yellow, $lightness: -10%);
       color: $white;
     }
   }
@@ -36,7 +38,7 @@
     @include button-style(150%, $red, $black);
 
     &:not(:disabled):hover, &:not(:disabled):focus {
-      background-color: darken($red, 10%);
+      background-color: color.adjust($red, $lightness: -10%);
       color: $white;
     }
   }
